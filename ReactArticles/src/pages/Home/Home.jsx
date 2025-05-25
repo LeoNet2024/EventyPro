@@ -1,12 +1,10 @@
-import classes from "./Home.module.css";
-import axios from "axios";
-import { useState, useEffect } from "react";
-import SearchBar from "../../components/SearchBar/SearchBar";
-import EventCard from "../../components/EventCard/EventCard";
+import classes from './Home.module.css';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
+import SearchBar from '../../components/SearchBar/SearchBar';
+import EventCard from '../../components/EventCard/EventCard';
 
 export default function Home() {
-
-  
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
@@ -15,13 +13,12 @@ export default function Home() {
 
   const fetchData = () => {
     axios
-      .get("home")
-      .then((res) => {
+      .get('home')
+      .then(res => {
         setEvents(res.data);
-        console.log(res.data); // Data from API
       })
-      .catch((error) => {
-        console.error("Error:", error);
+      .catch(error => {
+        console.error('Error:', error);
       });
   };
   return (
@@ -35,7 +32,7 @@ export default function Home() {
       <h2>Featured Events</h2>
       <div className={classes.featuredEvents}>
         {events &&
-          events.map((event) => {
+          events.map(event => {
             return <EventCard event={event} key={event.event_id} />;
           })}
       </div>

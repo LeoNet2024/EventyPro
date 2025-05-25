@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import axios from "axios";
-import classes from "./EventView.module.css";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import classes from './EventView.module.css';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
-import ParticipantsList from "../participantsList/participantsList";
+import Comment from '../../components/forms/comment/comment';
+
+import ParticipantsList from '../participantsList/participantsList';
 
 export default function EventView() {
   // use for navigate
@@ -13,6 +15,8 @@ export default function EventView() {
   const { user, setUser } = useAuth();
 
   const [event, setEvent] = useState(null);
+
+  // event id from URL local..../{id}
   const { id } = useParams();
 
   const [participants, setParticipants] = useState(null);
@@ -30,8 +34,8 @@ export default function EventView() {
         setEvent(eventRes.data);
         setParticipants(participantsRes.data);
       })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
+      .catch(error => {
+        console.error('Error fetching data:', error);
       });
   };
 
@@ -46,24 +50,24 @@ export default function EventView() {
 
     axios
       .post(`/event/${id}/joinEvent`, payload)
-      .then((res) => {
-        alert("you joined to event successfully");
-        navigate("/home");
+      .then(res => {
+        alert('you joined to event successfully');
+        navigate('/home');
       })
-      .catch((error) => {
-        console.error("Error:", error);
-        alert("you are already joined");
+      .catch(error => {
+        console.error('Error:', error);
+        alert('you are already joined');
       });
   }
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "-";
-    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+  const formatDate = dateString => {
+    if (!dateString) return '-';
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  const formatTime = (timeString) => {
-    if (!timeString) return "-";
+  const formatTime = timeString => {
+    if (!timeString) return '-';
     return timeString.substring(0, 5);
   };
 
@@ -79,7 +83,7 @@ export default function EventView() {
           <strong>Event ID:</strong> {event.event_id}
         </div>
         <div>
-          <strong>Category:</strong> {event.category || "-"}
+          <strong>Category:</strong> {event.category || '-'}
         </div>
         <div>
           <strong>Start Date:</strong> {formatDate(event.start_date)}
@@ -91,23 +95,24 @@ export default function EventView() {
           <strong>Start Time:</strong> {formatTime(event.start_time)}
         </div>
         <div>
-          <strong>City:</strong> {event.city || "-"}
+          <strong>City:</strong> {event.city || '-'}
         </div>
         <div>
-          <strong>Participants:</strong> {event.participant_amount ?? "-"}
+          <strong>Participants:</strong> {event.participant_amount ?? '-'}
         </div>
         <div>
-          <strong>Private:</strong> {event.is_private ? "Yes" : "No"}
+          <strong>Private:</strong> {event.is_private ? 'Yes' : 'No'}
         </div>
         <div>
-          <img src={event.src} alt="" />
+          <img src={event.src} alt='' />
         </div>
       </div>
       <div>
-        <h2>participants : {participants.map((p) => p.user_name)}</h2>
+        <h2>participants : {participants.map(p => p.user_name)}</h2>
         <ParticipantsList />
         {user && <button onClick={handleJoin}>Join Event</button>}
       </div>
+      <Comment eventid={id} />
     </div>
   );
 }

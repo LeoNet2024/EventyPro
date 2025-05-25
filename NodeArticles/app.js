@@ -22,14 +22,14 @@ app.use(express.json());
 
 app.use(
   session({
-    secret: "leoneo", // סוד אקראי – לא לפרסום
+    secret: 'leoneo', // סוד אקראי – לא לפרסום
     resave: false,
     saveUninitialized: false,
     cookie: {
       secure: false, // true רק ב־HTTPS
-      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24, // יום אחד
     },
-  })
+  }),
 );
 
 app.use("/home", homeRoute); // Home Page

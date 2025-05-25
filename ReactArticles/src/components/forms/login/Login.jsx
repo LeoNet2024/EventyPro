@@ -1,34 +1,34 @@
-import { useState } from "react";
-import classes from "./Login.module.css";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../context/AuthContext";
+import { useState } from 'react';
+import classes from './Login.module.css';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext';
 
 export default function Login() {
   const { user, setUser } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
-    setError("");
+    setError('');
 
     axios
-      .post("/login/login", { email, password }, { withCredentials: true })
-      .then((res) => {
-        const user = res.data.user;
-        // save true to local if user logged in
-        localStorage.setItem("logged", "true");
-        setUser(user);
-        navigate("/home");
+      .post('/login/login', { email, password }, { withCredentials: true })
+      .then(() => {
+        return axios.get('/login/session');
       })
-      .catch((err) => {
+      .then(res => {
+        setUser(res.data);
+        navigate('/home');
+      })
+      .catch(err => {
         if (err.response && err.response.data?.error) {
           setError(err.response.data.error);
         } else {
-          setError("שגיאה לא צפויה בהתחברות.");
+          setError('שגיאה לא צפויה בהתחברות.');
         }
       });
   };
@@ -39,22 +39,22 @@ export default function Login() {
       <form onSubmit={handleSubmit} className={classes.loginForm}>
         {error && <p className={classes.error}>{error}</p>}
         <input
-          type="email"
-          placeholder="Email"
+          type='email'
+          placeholder='Email'
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={e => setEmail(e.target.value)}
           className={classes.input}
           required
         />
         <input
-          type="password"
-          placeholder="Password"
+          type='password'
+          placeholder='Password'
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={e => setPassword(e.target.value)}
           className={classes.input}
           required
         />
-        <button type="submit" className={classes.button}>
+        <button type='submit' className={classes.button}>
           Login
         </button>
       </form>

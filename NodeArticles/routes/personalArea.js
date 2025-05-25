@@ -1,10 +1,10 @@
-const express = require("express");
-const dbSingleton = require("../dbSingleton");
+const express = require('express');
+const dbSingleton = require('../dbSingleton');
 const router = express.Router();
 const db = dbSingleton.getConnection();
 
 // Getting all user events
-router.post("/", (req, res) => {
+router.post('/', (req, res) => {
   const { user_id } = req.body;
 
   const query = `SELECT events.event_id, events.category, events.event_name
@@ -14,12 +14,10 @@ router.post("/", (req, res) => {
 
   db.query(query, [user_id], (err, results) => {
     if (err) {
-      console.log("Error to read user events");
+      console.log('Error to read user events');
       return res.status(500).send(err);
     }
-    if (results.length > 0) {
-      res.json(results);
-    } else res.send("No events yet");
+    res.json(results);
   });
 });
 module.exports = router;

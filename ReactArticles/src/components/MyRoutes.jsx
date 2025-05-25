@@ -9,6 +9,8 @@ import EventView from "./EventView/EventView";
 import PersonalArea from "../pages/personalArea/personalArea";
 
 export default function MyRoutes() {
+
+  
   return (
     <>
       <Header />
