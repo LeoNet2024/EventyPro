@@ -1,35 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import categories from "../../../data/sport_categories";
 import cities from "../../../data/full_israeli_cities";
 import axios from "axios";
 
 import classes from "./NewEvent.module.css";
+
 import { useNavigate } from "react-router-dom";
 
+import { useAuth } from "../../../context/AuthContext";
 // components for create new event
 export default function NewEvent() {
   // for navigate after event created
   const navigate = useNavigate();
 
+  // user details
+  const { user } = useAuth();
+
+  const [cities, setCities] = useState([]);
+
   const catOptions = categories.map((el, idx) => {
     return <option key={idx}>{el}</option>;
   });
 
-  const validCities = cities.filter(
-    (el) => el.english_name && el.english_name.trim().length > 0
-  );
+  // import  cities from cities table
+  useEffect(() => {
+    axios
+      .get("/login/cities")
+      .then((res) => {
+        const validCities = res.data.filter(
+          (el) => el.name_heb && el.name_heb.trim().length > 0
+        );
+        setCities(validCities);
+      })
+      .catch((err) => {
+        console.error("Error fetching cities:", err);
+      });
+  }, []);
 
-  const citiesOptions = validCities.map((el, idx) => {
-    const name = el.english_name.trim();
-    const formattedName =
-      name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-    return (
-      <option key={idx} value={formattedName}>
-        {formattedName}
-      </option>
-    );
-  });
-
+  // form details
   const [eventDea, setEventDea] = useState({
     eventName: "",
     city: "",
@@ -39,18 +47,20 @@ export default function NewEvent() {
     endDate: "",
     startTime: "",
     type: "",
+    user_id: "",
   });
 
+  // handle change
   function handleChange(e) {
     setEventDea((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
+      user_id: user.user_id,
     }));
   }
 
+  // hande submit
   function handleSubmit(e) {
-    console.log(eventDea);
-
     e.preventDefault();
 
     axios
@@ -83,7 +93,9 @@ export default function NewEvent() {
           <label>city</label>
           <select name="city" onChange={(e) => handleChange(e)}>
             <option></option>
-            {citiesOptions}
+            {cities.map((el, idx) => {
+              return <option key={idx}>{el.name_heb}</option>;
+            })}
           </select>
           <label>category</label>
           <select name="category" onChange={(e) => handleChange(e)}>
