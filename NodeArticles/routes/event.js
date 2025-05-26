@@ -8,10 +8,23 @@ router.get('/:id/participants', (req, res) => {
   const id = req.params.id;
 
   const query = `
-    SELECT users.user_name
+    SELECT *
     FROM event_participants
     JOIN users ON event_participants.user_id = users.user_id
     WHERE event_participants.event_id = ?`;
+
+  db.query(query, [id], (err, results) => {
+    if (err) return res.status(500).send(err);
+    res.json(results);
+  });
+});
+
+router.get('/:id/currentParticipants', (req, res) => {
+  const id = req.params.id;
+
+  const query = `SELECT COUNT(*) as count
+                FROM event_participants
+                WHERE event_participants.event_id = ?`;
 
   db.query(query, [id], (err, results) => {
     if (err) return res.status(500).send(err);
@@ -64,11 +77,12 @@ router.post('/:id/addComment', (req, res) => {
 router.get('/:id/comments', (req, res) => {
   const eventId = req.params.id;
 
+
   const query = `
     SELECT *
     FROM event_comments
     INNER JOIN users
-    ON event_comments.event_id = 17 AND event_comments.user_id = users.user_id
+    ON event_comments.event_id = (?) AND event_comments.user_id = users.user_id
   `;
 
   db.query(query, [eventId], (err, results) => {

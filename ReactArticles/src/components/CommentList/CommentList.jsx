@@ -19,7 +19,7 @@ export default function CommentList({ eventid }) {
 
   return (
     <div className={classes.commentListContainer}>
-      <h3>Comments</h3>
+      <h3 className={classes.title}>Comments</h3>
       {comments.length === 0 && <p>No comments yet.</p>}
       {comments.map(c => (
         <div key={c.comment_id} className={classes.comment}>

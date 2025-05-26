@@ -1,25 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import classes from './EventView.module.css';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+
 import CommentList from '../CommentList/CommentList';
-
 import Comment from '../../components/forms/comment/comment';
-
 import ParticipantsList from '../participantsList/participantsList';
 
 export default function EventView() {
-  // use for navigate
   const navigate = useNavigate();
-  const { user, setUser } = useAuth();
-
-  const [event, setEvent] = useState(null);
-
-  // event id from URL local..../{id}
+  const { user } = useAuth();
   const { id } = useParams();
 
+  const [event, setEvent] = useState(null);
   const [participants, setParticipants] = useState(null);
 
   useEffect(() => {
@@ -40,8 +34,7 @@ export default function EventView() {
       });
   };
 
-  // this function adding participants to events
-  function handleJoin() {
+  const handleJoin = () => {
     const payload = {
       user_id: user.user_id,
       event_id: id,
@@ -49,15 +42,15 @@ export default function EventView() {
 
     axios
       .post(`/event/${id}/joinEvent`, payload)
-      .then(res => {
-        alert('you joined to event successfully');
+      .then(() => {
+        alert('You joined the event successfully!');
         navigate('/home');
       })
       .catch(error => {
         console.error('Error:', error);
-        alert('you are already joined');
+        alert('You are already joined or something went wrong.');
       });
-  }
+  };
 
   const formatDate = dateString => {
     if (!dateString) return '-';
@@ -75,44 +68,57 @@ export default function EventView() {
   }
 
   return (
-    <div className={classes.eventContainer}>
-      <h2 className={classes.eventTitle}>{event.event_name}</h2>
-      <div className={classes.eventGrid}>
-        <div>
-          <strong>Event ID:</strong> {event.event_id}
-        </div>
-        <div>
-          <strong>Category:</strong> {event.category || '-'}
-        </div>
-        <div>
-          <strong>Start Date:</strong> {formatDate(event.start_date)}
-        </div>
-        <div>
-          <strong>End Date:</strong> {formatDate(event.end_date)}
-        </div>
-        <div>
-          <strong>Start Time:</strong> {formatTime(event.start_time)}
-        </div>
-        <div>
-          <strong>City:</strong> {event.city || '-'}
-        </div>
-        <div>
-          <strong>Participants:</strong> {event.participant_amount ?? '-'}
-        </div>
-        <div>
-          <strong>Private:</strong> {event.is_private ? 'Yes' : 'No'}
-        </div>
-        <div>
-          <img src={event.src} alt='' />
+    <>
+      <div className={classes.hero}>
+        <img
+          src={event.src}
+          alt={event.event_name}
+          className={classes.heroImage}
+        />
+        <div className={classes.overlay}>
+          <h1 className={classes.title}>{event.event_name}</h1>
+          <p className={classes.subtitle}>{event.category}</p>
         </div>
       </div>
-      <div>
-        <h2>participants : {participants.map(p => p.user_name)}</h2>
-        <ParticipantsList />
-        {user && <button onClick={handleJoin}>Join Event</button>}
+
+      <div className={classes.mainContent}>
+        <div className={classes.left}>
+          <div className={classes.eventDetails}>
+            <p>
+              <strong>Date:</strong> {formatDate(event.start_date)}
+            </p>
+            <p>
+              <strong>End Date:</strong> {formatDate(event.end_date)}
+            </p>
+            <p>
+              <strong>Time:</strong> {formatTime(event.start_time)}
+            </p>
+            <p>
+              <strong>City:</strong> {event.city || '-'}
+            </p>
+            <p>
+              <strong>Private:</strong> {event.is_private ? 'Yes' : 'No'}
+            </p>
+            <p>
+              <strong>Max Participants:</strong>{' '}
+              {event.participant_amount ?? '-'}
+            </p>
+          </div>
+
+          {user && (
+            <button onClick={handleJoin} className={classes.joinButton}>
+              Join Event
+            </button>
+          )}
+
+          <CommentList eventid={id} />
+          {user && <Comment eventid={id} />}
+        </div>
+
+        <div className={classes.right}>
+          <ParticipantsList participants={participants} />
+        </div>
       </div>
-      {user && <Comment eventid={id} />}
-      <CommentList eventid={id} />
-    </div>
+    </>
   );
 }
