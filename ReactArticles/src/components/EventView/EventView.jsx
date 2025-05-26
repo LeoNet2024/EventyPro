@@ -4,6 +4,7 @@ import axios from 'axios';
 import classes from './EventView.module.css';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import CommentList from '../CommentList/CommentList';
 
 import Comment from '../../components/forms/comment/comment';
 
@@ -38,8 +39,6 @@ export default function EventView() {
         console.error('Error fetching data:', error);
       });
   };
-
-  console.log(participants);
 
   // this function adding participants to events
   function handleJoin() {
@@ -112,7 +111,8 @@ export default function EventView() {
         <ParticipantsList />
         {user && <button onClick={handleJoin}>Join Event</button>}
       </div>
-      <Comment eventid={id} />
+      {user && <Comment eventid={id} />}
+      <CommentList eventid={id} />
     </div>
   );
 }

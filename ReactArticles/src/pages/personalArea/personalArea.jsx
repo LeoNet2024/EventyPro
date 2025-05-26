@@ -11,6 +11,7 @@ export default function PersonalArea() {
   const [userEvents, setUserEvents] = useState([]);
 
   useEffect(() => {
+    if (!user) return;
     axios
       .post('/personal-area', { user_id: user.user_id })
       .then(res => {
