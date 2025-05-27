@@ -39,14 +39,17 @@ export default function PersonalArea() {
     <div className={classes.container}>
       <header className={classes.header}>
         <h1>Personal Area</h1>
-        <p>Welcome, {user?.first_name} 👋</p>
+        <p>Welcome, {user?.first_name}</p>
       </header>
       <h2>My Events </h2>
-      {eventsToShow}
+      <section className={classes.eventsSection}>{eventsToShow}</section>
       <section className={classes.userSection}>
         <UserView />
       </section>
-      <section className={classes.eventsSection}></section>
+      <h2>statistics</h2>
+      {/* to do */}
+      <h2>freinds</h2>
+      {/* to do */}
     </div>
   );
 }

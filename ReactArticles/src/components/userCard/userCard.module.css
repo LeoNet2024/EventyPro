@@ -28,6 +28,7 @@
   color: #2e2e2e;
   line-height: 3.2rem;
   transition: all 0.3s ease-in-out;
+  text-align: center;
 }
 
 .card p {

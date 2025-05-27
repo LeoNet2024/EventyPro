@@ -3,17 +3,18 @@ import classes from "./edit.module.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-export default function Edit({ user, cities, setShowEditUser, user_id }) {
+export default function Edit({ user, cities, showForm, user_id }) {
   const navigate = useNavigate();
 
+  // use state for form
   const [formData, setFormData] = useState({
     first_name: user.first_name,
     last_name: user.last_name,
     user_name: user.user_name,
-    email: user.email,
     user_id: user_id,
   });
 
+  // update the form data
   function handleChange(e) {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -23,6 +24,7 @@ export default function Edit({ user, cities, setShowEditUser, user_id }) {
     }));
   }
 
+  // sending the form by put
   function handleSubmit(e) {
     e.preventDefault();
 
@@ -31,7 +33,7 @@ export default function Edit({ user, cities, setShowEditUser, user_id }) {
       .put("/personal-area/editProfile", formData)
       .then((res) => {
         console.log("User updated successfully:", res.data);
-        setShowEditUser(false);
+        showForm(false);
       })
       .catch((error) => {
         console.error("Update failed:", error);
@@ -74,33 +76,13 @@ export default function Edit({ user, cities, setShowEditUser, user_id }) {
             />
           </label>
 
-          <label>
-            Password:
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-            />
-          </label>
-
           {/* to do -> add cities */}
-
-          <label>
-            Email:
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-            />
-          </label>
 
           <button type="submit">Save Changes</button>
           <button
             type="button"
             style={{ backgroundColor: "red" }}
-            onClick={() => setShowEditUser(false)}
+            onClick={() => showForm(false)}
           >
             Cancel
           </button>

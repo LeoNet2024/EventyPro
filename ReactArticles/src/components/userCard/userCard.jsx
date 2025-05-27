@@ -35,6 +35,7 @@ export default function UserView() {
           <p>
             <span>Gender:</span> {user.gender === "male" ? "Male" : "Female"}
           </p>
+
           <button onClick={() => setShowEditUser(true)}>
             Edit my detailes
           </button>
