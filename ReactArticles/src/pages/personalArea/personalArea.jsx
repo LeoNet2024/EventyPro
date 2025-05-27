@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import classes from './personalArea.module.css';
+import React, { useEffect, useState } from "react";
+import classes from "./personalArea.module.css";
 
-import { useAuth } from '../../context/AuthContext';
-import UserView from '../../components/userCard/userCard';
-import EventCard from '../../components/EventCard/EventCard';
-import axios from 'axios';
+import { useAuth } from "../../context/AuthContext";
+import UserView from "../../components/userCard/userCard";
+import EventCard from "../../components/EventCard/EventCard";
+import axios from "axios";
 
 export default function PersonalArea() {
   const { user } = useAuth();
@@ -13,13 +13,13 @@ export default function PersonalArea() {
   useEffect(() => {
     if (!user) return;
     axios
-      .post('/personal-area', { user_id: user.user_id })
-      .then(res => {
+      .post("/personal-area", { user_id: user.user_id })
+      .then((res) => {
         setUserEvents(res.data);
-        console.log('Events loaded:', res.data);
+        console.log("Events loaded:", res.data);
       })
-      .catch(err => {
-        console.error('Error loading events:', err);
+      .catch((err) => {
+        console.error("Error loading events:", err);
       });
   }, [user]);
 
@@ -27,7 +27,7 @@ export default function PersonalArea() {
   const eventsToShow =
     userEvents.length > 0 ? (
       <div className={classes.eventGrid}>
-        {userEvents.map(el => {
+        {userEvents.map((el) => {
           return <EventCard key={el.event_id} event={el} />;
         })}
       </div>
@@ -41,15 +41,12 @@ export default function PersonalArea() {
         <h1>Personal Area</h1>
         <p>Welcome, {user?.first_name} 👋</p>
       </header>
-
+      <h2>My Events </h2>
+      {eventsToShow}
       <section className={classes.userSection}>
         <UserView />
       </section>
-
-      <section className={classes.eventsSection}>
-        <h2>My Events </h2>
-        {eventsToShow}
-      </section>
+      <section className={classes.eventsSection}></section>
     </div>
   );
 }

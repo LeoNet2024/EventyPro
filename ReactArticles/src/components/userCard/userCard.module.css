@@ -45,3 +45,28 @@
   text-align: center;
   color: #cc0000;
 }
+
+button {
+  font-size: 2rem;
+  cursor: pointer;
+  background-color: rgb(189, 218, 145);
+  color: #333;
+  border: none;
+  border-radius: 12px;
+  padding: 0.8rem 2rem;
+  transition: background-color 0.3s ease, transform 0.2s ease,
+    box-shadow 0.3s ease;
+  font-weight: 600;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+  background-color: rgb(159, 198, 105);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
