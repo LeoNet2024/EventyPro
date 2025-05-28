@@ -1,39 +1,60 @@
+.cardLink {
+  text-decoration: none;
+  color: inherit;
+}
+
 .eventCard {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 20px;
-  margin: 20px 0;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  background-color: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  max-width: 400px;
-  width: 70%;
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
   cursor: pointer;
 }
 
 .eventCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
 }
 
-.eventCard img {
+.image {
   width: 100%;
-  height: auto;
-  max-height: 200px;
-  object-fit: contain;
-  border-radius: 8px;
+  height: 180px;
+  object-fit: cover;
+  border-bottom: 1px solid #eee;
+}
+
+.content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.category {
+  font-size: 0.95rem;
+  color: #666;
+}
+
+.viewMore {
   margin-top: 10px;
-  margin-bottom: 15px;
+  font-size: 0.9rem;
+  color: #1a73e8;
+  font-weight: 500;
+  align-self: flex-start;
+  transition: color 0.2s ease;
 }
 
-.eventCard h2 {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-  color: #333333;
-}
-
-.eventCard p {
-  font-size: 1rem;
-  color: #666666;
-  line-height: 1.5;
+.viewMore:hover {
+  color: #0c4cc3;
 }

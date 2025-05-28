@@ -7,10 +7,9 @@ import LoginPage from "../pages/LoginPage/LoginPage";
 import NewEvent from "./forms/newEvent/NewEvent";
 import EventView from "./EventView/EventView";
 import PersonalArea from "../pages/personalArea/personalArea";
+import AdminDashboard from "../pages/AdminDashboard/AdminDashboard";
 
 export default function MyRoutes() {
-
-  
   return (
     <>
       <Header />
@@ -22,6 +21,7 @@ export default function MyRoutes() {
           <Route path="/personal-area" element={<PersonalArea />} />
           <Route path="/newEvent" element={<NewEvent />} />
           <Route path="/event/:id" element={<EventView />} />
+          <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
       </main>
 

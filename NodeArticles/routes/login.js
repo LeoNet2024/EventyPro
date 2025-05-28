@@ -95,6 +95,8 @@ router.post("/login", (req, res) => {
         city: user.city,
         gender: user.gender,
         email: user.email,
+        src: user.src,
+        is_admin: user.is_admin,
       };
 
       res.status(200).json({
