@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import classes from "./userCard.module.css";
 import { useAuth } from "../../context/AuthContext";
-import Edit from "../../components/forms/edit/edit";
+import Edit from "../forms/editUser/editUser";
+import EditPassword from "../forms/editUser/editPassword";
 
-export default function UserView() {
+export default function UserCard() {
   const { user } = useAuth();
 
   // used to display user edit form
   const [showEditUser, setShowEditUser] = useState(false);
+  const [showEditPassword, setshowEditPassword] = useState(false);
+
   if (!user) {
     return <div className={classes.message}>Not logged in</div>;
   }
@@ -39,11 +42,20 @@ export default function UserView() {
           <button onClick={() => setShowEditUser(true)}>
             Edit my detailes
           </button>
+          <button onClick={() => setshowEditPassword(true)}>
+            change password
+          </button>
           {showEditUser && (
             <Edit
               user_id={user.user_id}
               user={user}
               showForm={setShowEditUser}
+            />
+          )}
+          {showEditPassword && (
+            <EditPassword
+              user_id={user.user_id}
+              showForm={setshowEditPassword}
             />
           )}
         </div>

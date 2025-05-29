@@ -3,7 +3,7 @@ import classes from "./edit.module.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-export default function Edit({ user, cities, showForm, user_id }) {
+export default function EditUser({ user, cities, showForm, user_id }) {
   const navigate = useNavigate();
 
   // use state for form
