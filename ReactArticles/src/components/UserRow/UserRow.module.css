@@ -1,0 +1,14 @@
+.block {
+  background-color: #f44336;
+  color: white;
+}
+
+.unblock {
+  background-color: #4caf50;
+  color: white;
+}
+
+.delete {
+  background-color: #888;
+  color: white;
+}

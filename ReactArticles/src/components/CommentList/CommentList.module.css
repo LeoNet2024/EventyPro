@@ -32,6 +32,11 @@
   font-size: 2.5rem;
 }
 
+.admin {
+  color: #f1c40f;
+  font-weight: 600;
+}
+
 .text {
   margin: 0.3rem 0;
 }

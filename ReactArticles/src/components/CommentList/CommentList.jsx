@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import classes from './CommentList.module.css';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import classes from "./CommentList.module.css";
 
 export default function CommentList({ eventid }) {
   const [comments, setComments] = useState([]);
@@ -8,11 +8,11 @@ export default function CommentList({ eventid }) {
   useEffect(() => {
     axios
       .get(`/event/${eventid}/comments`)
-      .then(res => setComments(res.data))
-      .catch(err => console.error('Failed to load comments:', err));
+      .then((res) => setComments(res.data))
+      .catch((err) => console.error("Failed to load comments:", err));
   }, [eventid]);
 
-  const formatDateTime = datetime => {
+  const formatDateTime = (datetime) => {
     const date = new Date(datetime);
     return date.toLocaleString(); // תאריך + שעה
   };
@@ -21,7 +21,7 @@ export default function CommentList({ eventid }) {
     <div className={classes.commentListContainer}>
       <h3 className={classes.title}>Comments</h3>
       {comments.length === 0 && <p>No comments yet.</p>}
-      {comments.map(c => (
+      {comments.map((c) => (
         <div key={c.comment_id} className={classes.comment}>
           <img
             src={c.src}
@@ -29,7 +29,10 @@ export default function CommentList({ eventid }) {
             className={classes.avatar}
           />
           <div className={classes.content}>
-            <p className={classes.author}>{c.user_name}</p>
+            <p className={`${classes.author} ${c.is_admin ? classes.admin : ""}`}>
+              {c.user_name}
+            </p>
+
             <p className={classes.text}>{c.comment_content}</p>
             <p className={classes.timestamp}>
               {formatDateTime(c.comment_time)}

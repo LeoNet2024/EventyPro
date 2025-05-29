@@ -39,3 +39,8 @@
 .name {
   font-size: 1.5rem;
 }
+
+.admin {
+  color: #f1c40f;
+  font-weight: 600;
+}

@@ -18,7 +18,9 @@ export default function ParticipantsList({ participants }) {
               alt={participant.user_name}
               className={classes.avatar}
             />
-            <span className={classes.name}>{participant.user_name}</span>
+            <span className={`${classes.name} ${participant.is_admin ? classes.admin : ""}`}>
+              {participant.user_name}
+            </span>
           </li>
         ))}
       </ul>

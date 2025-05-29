@@ -76,6 +76,11 @@ router.post("/login", (req, res) => {
 
     const user = results[0];
 
+    // ✅ בדיקה אם המשתמש חסום
+    if (user.blocked) {
+      return res.status(403).json({ error: "This user is blocked" });
+    }
+
     bcrypt.compare(password, user.password, (err, isMatch) => {
       if (err) {
         console.error("Compare error:", err);
@@ -97,6 +102,7 @@ router.post("/login", (req, res) => {
         email: user.email,
         src: user.src,
         is_admin: user.is_admin,
+        blocked: user.blocked,
       };
 
       res.status(200).json({
