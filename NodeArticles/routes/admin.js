@@ -43,7 +43,8 @@ router.delete("/users/:id", (req, res) => {
 
 // Get all events
 router.get("/events", (req, res) => {
-  const query = "SELECT * FROM events";
+  const query = "SELECT e.*, COUNT(ep.user_id) AS actual_participants FROM events e LEFT JOIN event_participants ep ON e.event_id = ep.event_id GROUP BY e.event_id ORDER BY e.event_id";
+
   db.query(query, (err, results) => {
     if (err) return res.status(500).json({ error: "Database error" });
     res.json(results);

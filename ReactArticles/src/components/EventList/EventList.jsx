@@ -94,8 +94,15 @@ export default function EventList() {
               onSort={handleSort}
             />
             <SortableHeader
-              field="participant_amount"
+              field="actual_participants"
               label="Participants"
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+              onSort={handleSort}
+            />
+            <SortableHeader
+              field="participant_amount"
+              label="Max Participants"
               sortBy={sortBy}
               sortOrder={sortOrder}
               onSort={handleSort}
@@ -110,7 +117,10 @@ export default function EventList() {
               <td>{event.category}</td>
               <td>{event.city}</td>
               <td>{event.start_date?.slice(0, 10)}</td>
-              <td style={{ paddingLeft: "3em" }}>{event.participant_amount}</td>
+              <td style={{ paddingLeft: "3em" }}>
+                {event.actual_participants}
+              </td>
+              <td style={{ paddingLeft: "4em" }}>{event.participant_amount}</td>
               <td>
                 <button
                   className={classes.delete}
