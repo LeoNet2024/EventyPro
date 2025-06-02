@@ -48,7 +48,7 @@ export default function PersonalArea() {
       <h2>statistics</h2>
       {/* to do */}
       <UserStats />
-      <h2>freinds</h2>
+      <h2>friends</h2>
       {/* to do */}
       <UserView />
     </div>
