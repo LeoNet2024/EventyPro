@@ -103,6 +103,7 @@ router.post("/login", (req, res) => {
         src: user.src,
         is_admin: user.is_admin,
         blocked: user.blocked,
+        registration_date: user.registration_date,
       };
 
       res.status(200).json({

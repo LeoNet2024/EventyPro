@@ -76,4 +76,51 @@ router.put("/editProfile", (req, res) => {
   });
 });
 
+// ________________for user stats__________________________
+
+// Return the number of events that specific user created
+router.post("/userStats/createdEvents", (req, res) => {
+  const { user_id } = req.body;
+
+  const query = `SELECT COUNT(*) as "count"
+                FROM created_events
+                WHERE created_events.user_id = ?`;
+
+  db.query(query, [user_id], (err, results) => {
+    if (err) return res.status(500).send("Get created events error");
+    res.send(results[0]);
+  });
+});
+
+// Return the number of events that user joined them
+
+router.post("/userStats/joinedEvents", (req, res) => {
+  const { user_id } = req.body;
+
+  const query = `SELECT COUNT(*) as 'join events'
+                FROM event_participants
+                WHERE event_participants.user_id = 7;`;
+
+  db.query(query, [user_id], (err, results) => {
+    if (err) return res.send(500).send("Can't get the number of joined events");
+
+    return res.send(results[0]);
+  });
+});
+
+// Return the last comment from events_comments
+router.post("/userStats/lastComment", (req, res) => {
+  const { user_id } = req.body;
+
+  const query = `SELECT comment_content,MAX(comment_time) as "maxTime"
+                fROM event_comments as sub
+                WHERE sub.user_id = ?`;
+
+  db.query(query, [user_id], (err, results) => {
+    if (err) return res.status(500).send("last message is invalid");
+
+    res.send(results[0]);
+  });
+});
+
 module.exports = router;

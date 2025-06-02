@@ -4,6 +4,7 @@ import classes from "./personalArea.module.css";
 import { useAuth } from "../../context/AuthContext";
 import UserView from "../../components/userCard/userCard";
 import EventCard from "../../components/EventCard/EventCard";
+import UserStats from "../../components/userStats/userStats";
 import axios from "axios";
 
 export default function PersonalArea() {
@@ -43,13 +44,13 @@ export default function PersonalArea() {
       </header>
       <h2>My Events </h2>
       <section className={classes.eventsSection}>{eventsToShow}</section>
-      <section className={classes.userSection}>
-        <UserView />
-      </section>
+      <section className={classes.userSection}></section>
       <h2>statistics</h2>
       {/* to do */}
+      <UserStats />
       <h2>freinds</h2>
       {/* to do */}
+      <UserView />
     </div>
   );
 }

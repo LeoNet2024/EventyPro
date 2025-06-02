@@ -1,0 +1,32 @@
+.card {
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 2.5rem 3rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: 2rem auto;
+  font-size: 1.6rem;
+  color: #333;
+}
+
+.title {
+  font-size: 2.2rem;
+  margin-bottom: 1.5rem;
+  color: #003366;
+  text-align: center;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+}
+
+.list li {
+  margin-bottom: 1.2rem;
+  line-height: 2.4rem;
+}
+
+.list span {
+  font-weight: bold;
+  color: #005a9e;
+}
