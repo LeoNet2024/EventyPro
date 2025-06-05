@@ -1,0 +1,37 @@
+.messageContainer {
+  padding: 2rem;
+}
+
+.messageBox {
+  background-color: #f7f9fb;
+  border: 1px solid #d2dbe4;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.replyBox {
+  width: 100%;
+  height: 80px;
+  margin-top: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.5rem;
+}
+
+.replyButton {
+  margin-top: 0.5rem;
+  padding: 6px 12px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.fromLine {
+  text-align: right;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  color: #333;
+}

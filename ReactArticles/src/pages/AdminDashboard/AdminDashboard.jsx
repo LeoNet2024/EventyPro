@@ -2,6 +2,7 @@ import classes from "./AdminDashboard.module.css";
 import { useState } from "react";
 import UserList from "../../components/UserList/UserList";
 import EventList from "../../components/EventList/EventList";
+import AdminMessages from "../../components/AdminMessages/AdminMessages";
 
 export default function AdminDashboard() {
   const [view, setView] = useState("users");
@@ -33,7 +34,7 @@ export default function AdminDashboard() {
       <main className={classes.main}>
         {view === "users" && <UserList />}
         {view === "events" && <EventList />}
-        {/*view === "messages" && <AdminMessages />} */}
+        {view === "messages" && <AdminMessages />}
       </main>
     </div>
   );

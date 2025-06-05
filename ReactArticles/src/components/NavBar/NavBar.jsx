@@ -67,6 +67,15 @@ export default function NavBar() {
           Dashboard
         </NavLink>
       )}
+
+      {user && Boolean(user?.is_admin) && (
+        <NavLink
+          to="/contact"
+          className={({ isActive }) => (isActive ? classes.active : "")}
+        >
+          Contact Us
+        </NavLink>
+      )}
     </nav>
   );
 }
