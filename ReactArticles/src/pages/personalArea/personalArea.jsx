@@ -37,7 +37,7 @@ export default function PersonalArea() {
         setFriendRequests(res.data);
       })
       .catch((err) => console.error("Error loading Friend Requests"));
-  }, [user, friendRequests]);
+  }, [user]);
 
   // Showcasing the events of the current user, if there are any
   const eventsToShow =

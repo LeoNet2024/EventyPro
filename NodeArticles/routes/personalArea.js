@@ -83,12 +83,37 @@ router.post("/FriendRequests", (req, res) => {
   const query = `SELECT users.user_name, users.user_id,friend_requests.request_id
                 FROM users
                 INNER JOIN friend_requests ON users.user_id = friend_requests.sender_id
-                WHERE friend_requests.receiver_id = ?`;
+                WHERE friend_requests.receiver_id = ? AND friend_requests.status = 'pending'`;
 
   db.query(query, [user_id], (err, results) => {
     if (err) return res.status(500).send("Cannot get the friends request");
 
     return res.json(results);
+  });
+});
+
+//Handle with user respone to request
+router.put("/FriendRequests/responeToRequest", (req, res) => {
+  console.log(req.body);
+  const { user_respone, request_id } = req.body;
+
+  const query = `UPDATE friend_requests 
+                 SET status = ? 
+                 WHERE request_id = ?`;
+
+  const status = user_respone === "confirm" ? "accepted" : "ignored";
+
+  db.query(query, [status, request_id], (err, result) => {
+    if (err) {
+      console.error("Failed to update friend request", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Request not found" });
+    }
+
+    return res.json({ message: `Friend request ${status}` });
   });
 });
 
