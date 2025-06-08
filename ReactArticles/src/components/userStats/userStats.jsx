@@ -3,10 +3,8 @@ import classes from "./userStats.module.css";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 
-export default function UserStats() {
+export default function UserStats({ noti }) {
   const { user } = useAuth();
-
-  console.log(user);
 
   const [createdCount, setCreatedCount] = useState(0);
   const [joinedCount, setJoinedCount] = useState(0);
@@ -35,7 +33,6 @@ export default function UserStats() {
       axios
         .post("personal-area/userStats/lastComment", { user_id: user.user_id })
         .then((res) => {
-          console.log(res.data["comment_content"]);
           setLastComment(res.data["comment_content"]);
         })
         .catch((err) => console.error(err));
@@ -53,6 +50,12 @@ export default function UserStats() {
         </li>
         <li>
           <span>Created Events:</span> {createdCount}
+        </li>
+        <li>
+          <span style={noti > 0 ? { color: "red" } : { color: "" }}>
+            Notifications:{" "}
+          </span>
+          {noti}
         </li>
         <li>
           <span>Last Comment:</span> {lastComment}

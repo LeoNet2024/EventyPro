@@ -76,6 +76,22 @@ router.put("/editProfile", (req, res) => {
   });
 });
 
+//Handle to get all user Friend Requests
+router.post("/FriendRequests", (req, res) => {
+  const { user_id } = req.body;
+
+  const query = `SELECT users.user_name, users.user_id,friend_requests.request_id
+                FROM users
+                INNER JOIN friend_requests ON users.user_id = friend_requests.sender_id
+                WHERE friend_requests.receiver_id = ?`;
+
+  db.query(query, [user_id], (err, results) => {
+    if (err) return res.status(500).send("Cannot get the friends request");
+
+    return res.json(results);
+  });
+});
+
 // ________________for user stats__________________________
 
 // Return the number of events that specific user created

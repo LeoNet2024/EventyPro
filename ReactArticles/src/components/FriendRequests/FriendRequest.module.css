@@ -1,0 +1,36 @@
+.wrapper {
+  padding: 1rem;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.requestCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+  padding: 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.actions button {
+  margin-left: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.confirm {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+}
+
+.ignore {
+  background-color: #f44336;
+  color: white;
+  border: none;
+}
