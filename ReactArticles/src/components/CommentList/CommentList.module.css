@@ -1,0 +1,54 @@
+.commentListContainer {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #fafafa;
+  border-radius: 10px;
+}
+
+.comment {
+  display: flex;
+  align-items: flex-start;
+  text-align: left;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 1rem;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 1rem;
+}
+
+.content {
+  flex: 1;
+}
+
+.author {
+  font-weight: bold;
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+.admin {
+  color: #f1c40f;
+  font-weight: 600;
+}
+
+.text {
+  margin: 0.3rem 0;
+}
+
+.title {
+  font-size: 1.9rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid brown;
+  padding-bottom: 0.5rem;
+}
+
+.timestamp {
+  font-size: 1.3rem;
+  color: gray;
+}

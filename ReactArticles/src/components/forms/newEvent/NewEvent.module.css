@@ -1,10 +1,15 @@
-main {
+.backdrop {
+  background: #f0f4f8;
+  min-height: 100vh;
+  padding: 2rem 0;
+}
+
+.main {
   display: flex;
   flex-direction: column;
   width: 80%;
-  border: 1px solid black;
   margin: auto;
-  font-size: 2rem;
+  font-size: 1.8rem;
   text-align: center;
 }
 
@@ -12,13 +17,47 @@ main {
   display: flex;
   flex-direction: column;
   background-color: white;
-  gap: 1rem;
-  width: 50%;
+  gap: 1.5rem;
+  width: 60%;
   margin: auto;
-  padding: 1rem;
-  border-radius: 10px 10px 10px 10px;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
-input {
-  font-size: 2rem;
-  border-radius: 10px 10px 10px 10px;
+
+.formWrap label {
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  text-align: left;
+}
+
+.formWrap input,
+.formWrap select {
+  padding: 0.8rem 1rem;
+  font-size: 1.6rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: 0.2s ease;
+}
+
+.formWrap input:focus,
+.formWrap select:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+.formWrap button {
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.8rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.formWrap button:hover {
+  background-color: #125a9c;
 }

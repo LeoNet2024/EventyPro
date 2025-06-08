@@ -76,6 +76,11 @@ router.post("/login", (req, res) => {
 
     const user = results[0];
 
+    // ✅ בדיקה אם המשתמש חסום
+    if (user.blocked) {
+      return res.status(403).json({ error: "This user is blocked" });
+    }
+
     bcrypt.compare(password, user.password, (err, isMatch) => {
       if (err) {
         console.error("Compare error:", err);
@@ -95,8 +100,11 @@ router.post("/login", (req, res) => {
         city: user.city,
         gender: user.gender,
         email: user.email,
+        src: user.src,
+        is_admin: user.is_admin,
+        blocked: user.blocked,
+        registration_date: user.registration_date,
       };
-
 
       res.status(200).json({
         message: "Login successful.",
@@ -119,7 +127,6 @@ router.get("/cities", (req, res) => {
 });
 
 router.post("/logout", (req, res) => {
-  console.log("in logout");
   req.session.destroy((err) => {
     if (err) {
       console.error("Logout error:", err);

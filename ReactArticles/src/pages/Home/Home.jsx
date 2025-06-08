@@ -4,41 +4,58 @@ import { useState, useEffect } from "react";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import EventCard from "../../components/EventCard/EventCard";
 
+/**
+ * Home component displays:
+ * - Page header
+ * - Event search bar
+ * - Featured events list
+ * - (Placeholder) Filter section and map
+ */
 export default function Home() {
-
-  
   const [events, setEvents] = useState([]);
 
+  // Load events from backend when component mounts
   useEffect(() => {
     fetchData();
   }, []);
 
+  // Fetch event data from backend API
   const fetchData = () => {
     axios
       .get("home")
       .then((res) => {
         setEvents(res.data);
-        console.log(res.data); // Data from API
       })
       .catch((error) => {
         console.error("Error:", error);
       });
   };
+
   return (
     <main>
-      <div className={classes.homeHeader}>
-        <h2>Home Page</h2>
+      {/* Intro about the project */}
+      <div className={classes.about}>
+        <p>
+          Welcome to our project! This system helps users find and manage
+          events. Developed by Neo and Leon.
+        </p>
       </div>
+
+      {/* Search functionality */}
       <div className={classes.homeSearch}>
         <SearchBar events={events} />
       </div>
+
+      {/* Event list section */}
       <h2>Featured Events</h2>
       <div className={classes.featuredEvents}>
         {events &&
-          events.map((event) => {
-            return <EventCard event={event} key={event.event_id} />;
-          })}
+          events.map((event) => (
+            <EventCard event={event} key={event.event_id} />
+          ))}
       </div>
+
+      {/* Placeholder for future filters and map */}
       <div className={classes.mapAndFilter}>
         <div className={classes.filters}>
           <p>Here we will have filters</p>

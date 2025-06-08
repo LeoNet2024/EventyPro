@@ -14,8 +14,8 @@ export default function NavBar() {
     axios
       .post("/login/logout", {}, { withCredentials: true })
       .then(() => {
-        setUser(null); // נקה את ה-user מה-Context
         navigate("/home");
+        setUser(null); // נקה את ה-user מה-Context
       })
       .catch((err) => {
         console.error("Logout failed:", err);
@@ -50,12 +50,32 @@ export default function NavBar() {
           Login
         </NavLink>
       )}
-      <NavLink
-        to="/newEvent"
-        className={({ isActive }) => (isActive ? classes.active : "")}
-      >
-        New Event
-      </NavLink>
+      {user && (
+        <NavLink
+          to="/newEvent"
+          className={({ isActive }) => (isActive ? classes.active : "")}
+        >
+          New Event
+        </NavLink>
+      )}
+
+      {user && Boolean(user?.is_admin) && (
+        <NavLink
+          to="/admin"
+          className={({ isActive }) => (isActive ? classes.active : "")}
+        >
+          Dashboard
+        </NavLink>
+      )}
+
+      {user && Boolean(user?.is_admin) && (
+        <NavLink
+          to="/contact"
+          className={({ isActive }) => (isActive ? classes.active : "")}
+        >
+          Contact Us
+        </NavLink>
+      )}
     </nav>
   );
 }

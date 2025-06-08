@@ -1,0 +1,115 @@
+.contactContainer {
+  padding: 2rem;
+  max-width: 700px;
+  margin: auto;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  color: #1f2937;
+}
+
+h2,
+h3 {
+  color: #1e293b;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.input,
+.textarea {
+  padding: 1rem;
+  background: #f9fafb;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  color: #1e293b;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: #3b82f6;
+  outline: none;
+}
+
+.textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.button {
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+  color: #ffffff;
+  padding: 0.9rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.button:hover {
+  background: linear-gradient(90deg, #2563eb, #1d4ed8);
+}
+
+.status {
+  margin-top: 1rem;
+  color: #16a34a;
+  font-weight: 600;
+  text-align: center;
+}
+
+.previousMessages {
+  margin-top: 2rem;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.5rem;
+}
+
+.messageCard {
+  background: #f1f5f9;
+  padding: 1.2rem;
+  margin-bottom: 1.5rem;
+  border-left: 5px solid #3b82f6;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.messageCard h4 {
+  margin-bottom: 0.5rem;
+  color: #0f172a;
+}
+
+.messageCard p {
+  margin: 0.4rem 0;
+  line-height: 1.5;
+  color: #334155;
+}
+
+.meta {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-top: 0.5rem;
+}
+
+.reply {
+  margin-top: 0.75rem;
+  background: #ecfdf5;
+  padding: 0.75rem;
+  border-left: 4px solid #16a34a;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  color: #065f46;
+}
+
+.pending {
+  color: #dc2626;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}

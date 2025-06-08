@@ -1,0 +1,64 @@
+.commentForm {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 1rem 0;
+  font-family: Arial, sans-serif;
+}
+
+.commentAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.commentInputSection {
+  flex: 1;
+}
+
+.commentTextarea {
+  width: 100%;
+  border: none;
+  resize: none;
+  border-bottom: 1px solid #ccc;
+  padding: 0.5rem;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.3s;
+  background-color: transparent;
+}
+
+.commentTextarea:focus {
+  border-bottom: 1px solid #1a73e8;
+}
+
+.commentButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.submitButton,
+.cancelButton {
+  padding: 6px 12px;
+  font-size: 14px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.submitButton {
+  background-color: #1a73e8;
+  color: white;
+}
+
+.submitButton:disabled {
+  background-color: #a0c4f7;
+  cursor: not-allowed;
+}
+
+.cancelButton {
+  background-color: transparent;
+  color: #555;
+}

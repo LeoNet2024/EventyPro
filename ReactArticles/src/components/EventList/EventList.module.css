@@ -1,0 +1,59 @@
+.eventList {
+  padding: 2rem;
+}
+
+.eventList h2 {
+  margin-bottom: 1rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.75rem;
+  border-bottom: 1px solid #adacac;
+}
+
+button {
+  margin-right: 0.5rem;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+th {
+  cursor: pointer;
+  user-select: none;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+th:hover {
+  background-color: #eef4f8;
+}
+
+.sectionTitle {
+  font-size: 1.75rem;
+  font-weight: 600;
+  text-align: left;
+  position: relative;
+}
+
+.sectionTitle::after {
+  content: "";
+  display: block;
+  width: 110px;
+  height: 2px;
+  background-color: #3b4c5c;
+  border-radius: 1px;
+}
+
+.delete {
+  background-color: #888;
+  color: white;
+}

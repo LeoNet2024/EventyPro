@@ -21,6 +21,7 @@ export default function Header() {
         </div>
       </div>
       <div>{user && <p>Welcome, {user.first_name}</p>}</div>
+      {user && Boolean(user?.is_admin) && <p>Logged in as admin</p>}
     </header>
   );
 }

@@ -1,11 +1,18 @@
 import { useEffect, useState } from "react";
-import classes from "./Register.module.css";
+import classes from "../login/Login.module.css"; // shared styling
 import axios from "axios";
 
 export default function Register() {
+  // State to hold success message after registration
   const [successMessage, setSuccessMessage] = useState("");
+
+  // State to hold list of cities loaded from backend
   const [cities, setCities] = useState([]);
 
+  /**
+   * Load list of cities from backend on component mount.
+   * Used in <select> list for city options.
+   */
   useEffect(() => {
     axios
       .get("/login/cities")
@@ -20,6 +27,10 @@ export default function Register() {
       });
   }, []);
 
+  /**
+   * Sends the registration data to the backend.
+   * Handles success and server-side validation errors.
+   */
   const fetchData = () => {
     return axios
       .post("/login/register", info)
@@ -42,6 +53,7 @@ export default function Register() {
       });
   };
 
+  // Form information from user input
   const [info, setInfo] = useState({
     first_name: "",
     last_name: "",
@@ -52,40 +64,77 @@ export default function Register() {
     email: "",
   });
 
+  // State for field-specific error messages
   const [errors, setErrors] = useState({});
 
+  /**
+   * Updates form field values and clears related error messages
+   */
   const handleChange = (e) => {
     const { name, value } = e.target;
     setInfo((prevInfo) => ({
       ...prevInfo,
       [name]: value,
     }));
-
     setErrors((prevErrors) => ({
       ...prevErrors,
       [name]: "",
     }));
   };
 
+  /**
+   * Validates all form fields before submission.
+   * Returns an object with any errors found.
+   */
   const validate = () => {
     const newErrors = {};
 
-    if (!info.first_name.trim())
-      newErrors.first_name = "First name is required.";
-    if (!info.last_name.trim()) newErrors.last_name = "Last name is required.";
-    if (!info.user_name.trim()) newErrors.user_name = "Username is required.";
-    if (!info.password) newErrors.password = "Password is required.";
-    else if (info.password.length < 6)
-      newErrors.password = "Password must be at least 6 characters.";
+    // First/last name: only letters, min 2 chars
+    if (!/^[A-Za-z]{2,}$/.test(info.first_name)) {
+      newErrors.first_name = "First name must contain at least 2 letters.";
+    }
+    if (!/^[A-Za-z]{2,}$/.test(info.last_name)) {
+      newErrors.last_name = "Last name must contain at least 2 letters.";
+    }
+
+    // Username required
+    if (!info.user_name.trim()) {
+      newErrors.user_name = "Username is required.";
+    }
+
+    // Password rules: 3–8 chars, at least one digit and one letter
+    if (!info.password) {
+      newErrors.password = "Password is required.";
+    } else if (
+      info.password.length < 3 ||
+      info.password.length > 8 ||
+      !/\d/.test(info.password) ||
+      !/[a-zA-Z]/.test(info.password)
+    ) {
+      newErrors.password =
+        "Password must be 3–8 characters and include at least one letter and one number.";
+    }
+
+    // Gender and city are required selections
     if (!info.gender) newErrors.gender = "Gender is required.";
     if (!info.city) newErrors.city = "City is required.";
-    if (!info.email) newErrors.email = "Email is required.";
-    else if (!/^\S+@\S+\.\S+$/.test(info.email))
+
+    // Email format validation
+    if (!info.email) {
+      newErrors.email = "Email is required.";
+    } else if (!/^\S+@\S+\.\S+$/.test(info.email)) {
       newErrors.email = "Invalid email format.";
+    }
 
     return newErrors;
   };
 
+  /**
+   * Handles form submission:
+   * - Validates all fields
+   * - Sends data to server
+   * - Displays success or error messages
+   */
   const handleSubmit = (e) => {
     e.preventDefault();
     const validationErrors = validate();
@@ -94,6 +143,7 @@ export default function Register() {
     } else {
       setErrors({});
       fetchData().then(() => {
+        // Reset form after success
         setInfo({
           first_name: "",
           last_name: "",
@@ -108,13 +158,20 @@ export default function Register() {
     }
   };
 
+  // ----------------- RENDER -----------------
+
   return (
     <div className={classes.loginContainer}>
       <h2>Register</h2>
+
+      {/* Displaying success message after successful registration */}
       {successMessage && (
         <div className={classes.success}>{successMessage}</div>
       )}
+
+      {/* Registration Form */}
       <form onSubmit={handleSubmit} className={classes.loginForm}>
+        {/* First Name */}
         <div>
           <input
             type="text"
@@ -129,6 +186,7 @@ export default function Register() {
           )}
         </div>
 
+        {/* Last Name */}
         <div>
           <input
             type="text"
@@ -143,6 +201,7 @@ export default function Register() {
           )}
         </div>
 
+        {/* Username */}
         <div>
           <input
             type="text"
@@ -157,6 +216,7 @@ export default function Register() {
           )}
         </div>
 
+        {/* Password */}
         <div>
           <input
             type="password"
@@ -171,6 +231,7 @@ export default function Register() {
           )}
         </div>
 
+        {/* Gender selection */}
         <div>
           <select
             name="gender"
@@ -185,6 +246,7 @@ export default function Register() {
           {errors.gender && <p className={classes.error}>{errors.gender}</p>}
         </div>
 
+        {/* City selection */}
         <div>
           <select
             name="city"
@@ -207,6 +269,7 @@ export default function Register() {
           {errors.city && <p className={classes.error}>{errors.city}</p>}
         </div>
 
+        {/* Email */}
         <div>
           <input
             type="email"
@@ -219,6 +282,7 @@ export default function Register() {
           {errors.email && <p className={classes.error}>{errors.email}</p>}
         </div>
 
+        {/* Submit Button */}
         <button type="submit" className={classes.button}>
           Register
         </button>

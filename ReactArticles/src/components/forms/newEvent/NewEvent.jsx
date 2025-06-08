@@ -1,34 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import categories from "../../../data/sport_categories";
-import cities from "../../../data/full_israeli_cities";
 import axios from "axios";
-
 import classes from "./NewEvent.module.css";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 
-// components for create new event
 export default function NewEvent() {
-  // for navigate after event created
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [cities, setCities] = useState([]);
 
-  const catOptions = categories.map((el, idx) => {
-    return <option key={idx}>{el}</option>;
-  });
-
-  const validCities = cities.filter(
-    (el) => el.english_name && el.english_name.trim().length > 0
-  );
-
-  const citiesOptions = validCities.map((el, idx) => {
-    const name = el.english_name.trim();
-    const formattedName =
-      name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-    return (
-      <option key={idx} value={formattedName}>
-        {formattedName}
-      </option>
-    );
-  });
+  useEffect(() => {
+    axios
+      .get("/login/cities")
+      .then((res) => {
+        const validCities = res.data.filter(
+          (el) => el.name_heb && el.name_heb.trim().length > 0
+        );
+        setCities(validCities);
+      })
+      .catch((err) => {
+        console.error("Error fetching cities:", err);
+      });
+  }, []);
 
   const [eventDea, setEventDea] = useState({
     eventName: "",
@@ -39,24 +33,24 @@ export default function NewEvent() {
     endDate: "",
     startTime: "",
     type: "",
+    user_id: "",
   });
 
   function handleChange(e) {
     setEventDea((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
+      user_id: user.user_id,
     }));
   }
 
   function handleSubmit(e) {
-    console.log(eventDea);
-
     e.preventDefault();
 
     axios
       .post("/newEvent", eventDea)
-      .then((res) => {
-        alert("event created");
+      .then(() => {
+        alert("Event created");
         navigate("/");
       })
       .catch((error) => {
@@ -65,59 +59,84 @@ export default function NewEvent() {
   }
 
   return (
-    <div>
-      <main>
-        <h2>create new event</h2>
-        <form
-          action=""
-          method="post"
-          onSubmit={handleSubmit}
-          className={classes.formWrap}
-        >
-          <label>Event name</label>
+    <div className={classes.backdrop}>
+      <main className={classes.main}>
+        <h2>Create New Event</h2>
+        <form onSubmit={handleSubmit} className={classes.formWrap}>
+          <label>Event Name</label>
           <input
             type="text"
             name="eventName"
-            onChange={(e) => handleChange(e)}
+            value={eventDea.eventName}
+            onChange={handleChange}
+            required
           />
-          <label>city</label>
-          <select name="city" onChange={(e) => handleChange(e)}>
-            <option></option>
-            {citiesOptions}
+
+          <label>City</label>
+          <select name="city" onChange={handleChange} required>
+            <option value="">-- Select City --</option>
+            {cities.map((el, idx) => (
+              <option key={idx} value={el.name_heb}>
+                {el.name_heb}
+              </option>
+            ))}
           </select>
-          <label>category</label>
-          <select name="category" onChange={(e) => handleChange(e)}>
-            <option></option>
-            {catOptions}
+
+          <label>Category</label>
+          <select name="category" onChange={handleChange} required>
+            <option value="">-- Select Category --</option>
+            {categories.map((cat, idx) => (
+              <option key={idx} value={cat}>
+                {cat}
+              </option>
+            ))}
           </select>
-          <label>participants</label>
+
+          <label>Participants</label>
           <input
-            type="text"
+            type="number"
             name="participantAmount"
+            value={eventDea.participantAmount}
             maxLength={3}
-            onChange={(e) => handleChange(e)}
+            onChange={handleChange}
+            required
           />
-          <label>start date</label>
+
+          <label>Start Date</label>
           <input
             type="date"
-            onChange={(e) => handleChange(e)}
             name="startDate"
+            value={eventDea.startDate}
+            onChange={handleChange}
+            required
           />
-          <label>End date</label>
-          <input type="date" onChange={(e) => handleChange(e)} name="endDate" />
-          <label>start time</label>
+
+          <label>End Date</label>
+          <input
+            type="date"
+            name="endDate"
+            value={eventDea.endDate}
+            onChange={handleChange}
+            required
+          />
+
+          <label>Start Time</label>
           <input
             type="time"
             name="startTime"
-            onChange={(e) => handleChange(e)}
+            value={eventDea.startTime}
+            onChange={handleChange}
+            required
           />
-          <label>type of event</label>
-          <select name="type" onChange={(e) => handleChange(e)}>
-            <option></option>
-            <option value="private">private</option>
-            <option value="public">public</option>
+
+          <label>Type of Event</label>
+          <select name="type" onChange={handleChange} required>
+            <option value="">-- Select Type --</option>
+            <option value="private">Private</option>
+            <option value="public">Public</option>
           </select>
-          <button type="submit">create event</button>
+
+          <button type="submit">Create Event</button>
         </form>
       </main>
     </div>

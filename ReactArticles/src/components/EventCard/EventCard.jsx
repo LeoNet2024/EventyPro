@@ -1,13 +1,17 @@
+import { Link } from "react-router-dom";
 import classes from "./EventCard.module.css";
-import { Outlet, Link } from "react-router-dom";
 
 export default function EventCard({ event }) {
   return (
-    <div className={classes.eventCard}>
-      <h2>{event.event_name}</h2>
-      <p>{event.category}</p>
-      <img src={event.src} alt="" />
-      <Link to={`/event/${event.event_id}`}>view</Link>
-    </div>
+    <Link to={`/event/${event.event_id}`} className={classes.cardLink}>
+      <div className={classes.eventCard}>
+        <img src={event.src} alt={event.event_name} className={classes.image} />
+        <div className={classes.content}>
+          <h2 className={classes.title}>{event.event_name}</h2>
+          <p className={classes.category}>{event.category}</p>
+          <span className={classes.viewMore}>View Details →</span>
+        </div>
+      </div>
+    </Link>
   );
 }
