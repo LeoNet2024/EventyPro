@@ -21,10 +21,24 @@
   color: #555;
 }
 
-.userSection {
-  margin-bottom: 3rem;
+/* Main layout grid */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.leftPanel {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.rightPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .eventsSection {

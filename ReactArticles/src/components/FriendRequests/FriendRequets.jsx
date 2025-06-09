@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import classes from "./FriendRequest.module.css";
 import axios from "axios";
 
-export default function FriendRequests({ requests }) {
+export default function FriendRequests({ requests, setResetRequests }) {
   // This fucntion handling with user respone to request.
   // got the parameters from onClickEvent
   function handleToRequest(userRespone, request_id) {

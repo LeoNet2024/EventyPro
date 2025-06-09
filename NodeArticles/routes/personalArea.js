@@ -117,6 +117,29 @@ router.put("/FriendRequests/responeToRequest", (req, res) => {
   });
 });
 
+//Handle to get all friend list of spesific user
+
+router.post("/myFriends", (req, res) => {
+  const { user_id } = req.body;
+
+  const query = `
+    SELECT *
+    FROM friend_requests AS f
+    INNER JOIN users 
+    ON 
+    (
+      (users.user_id = f.sender_id AND f.receiver_id = ?)
+     OR 
+      (users.user_id = f.receiver_id AND f.sender_id = ?)
+    )
+    WHERE f.status = 'accepted'`;
+
+  db.query(query, [user_id, user_id], (err, results) => {
+    if (err) return res.status(500).send("Error get friends list");
+    res.json(results);
+  });
+});
+
 // ________________for user stats__________________________
 
 // Return the number of events that specific user created

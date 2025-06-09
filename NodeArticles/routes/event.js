@@ -1,10 +1,10 @@
-const express = require('express');
-const dbSingleton = require('../dbSingleton');
+const express = require("express");
+const dbSingleton = require("../dbSingleton");
 const router = express.Router();
 const db = dbSingleton.getConnection();
 
 // GET participants by event id
-router.get('/:id/participants', (req, res) => {
+router.get("/:id/participants", (req, res) => {
   const id = req.params.id;
 
   const query = `
@@ -19,7 +19,7 @@ router.get('/:id/participants', (req, res) => {
   });
 });
 
-router.get('/:id/currentParticipants', (req, res) => {
+router.get("/:id/currentParticipants", (req, res) => {
   const id = req.params.id;
 
   const query = `SELECT COUNT(*) as count
@@ -33,7 +33,7 @@ router.get('/:id/currentParticipants', (req, res) => {
 });
 
 // GET event details
-router.get('/:id', (req, res) => {
+router.get("/:id", (req, res) => {
   const id = req.params.id;
 
   const query = `
@@ -49,19 +49,19 @@ router.get('/:id', (req, res) => {
 });
 
 // POST join event
-router.post('/:id/joinEvent', (req, res) => {
+router.post("/:id/joinEvent", (req, res) => {
   const { user_id, event_id } = req.body;
 
   const query = `INSERT INTO event_participants (user_id, event_id) VALUES (?, ?)`;
 
   db.query(query, [user_id, event_id], (err, results) => {
     if (err) return res.status(500).send(err);
-    res.json({ message: 'Joined successfully', insertedId: results.insertId });
+    res.json({ message: "Joined successfully", insertedId: results.insertId });
   });
 });
 
 // Handling  new comment
-router.post('/:id/addComment', (req, res) => {
+router.post("/:id/addComment", (req, res) => {
   // text and event id from frontEnd
   const { text, event_id, user_id } = req.body;
 
@@ -69,12 +69,12 @@ router.post('/:id/addComment', (req, res) => {
 
   db.query(query, [event_id, text, user_id], (err, results) => {
     if (err) return res.status(500).send(err);
-    res.send('Comment successfully uploaded');
+    res.send("Comment successfully uploaded");
   });
 });
 
 // ב־routes/event.js או איפה שאתה שם את זה
-router.get('/:id/comments', (req, res) => {
+router.get("/:id/comments", (req, res) => {
   const eventId = req.params.id;
 
   const query = `
@@ -87,6 +87,42 @@ router.get('/:id/comments', (req, res) => {
   db.query(query, [eventId], (err, results) => {
     if (err) return res.status(500).send(err);
     res.json(results);
+  });
+});
+
+// Handle sending friend request
+router.post("/sendFriendRequest", (req, res) => {
+  const { sender_id, receiver_id } = req.body;
+
+  if (sender_id === receiver_id) {
+    return res.status(400).send("Cannot send a friend request to yourself");
+  }
+
+  const alreadySentReq = `
+    SELECT * FROM friend_requests 
+    WHERE sender_id = ? AND receiver_id = ?
+  `;
+
+  db.query(alreadySentReq, [sender_id, receiver_id], (err, results) => {
+    if (err) {
+      return res.status(500).send("Error checking existing friend request");
+    }
+
+    if (results.length > 0) {
+      return res.status(403).send("Friend request already sent");
+    }
+
+    const insertQuery = `
+      INSERT INTO friend_requests (sender_id, receiver_id) 
+      VALUES (?, ?)
+    `;
+
+    db.query(insertQuery, [sender_id, receiver_id], (err, results) => {
+      if (err) {
+        return res.status(500).send("Error sending friend request");
+      }
+      res.send("Friend request has been sent");
+    });
   });
 });
 
