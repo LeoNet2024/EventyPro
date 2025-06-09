@@ -52,3 +52,21 @@
   border-radius: 3px solid green;
   padding: 1em;
 }
+.forgotPassword {
+  margin-top: 10px;
+  text-align: center;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.forgotPassword span:hover {
+  text-decoration: underline;
+}
+
+.testCredentials {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #555;
+  text-align: center;
+}

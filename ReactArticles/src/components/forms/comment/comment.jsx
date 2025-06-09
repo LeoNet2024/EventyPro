@@ -5,9 +5,9 @@ import { useAuth } from '../../../context/AuthContext';
 import undefined2 from '../../../../src/assets/img/logo.png';
 import axios from 'axios';
 
-export default function Comment({ eventid }) {
+export default function Comment({ eventid, setSuccessMsg, triggerRefresh }) {
   const { user, setUser } = useAuth();
-  const [successMsg, setSuccessMsg] = useState('');
+
   const [text, setText] = useState('');
   const [active, setActive] = useState(false);
 
@@ -29,6 +29,7 @@ export default function Comment({ eventid }) {
         })
         .then(res => {
           setSuccessMsg(res.data);
+          triggerRefresh();
         })
         .catch(error => {
           console.error('Error:', error);
@@ -37,40 +38,42 @@ export default function Comment({ eventid }) {
   }
 
   return (
-    <form className={classes.commentForm} onSubmit={handleSubmit}>
-      <img src={undefined2} alt='User' className={classes.commentAvatar} />
+    <>
+      <form className={classes.commentForm} onSubmit={handleSubmit}>
+        <img src={undefined2} alt='User' className={classes.commentAvatar} />
 
-      <div className={classes.commentInputSection}>
-        <textarea
-          className={classes.commentTextarea}
-          placeholder='Add Comment...'
-          value={text}
-          onFocus={() => setActive(true)}
-          onChange={e => setText(e.target.value)}
-          rows={active ? 3 : 1}
-        />
-        {active && (
-          <div className={classes.commentButtons}>
-            <button
-              type='button'
-              className={classes.cancelButton}
-              onClick={() => {
-                setActive(false);
-                setText('');
-              }}
-            >
-              Cancel
-            </button>
-            <button
-              type='submit'
-              className={classes.submitButton}
-              disabled={!text.trim()}
-            >
-              Send
-            </button>
-          </div>
-        )}
-      </div>
-    </form>
+        <div className={classes.commentInputSection}>
+          <textarea
+            className={classes.commentTextarea}
+            placeholder='Add Comment...'
+            value={text}
+            onFocus={() => setActive(true)}
+            onChange={e => setText(e.target.value)}
+            rows={active ? 3 : 1}
+          />
+          {active && (
+            <div className={classes.commentButtons}>
+              <button
+                type='button'
+                className={classes.cancelButton}
+                onClick={() => {
+                  setActive(false);
+                  setText('');
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type='submit'
+                className={classes.submitButton}
+                disabled={!text.trim()}
+              >
+                Send
+              </button>
+            </div>
+          )}
+        </div>
+      </form>
+    </>
   );
 }

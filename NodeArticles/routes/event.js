@@ -69,14 +69,13 @@ router.post('/:id/addComment', (req, res) => {
 
   db.query(query, [event_id, text, user_id], (err, results) => {
     if (err) return res.status(500).send(err);
-    res.json({ message: 'Comment successfully uploaded' });
+    res.send('Comment successfully uploaded');
   });
 });
 
 // ב־routes/event.js או איפה שאתה שם את זה
 router.get('/:id/comments', (req, res) => {
   const eventId = req.params.id;
-
 
   const query = `
     SELECT *
