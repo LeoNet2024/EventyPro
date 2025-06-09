@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import classes from './comment.module.css';
 import { useAuth } from '../../../context/AuthContext';
 
-import undefined2 from '../../../../src/assets/img/logo.png';
 import axios from 'axios';
 
 export default function Comment({ eventid, setSuccessMsg, triggerRefresh }) {
@@ -40,7 +39,7 @@ export default function Comment({ eventid, setSuccessMsg, triggerRefresh }) {
   return (
     <>
       <form className={classes.commentForm} onSubmit={handleSubmit}>
-        <img src={undefined2} alt='User' className={classes.commentAvatar} />
+        <img src={user.src} alt='User' className={classes.commentAvatar} />
 
         <div className={classes.commentInputSection}>
           <textarea

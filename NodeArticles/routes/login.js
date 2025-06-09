@@ -7,7 +7,15 @@ const db = dbSingleton.getConnection();
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 
-// REGISTER
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'leongitelman2015@gmail.com',
+    pass: 'vvyc fcmj rwis vliu',
+  },
+});
+
+// REGISTER עם שליחת קוד
 router.post('/register', (req, res) => {
   const { first_name, last_name, user_name, password, gender, city, email } =
     req.body;
@@ -24,20 +32,16 @@ router.post('/register', (req, res) => {
     }
 
     bcrypt.genSalt(10, (err, salt) => {
-      if (err) {
-        console.error('Salt error:', err);
+      if (err)
         return res.status(500).json({ error: 'Salt generation failed.' });
-      }
 
       bcrypt.hash(password, salt, (err, hashedPassword) => {
-        if (err) {
-          console.error('Hash error:', err);
+        if (err)
           return res.status(500).json({ error: 'Password hashing failed.' });
-        }
 
         const insertQuery = `
-          INSERT INTO users (first_name, last_name, user_name, password, gender, city, email)
-          VALUES (?, ?, ?, ?, ?, ?, ?)
+          INSERT INTO users (first_name, last_name, user_name, password, gender, city, email, is_verified)
+          VALUES (?, ?, ?, ?, ?, ?, ?, false)
         `;
         const values = [
           first_name,
@@ -55,7 +59,50 @@ router.post('/register', (req, res) => {
             return res.status(500).json({ error: 'User creation failed.' });
           }
 
-          res.status(201).json({ message: 'User registered successfully.' });
+          const userId = result.insertId;
+
+          // שלב 2: יצירת קוד אימות
+          const verificationCode = Math.floor(
+            100000 + Math.random() * 900000,
+          ).toString();
+          const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 דקות
+
+          const codeQuery = `
+            INSERT INTO email_verification_codes (user_id, code, expires_at)
+            VALUES (?, ?, ?)
+          `;
+
+          db.query(codeQuery, [userId, verificationCode, expiresAt], err2 => {
+            if (err2) {
+              console.error('Failed to save code:', err2);
+              return res
+                .status(500)
+                .json({ error: 'Failed to save verification code.' });
+            }
+
+            // שליחת מייל עם הקוד
+            const mailOptions = {
+              from: process.env.EMAIL_USER,
+              to: email,
+              subject: 'Verify your account',
+              html: `<p>Your verification code is: <b>${verificationCode}</b></p>`,
+            };
+
+            transporter.sendMail(mailOptions, (error, info) => {
+              if (error) {
+                console.error('Mail send error:', error);
+                return res
+                  .status(500)
+                  .json({ error: 'Failed to send verification email.' });
+              }
+
+              // הרשמה + שליחת קוד הסתיימו בהצלחה
+              res.status(201).json({
+                message: 'User registered. Verification code sent to email.',
+                user_id: userId,
+              });
+            });
+          });
         });
       });
     });
@@ -174,14 +221,6 @@ router.post('/users/forgot-password', (req, res) => {
       // Send email
       const resetLink = `http://localhost:3000/reset-password/${token}`;
 
-      const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: 'leongitelman2015@gmail.com',
-          pass: 'vvyc fcmj rwis vliu',
-        },
-      });
-
       const mailOptions = {
         from: 'leongitelman2015@gmail.com',
         to: email,
@@ -239,6 +278,39 @@ router.post('/reset-password/:token', (req, res) => {
         res.json({ message: 'Password has been reset successfully.' });
       });
     });
+  });
+});
+
+router.post('/verify-code', (req, res) => {
+  const { user_id, code } = req.body;
+
+  const query = `
+    SELECT * FROM email_verification_codes 
+    WHERE user_id = ? AND code = ? AND expires_at > NOW()
+  `;
+  db.query(query, [user_id, code], (err, results) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
+
+    if (results.length === 0) {
+      return res.status(400).json({ error: 'Invalid or expired code' });
+    }
+
+    // עדכון המשתמש
+    db.query(
+      `UPDATE users SET is_verified = 1 WHERE user_id = ?`,
+      [user_id],
+      err2 => {
+        if (err2)
+          return res.status(500).json({ error: 'Failed to verify user' });
+
+        // מחיקת הקוד אחרי שימוש
+        db.query(`DELETE FROM email_verification_codes WHERE user_id = ?`, [
+          user_id,
+        ]);
+
+        res.json({ message: 'Email verified successfully' });
+      },
+    );
   });
 });
 
