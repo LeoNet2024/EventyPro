@@ -6,44 +6,89 @@ const db = dbSingleton.getConnection();
 
 // ------------------- CREATE NEW EVENT -------------------
 router.post("/", (req, res) => {
-  // Step 1: Prepare query to insert new event
-  const query = `
-    INSERT INTO events(event_name, category, start_date, end_date, start_time, is_private, participant_amount, city)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-  `;
+  // Data from frontend
+  const {
+    eventName,
+    category,
+    startDate,
+    endDate,
+    startTime,
+    type,
+    participantAmount,
+    city,
+    user_id,
+  } = req.body;
 
+  // list of values to insert
   const values = [
-    req.body.eventName, // Event title
-    req.body.category, // Category (e.g., sports, culture)
-    req.body.startDate, // Start date (YYYY-MM-DD)
-    req.body.endDate, // End date (YYYY-MM-DD)
-    req.body.startTime, // Time (HH:MM)
-    req.body.type === "private" ? 1 : 0, // Private = 1, Public = 0
-    parseInt(req.body.participantAmount), // Max number of participants
-    req.body.city, // Event location
+    eventName,
+    category,
+    startDate,
+    endDate,
+    startTime,
+    type === "private" ? 1 : 0,
+    parseInt(participantAmount),
+    city,
   ];
 
-  // Step 2: Execute insert query into events table
-  db.query(query, values, (err, results) => {
-    if (err) {
-      res.status(500).send(err); // DB error when creating event
-      return;
-    }
+  // Prevent duplicated events
+  const preventDupEvents = `
+    SELECT * 
+    FROM events 
+    WHERE event_name = ? AND category = ? AND city = ? AND start_date = ?
+  `;
 
-    const event_id = results.insertId; // Get newly created event ID
-
-    // Step 3: Log the creator of the event (user_id + event_id)
-    const eventCreated = `INSERT INTO created_events (user_id, event_id) VALUES (?, ?)`;
-    db.query(eventCreated, [req.body.user_id, event_id], (err2, results2) => {
-      if (err2) {
-        res.status(500).send(err2); // DB error when linking creator
-        return;
+  // execute the query
+  db.query(
+    preventDupEvents,
+    [eventName, category, city, startDate],
+    (err, results) => {
+      if (err) {
+        return res.status(500).send("Error while checking for existing events");
       }
 
-      // Event successfully created and linked to user
-      res.json(results2);
-    });
-  });
+      // Dupliacte event
+      if (results.length > 0) {
+        return res
+          .status(409)
+          .send("Event creation failed: a similar event already exists");
+      }
+
+      // query to insert values into tables
+      const query = `
+      INSERT INTO events(event_name, category, start_date, end_date, start_time, is_private, participant_amount, city)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+      // Execute the query
+      db.query(query, values, (err, results) => {
+        if (err) {
+          return res
+            .status(500)
+            .send("Error while inserting event into database");
+        }
+
+        const event_id = results.insertId;
+
+        // Insert into eventCreated table the creator id and event id
+        const eventCreated = `INSERT INTO created_events (user_id, event_id) VALUES (?, ?)`;
+
+        // Execute the query
+        db.query(eventCreated, [user_id, event_id], (err2, results2) => {
+          if (err2) {
+            return res
+              .status(500)
+              .send("Error while linking the event to its creator");
+          }
+
+          res.status(201).json({
+            message: "Event created successfully",
+            eventId: event_id,
+          });
+        });
+      });
+    }
+  );
 });
 
 // Handle to get categories rows from DB
@@ -52,7 +97,6 @@ router.get("/getCategories", (req, res) => {
 
   db.query(query, (err, results) => {
     if (err) return res.status(500).send("Cannot get categories");
-    console.log(results);
     return res.json(results);
   });
 });

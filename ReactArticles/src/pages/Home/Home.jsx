@@ -19,6 +19,8 @@ export default function Home() {
   const [filterEvents, setFilterEvents] = useState([]);
   // for recent events
   const [recentEvents, setRecentEvents] = useState([]);
+  //event category
+  const [categories, setCategories] = useState([]);
 
   // Load events from backend when component mounts
   useEffect(() => {
@@ -31,10 +33,17 @@ export default function Home() {
       .get("home")
       .then((res) => {
         setEvents(res.data);
+        setFilterEvents(res.data);
       })
       .catch((error) => {
         console.error("Error:", error);
       });
+
+    //getting the categories from DB
+    axios
+      .get("/filterEvents/getAllCategories")
+      .then((res) => setCategories(res))
+      .catch((err) => console.error(err));
   };
 
   return (
@@ -55,11 +64,15 @@ export default function Home() {
       {/* Event list section */}
 
       <h2>Featured Events</h2>
-      <Filterbar setEvents={setEvents} events={events} />
+      <Filterbar
+        setFilterEvents={setFilterEvents}
+        events={events}
+        categories={categories}
+      />
 
       <div className={classes.featuredEvents}>
-        {events &&
-          events.map((event) => (
+        {filterEvents &&
+          filterEvents.map((event) => (
             <EventCard event={event} key={event.event_id} />
           ))}
       </div>

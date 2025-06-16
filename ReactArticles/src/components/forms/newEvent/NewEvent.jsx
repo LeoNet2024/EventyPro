@@ -9,6 +9,8 @@ export default function NewEvent() {
   const { user } = useAuth();
   const [cities, setCities] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
 
   useEffect(() => {
     axios
@@ -63,11 +65,27 @@ export default function NewEvent() {
       })
       .catch((error) => {
         console.error("Error:", error);
+        const msg =
+          error.response?.data ||
+          "An unexpected error occurred while creating the event.";
+        setMessage(msg);
+        setMessageType("error");
       });
   }
 
   return (
     <div className={classes.backdrop}>
+      {message && (
+        <div
+          className={
+            messageType === "success"
+              ? classes.successMessage
+              : classes.errorMessage
+          }
+        >
+          {message}
+        </div>
+      )}
       <main className={classes.main}>
         <h2>Create New Event</h2>
         <form onSubmit={handleSubmit} className={classes.formWrap}>
