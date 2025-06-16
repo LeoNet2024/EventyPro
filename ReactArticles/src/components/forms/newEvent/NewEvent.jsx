@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import categories from "../../../data/sport_categories";
 import axios from "axios";
 import classes from "./NewEvent.module.css";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +8,7 @@ export default function NewEvent() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [cities, setCities] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     axios
@@ -22,6 +22,14 @@ export default function NewEvent() {
       .catch((err) => {
         console.error("Error fetching cities:", err);
       });
+
+    axios
+      .get("/newEvent/getCategories")
+      .then((res) => {
+        console.log(res.data);
+        setCategories(res.data);
+      })
+      .catch((err) => console.error(err));
   }, []);
 
   const [eventDea, setEventDea] = useState({
@@ -86,8 +94,8 @@ export default function NewEvent() {
           <select name="category" onChange={handleChange} required>
             <option value="">-- Select Category --</option>
             {categories.map((cat, idx) => (
-              <option key={idx} value={cat}>
-                {cat}
+              <option key={idx} value={cat.category}>
+                {cat.category}
               </option>
             ))}
           </select>

@@ -46,5 +46,16 @@ router.post("/", (req, res) => {
   });
 });
 
+// Handle to get categories rows from DB
+router.get("/getCategories", (req, res) => {
+  const query = "SELECT category FROM default_images ORDER BY category ASC;";
+
+  db.query(query, (err, results) => {
+    if (err) return res.status(500).send("Cannot get categories");
+    console.log(results);
+    return res.json(results);
+  });
+});
+
 // Export router
 module.exports = router;

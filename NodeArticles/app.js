@@ -12,6 +12,7 @@ const personalAreaRoute = require("./routes/personalArea");
 const adminRoute = require("./routes/admin");
 const registerRoute = require("./routes/register");
 const verificationRoute = require("./routes/verification");
+const filterEvents = require("./routes/filterEvents");
 
 const app = express();
 const port = 8801;
@@ -49,6 +50,7 @@ app.use("/personal-area", personalAreaRoute); // User profile area
 app.use("/admin", adminRoute); // Admin dashboard
 app.use("/register", registerRoute); // Register user
 app.use("/verification", verificationRoute); // Verification with email
+app.use("/filterEvents", filterEvents); // Filter events
 
 // ------------------- GLOBAL ERROR HANDLER -------------------
 app.use((err, req, res, next) => {

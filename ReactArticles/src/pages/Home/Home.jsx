@@ -3,6 +3,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import EventCard from "../../components/EventCard/EventCard";
+import Filterbar from "../../components/Filterbar/filterbar";
 
 /**
  * Home component displays:
@@ -12,7 +13,12 @@ import EventCard from "../../components/EventCard/EventCard";
  * - (Placeholder) Filter section and map
  */
 export default function Home() {
+  // for all event
   const [events, setEvents] = useState([]);
+  // for filtered events
+  const [filterEvents, setFilterEvents] = useState([]);
+  // for recent events
+  const [recentEvents, setRecentEvents] = useState([]);
 
   // Load events from backend when component mounts
   useEffect(() => {
@@ -47,7 +53,10 @@ export default function Home() {
       </div>
 
       {/* Event list section */}
+
       <h2>Featured Events</h2>
+      <Filterbar setEvents={setEvents} events={events} />
+
       <div className={classes.featuredEvents}>
         {events &&
           events.map((event) => (
