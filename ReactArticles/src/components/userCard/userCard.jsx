@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import classes from "./userCard.module.css";
 import { useAuth } from "../../context/AuthContext";
-import Edit from "../forms/editUser/editUser";
+import EditUser from "../forms/editUser/editUser";
 import EditPassword from "../forms/editUser/editPassword";
 
 export default function UserCard() {
@@ -48,7 +48,11 @@ export default function UserCard() {
       </div>
 
       {showEditUser && (
-        <Edit user_id={user.user_id} user={user} showForm={setShowEditUser} />
+        <EditUser
+          user_id={user.user_id}
+          user={user}
+          showForm={setShowEditUser}
+        />
       )}
       {showEditPassword && (
         <EditPassword user_id={user.user_id} showForm={setShowEditPassword} />

@@ -12,7 +12,7 @@ export default function NewEvent() {
 
   useEffect(() => {
     axios
-      .get("/login/cities")
+      .get("/register/cities")
       .then((res) => {
         const validCities = res.data.filter(
           (el) => el.name_heb && el.name_heb.trim().length > 0

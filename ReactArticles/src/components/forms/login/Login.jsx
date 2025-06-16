@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import classes from './Login.module.css';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../context/AuthContext';
+import { useState } from "react";
+import classes from "./Login.module.css";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 
 export default function Login() {
   // Accessing global auth context
@@ -10,9 +10,9 @@ export default function Login() {
   const navigate = useNavigate();
 
   // Local state for form inputs and error message
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   /**
    * Handles the login form submission:
@@ -20,29 +20,29 @@ export default function Login() {
    * - Retrieves session info
    * - Navigates based on user role
    */
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     axios
-      .post('/login/login', { email, password }, { withCredentials: true })
+      .post("/login", { email, password }, { withCredentials: true })
       .then(() => {
         // Get session info after login success
-        return axios.get('/login/session');
+        return axios.get("/login/session");
       })
-      .then(res => {
+      .then((res) => {
         // Save user in global context
         setUser(res.data);
         // Navigate based on role
-        if (res.data.is_admin) navigate('/admin');
-        else navigate('/home');
+        if (res.data.is_admin) navigate("/admin");
+        else navigate("/home");
       })
-      .catch(err => {
+      .catch((err) => {
         // Handle server-side or network errors
         if (err.response && err.response.data?.error) {
           setError(err.response.data.error);
         } else {
-          setError('Login Error');
+          setError("Login Error");
         }
       });
   };
@@ -57,31 +57,31 @@ export default function Login() {
 
         {/* Email input field */}
         <input
-          type='email'
-          placeholder='Email'
+          type="email"
+          placeholder="Email"
           value={email}
-          onChange={e => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
           className={classes.input}
           required
         />
 
         {/* Password input field */}
         <input
-          type='password'
-          placeholder='Password'
+          type="password"
+          placeholder="Password"
           value={password}
-          onChange={e => setPassword(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
           className={classes.input}
           required
         />
 
         {/* Submit button */}
-        <button type='submit' className={classes.button}>
+        <button type="submit" className={classes.button}>
           Login
         </button>
 
         <p className={classes.forgotPassword}>
-          <span onClick={() => navigate('/forgot-password')}>
+          <span onClick={() => navigate("/forgot-password")}>
             forgot password?
           </span>
         </p>
@@ -92,8 +92,8 @@ export default function Login() {
       <p>admin@gmail.com</p>
       <p>admin123</p>
       <p>user:</p>
-      <p>test@gmail.com</p>
-      <p>testtest</p>
+      <p>testtest@gmail.com</p>
+      <p>testtest2</p>
     </div>
   );
 }

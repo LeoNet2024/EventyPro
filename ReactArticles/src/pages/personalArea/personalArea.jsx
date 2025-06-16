@@ -3,7 +3,7 @@ import classes from "./personalArea.module.css";
 import axios from "axios";
 
 import { useAuth } from "../../context/AuthContext";
-import UserView from "../../components/userCard/userCard";
+import UserCard from "../../components/userCard/userCard";
 import EventCard from "../../components/EventCard/EventCard";
 import UserStats from "../../components/userStats/userStats";
 import FriendRequests from "../../components/FriendRequests/FriendRequets";
@@ -39,7 +39,7 @@ export default function PersonalArea() {
 
       <div className={classes.grid}>
         <div className={classes.leftPanel}>
-          <UserView />
+          <UserCard />
           <UserStats noti={friendRequests.length} />
         </div>
 

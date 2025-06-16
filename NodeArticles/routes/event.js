@@ -1,17 +1,20 @@
+// Import modules
 const express = require("express");
 const dbSingleton = require("../dbSingleton");
 const router = express.Router();
 const db = dbSingleton.getConnection();
 
-// GET participants by event id
+// ------------------- GET PARTICIPANTS BY EVENT ID -------------------
 router.get("/:id/participants", (req, res) => {
   const id = req.params.id;
 
+  // Join event_participants with users for full user data
   const query = `
     SELECT *
     FROM event_participants
     JOIN users ON event_participants.user_id = users.user_id
-    WHERE event_participants.event_id = ?`;
+    WHERE event_participants.event_id = ?
+  `;
 
   db.query(query, [id], (err, results) => {
     if (err) return res.status(500).send(err);
@@ -19,12 +22,15 @@ router.get("/:id/participants", (req, res) => {
   });
 });
 
+// ------------------- GET CURRENT PARTICIPANT COUNT -------------------
 router.get("/:id/currentParticipants", (req, res) => {
   const id = req.params.id;
 
-  const query = `SELECT COUNT(*) as count
-                FROM event_participants
-                WHERE event_participants.event_id = ?`;
+  const query = `
+    SELECT COUNT(*) as count
+    FROM event_participants
+    WHERE event_participants.event_id = ?
+  `;
 
   db.query(query, [id], (err, results) => {
     if (err) return res.status(500).send(err);
@@ -32,15 +38,18 @@ router.get("/:id/currentParticipants", (req, res) => {
   });
 });
 
-// GET event details
+// ------------------- GET EVENT DETAILS -------------------
 router.get("/:id", (req, res) => {
   const id = req.params.id;
 
+  // Join event with default image based on category
   const query = `
     SELECT * 
     FROM events
     NATURAL JOIN default_images
-    WHERE event_id = ? LIMIT 1`;
+    WHERE event_id = ?
+    LIMIT 1
+  `;
 
   db.query(query, [id], (err, results) => {
     if (err) return res.status(500).send(err);
@@ -48,7 +57,7 @@ router.get("/:id", (req, res) => {
   });
 });
 
-// POST join event
+// ------------------- JOIN EVENT -------------------
 router.post("/:id/joinEvent", (req, res) => {
   const { user_id, event_id } = req.body;
 
@@ -60,28 +69,30 @@ router.post("/:id/joinEvent", (req, res) => {
   });
 });
 
-// Handling  new comment
+// ------------------- ADD COMMENT TO EVENT -------------------
 router.post("/:id/addComment", (req, res) => {
-  // text and event id from frontEnd
   const { text, event_id, user_id } = req.body;
 
-  const query = `INSERT INTO event_comments (event_id , comment_content, user_id	) VALUES (? , ?, ?) `;
+  const query = `
+    INSERT INTO event_comments (event_id, comment_content, user_id)
+    VALUES (?, ?, ?)
+  `;
 
-  db.query(query, [event_id, text, user_id], (err, results) => {
+  db.query(query, [event_id, text, user_id], (err) => {
     if (err) return res.status(500).send(err);
     res.send("Comment successfully uploaded");
   });
 });
 
-// ב־routes/event.js או איפה שאתה שם את זה
+// ------------------- GET EVENT COMMENTS -------------------
 router.get("/:id/comments", (req, res) => {
   const eventId = req.params.id;
 
   const query = `
     SELECT *
     FROM event_comments
-    INNER JOIN users
-    ON event_comments.event_id = (?) AND event_comments.user_id = users.user_id
+    INNER JOIN users ON event_comments.user_id = users.user_id
+    WHERE event_comments.event_id = ?
   `;
 
   db.query(query, [eventId], (err, results) => {
@@ -90,40 +101,41 @@ router.get("/:id/comments", (req, res) => {
   });
 });
 
-// Handle sending friend request
+// ------------------- SEND FRIEND REQUEST -------------------
 router.post("/sendFriendRequest", (req, res) => {
   const { sender_id, receiver_id } = req.body;
 
+  // Prevent user from sending request to self
   if (sender_id === receiver_id) {
     return res.status(400).send("Cannot send a friend request to yourself");
   }
 
+  // Check if friend request already exists
   const alreadySentReq = `
     SELECT * FROM friend_requests 
     WHERE sender_id = ? AND receiver_id = ?
   `;
 
   db.query(alreadySentReq, [sender_id, receiver_id], (err, results) => {
-    if (err) {
+    if (err)
       return res.status(500).send("Error checking existing friend request");
-    }
 
     if (results.length > 0) {
       return res.status(403).send("Friend request already sent");
     }
 
+    // Insert new friend request
     const insertQuery = `
       INSERT INTO friend_requests (sender_id, receiver_id) 
       VALUES (?, ?)
     `;
 
-    db.query(insertQuery, [sender_id, receiver_id], (err, results) => {
-      if (err) {
-        return res.status(500).send("Error sending friend request");
-      }
+    db.query(insertQuery, [sender_id, receiver_id], (err) => {
+      if (err) return res.status(500).send("Error sending friend request");
       res.send("Friend request has been sent");
     });
   });
 });
 
+// Export router
 module.exports = router;

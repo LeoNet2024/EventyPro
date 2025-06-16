@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import classes from "./edit.module.css";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 
-export default function EditUser({ user, cities, showForm, user_id }) {
-  const navigate = useNavigate();
+export default function EditUser({ user, showForm, user_id }) {
+  const { setUser } = useAuth();
 
   // use state for form
   const [formData, setFormData] = useState({
@@ -32,8 +32,8 @@ export default function EditUser({ user, cities, showForm, user_id }) {
       // send obj
       .put("/personal-area/editProfile", formData)
       .then((res) => {
-        console.log("User updated successfully:", res.data);
         showForm(false);
+        setUser(res.data);
       })
       .catch((error) => {
         console.error("Update failed:", error);

@@ -13,7 +13,7 @@ export default function ForgotPassword() {
     setError('');
 
     axios
-      .post('/login/users/forgot-password', { email }) // ← מסלול ה-API שלך
+      .post('/verification/forgot-password', { email }) // ← מסלול ה-API שלך
       .then(res => {
         setMessage(res.data.message || 'קישור לאיפוס סיסמה נשלח למייל שלך');
       })
