@@ -137,5 +137,27 @@ router.post("/sendFriendRequest", (req, res) => {
   });
 });
 
+// Handle with delete event
+router.post("/deleteEvent", (req, res) => {
+  const { event_id, user_id } = req.body;
+
+  // Finding if the user created the event
+  const query = `SELECT created_by 
+                FROM events 
+                WHERE  event_id = ? and created_by = ?;`;
+
+  db.query(query, [event_id, user_id], (err, results) => {
+    if (err) return res.status(500).send("Error -  to manage event");
+    if (results.length === 0) res.json(null);
+    // Deleting the events from all tables
+    const deleteQuery = `DELETE FROM events WHERE event_id = ?`;
+
+    db.query(deleteQuery, [event_id], (err, results) => {
+      if (err) return res.status(500).send("Error -  to delete event");
+      res.json(results);
+    });
+  });
+});
+
 // Export router
 module.exports = router;

@@ -29,6 +29,7 @@ router.post("/", (req, res) => {
     type === "private" ? 1 : 0,
     parseInt(participantAmount),
     city,
+    user_id,
   ];
 
   // Prevent duplicated events
@@ -56,8 +57,8 @@ router.post("/", (req, res) => {
 
       // query to insert values into tables
       const query = `
-      INSERT INTO events(event_name, category, start_date, end_date, start_time, is_private, participant_amount, city)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO events(event_name, category, start_date, end_date, start_time, is_private, participant_amount, city,created_by)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)
     `;
 
       // Execute the query
@@ -70,21 +71,9 @@ router.post("/", (req, res) => {
 
         const event_id = results.insertId;
 
-        // Insert into eventCreated table the creator id and event id
-        const eventCreated = `INSERT INTO created_events (user_id, event_id) VALUES (?, ?)`;
-
-        // Execute the query
-        db.query(eventCreated, [user_id, event_id], (err2, results2) => {
-          if (err2) {
-            return res
-              .status(500)
-              .send("Error while linking the event to its creator");
-          }
-
-          res.status(201).json({
-            message: "Event created successfully",
-            eventId: event_id,
-          });
+        res.status(201).json({
+          message: "Event created successfully",
+          eventId: event_id,
         });
       });
     }

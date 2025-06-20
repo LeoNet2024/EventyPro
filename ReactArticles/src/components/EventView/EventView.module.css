@@ -10,8 +10,6 @@
   object-fit: cover;
 }
 
-
-
 .overlay {
   position: absolute;
   top: 0;
@@ -74,4 +72,20 @@
 
 .joinButton:hover {
   background-color: #0056b3;
+}
+
+.deleteButton {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.deleteButton:hover {
+  background-color: #d9363e;
 }
