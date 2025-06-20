@@ -60,8 +60,11 @@ export default function NewEvent() {
     axios
       .post("/newEvent", eventDea)
       .then(() => {
-        alert("Event created");
-        navigate("/");
+        setMessage("Event created successfully!");
+        setMessageType("success");
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -72,6 +75,14 @@ export default function NewEvent() {
         setMessageType("error");
       });
   }
+
+  // נקה את ההודעה אחרי 3 שניות
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => setMessage(""), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
 
   return (
     <div className={classes.backdrop}>

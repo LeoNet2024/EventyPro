@@ -30,12 +30,12 @@ export default function EventView() {
         user_id: user.user_id,
       })
       .then(() => {
-        alert("Event deleted successfully.");
-        navigate("/home");
+        setSuccessMsg("Event deleted successfully.");
+        setTimeout(() => navigate("/home"), 2000); // ממתין לפני ניווט
       })
       .catch((error) => {
         console.error("Error deleting event:", error);
-        alert(
+        setSuccessMsg(
           "You are not authorized to delete this event or an error occurred."
         );
       });
@@ -69,14 +69,21 @@ export default function EventView() {
     axios
       .post(`/event/${id}/joinEvent`, payload)
       .then(() => {
-        alert("You joined the event successfully!");
-        navigate("/home");
+        setSuccessMsg("You joined the event successfully!");
+        setTimeout(() => navigate("/home"), 2000);
       })
       .catch((error) => {
         console.error("Error:", error);
-        alert("You are already joined or something went wrong.");
+        setSuccessMsg("You are already joined or something went wrong.");
       });
   };
+
+  useEffect(() => {
+    if (successMsg) {
+      const timer = setTimeout(() => setSuccessMsg(""), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMsg]);
 
   const formatDate = (dateString) => {
     if (!dateString) return "-";
@@ -159,6 +166,7 @@ export default function EventView() {
           />
         </div>
       </div>
+      {successMsg && <div className={classes.toast}>{successMsg}</div>}
     </>
   );
 }

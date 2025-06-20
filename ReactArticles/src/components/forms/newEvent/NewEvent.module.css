@@ -61,20 +61,45 @@
 .formWrap button:hover {
   background-color: #125a9c;
 }
-.successMessage {
-  background-color: #d4edda;
-  color: #155724;
-  padding: 0.75rem 1rem;
+.successMessage,
+.errorMessage {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  padding: 14px 20px;
   border-radius: 8px;
-  margin-bottom: 1rem;
-  border: 1px solid #c3e6cb;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+.successMessage {
+  background-color: #4caf50;
+  color: white;
 }
 
 .errorMessage {
-  background-color: #f8d7da;
-  color: #721c24;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  border: 1px solid #f5c6cb;
+  background-color: #f44336;
+  color: white;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
