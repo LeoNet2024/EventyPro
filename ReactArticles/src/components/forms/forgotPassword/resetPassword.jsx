@@ -1,42 +1,53 @@
+// ResetPassword.jsx
+// Component for handling password reset using token from the URL
+
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import classes from "./resetPassword.module.css";
 
 export default function ResetPassword() {
-  const { token } = useParams(); // מקבל את הטוקן מה-URL
+  const { token } = useParams(); // Get token from URL params
   const navigate = useNavigate();
 
+  // Form fields and feedback messages
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
+  /**
+   * Handles form submission for resetting the password.
+   * Validates the form and sends the new password to the backend.
+   */
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
     setMessage("");
 
     if (password !== confirm) {
-      setError("הסיסמאות אינן תואמות");
+      setError("Passwords do not match");
       return;
     }
 
     axios
       .post(`/verification/reset-password/${token}`, { password })
-      .then((res) => {
-        setMessage("הסיסמה אופסה בהצלחה! מועבר לעמוד ההתחברות...");
+      .then(() => {
+        setMessage("Password successfully reset! Redirecting to login...");
         setTimeout(() => navigate("/login"), 3000);
       })
       .catch((err) => {
         if (err.response?.data?.error) {
           setError(err.response.data.error);
         } else {
-          setError("אירעה שגיאה באיפוס הסיסמה");
+          setError("An error occurred while resetting the password");
         }
       });
   };
 
+  /**
+   * Renders the password reset form with input fields and feedback.
+   */
   return (
     <div className={classes.container}>
       <h2>איפוס סיסמה</h2>

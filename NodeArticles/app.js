@@ -1,3 +1,5 @@
+// Engineers: Leon Gitelman and Neo Zino
+
 // Import core modules
 const express = require("express");
 const session = require("express-session");

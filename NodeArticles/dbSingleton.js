@@ -1,3 +1,5 @@
+// Engineers: Leon Gitelman and Neo Zino
+
 //dbSingleton.js
 const mysql = require("mysql2");
 

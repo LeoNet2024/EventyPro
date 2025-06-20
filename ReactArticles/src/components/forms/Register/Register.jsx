@@ -1,28 +1,15 @@
+// Register.jsx
+// Sends verification code to user's email, but does NOT create the user yet
+
 import { useEffect, useState } from "react";
-import classes from "../login/Login.module.css";
 import axios from "axios";
-import VerifyCode from "../Register/VerifyCode"; // ודא שהנתיב נכון
+import classes from "../login/Login.module.css";
+import VerifyCode from "../Register/VerifyCode";
 
 export default function Register() {
   const [successMessage, setSuccessMessage] = useState("");
   const [cities, setCities] = useState([]);
   const [showVerification, setShowVerification] = useState(false);
-  const [createdUserId, setCreatedUserId] = useState(null);
-
-  useEffect(() => {
-    axios
-      .get("/register/cities")
-      .then((res) => {
-        const validCities = res.data.filter(
-          (el) => el.name_heb && el.name_heb.trim().length > 0
-        );
-        setCities(validCities);
-      })
-      .catch((err) => {
-        console.error("Error fetching cities:", err);
-      });
-  }, []);
-
   const [info, setInfo] = useState({
     first_name: "",
     last_name: "",
@@ -32,8 +19,15 @@ export default function Register() {
     city: "",
     email: "",
   });
-
   const [errors, setErrors] = useState({});
+
+  // Fetch cities for dropdown
+  useEffect(() => {
+    axios.get("/register/cities").then((res) => {
+      const valid = res.data.filter((c) => c.name_heb?.trim().length > 0);
+      setCities(valid);
+    });
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,15 +37,13 @@ export default function Register() {
 
   const validate = () => {
     const newErrors = {};
-
     if (!/^[A-Za-z]{2,}$/.test(info.first_name))
       newErrors.first_name = "First name must contain at least 2 letters.";
     if (!/^[A-Za-z]{2,}$/.test(info.last_name))
       newErrors.last_name = "Last name must contain at least 2 letters.";
     if (!info.user_name.trim()) newErrors.user_name = "Username is required.";
-    if (!info.password) {
-      newErrors.password = "Password is required.";
-    } else if (
+    if (
+      !info.password ||
       info.password.length < 3 ||
       info.password.length > 8 ||
       !/\d/.test(info.password) ||
@@ -62,52 +54,31 @@ export default function Register() {
     }
     if (!info.gender) newErrors.gender = "Gender is required.";
     if (!info.city) newErrors.city = "City is required.";
-    if (!info.email) {
-      newErrors.email = "Email is required.";
-    } else if (!/^\S+@\S+\.\S+$/.test(info.email)) {
-      newErrors.email = "Invalid email format.";
+    if (!info.email || !/^\S+@\S+\.\S+$/.test(info.email)) {
+      newErrors.email = "Valid email is required.";
     }
-
     return newErrors;
   };
 
-  const fetchData = () => {
-    return axios
-      .post("/register", info)
-      .then((res) => {
-        setSuccessMessage("Verification code sent to your email.");
-        setCreatedUserId(res.data.user_id);
-        setShowVerification(true);
-        return true;
-      })
-      .catch((error) => {
-        if (
-          error.response &&
-          error.response.status === 400 &&
-          error.response.data.error === "Email already exists."
-        ) {
-          setErrors((prev) => ({ ...prev, email: "Email already exists." }));
-        } else {
-          console.error("Unexpected error:", error);
-        }
-        return false;
-      });
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-    } else {
-      setErrors({});
-      fetchData();
+      return;
+    }
+
+    try {
+      const res = await axios.post("/register/request-verification", info);
+      setSuccessMessage(res.data.message);
+      setShowVerification(true);
+    } catch (err) {
+      const msg = err.response?.data?.error || "Unexpected error.";
+      setErrors({ email: msg });
     }
   };
 
-  if (showVerification) {
-    return <VerifyCode userId={createdUserId} />;
-  }
+  if (showVerification) return <VerifyCode />;
 
   return (
     <div className={classes.loginContainer}>
@@ -182,16 +153,11 @@ export default function Register() {
           className={classes.input}
         >
           <option value="">Select City</option>
-          {cities.map((el, idx) => {
-            const name = el.name_heb.trim();
-            const formattedName =
-              name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-            return (
-              <option key={idx} value={formattedName}>
-                {formattedName}
-              </option>
-            );
-          })}
+          {cities.map((el, idx) => (
+            <option key={idx} value={el.name_heb.trim()}>
+              {el.name_heb.trim()}
+            </option>
+          ))}
         </select>
         {errors.city && <p className={classes.error}>{errors.city}</p>}
 
@@ -206,7 +172,7 @@ export default function Register() {
         {errors.email && <p className={classes.error}>{errors.email}</p>}
 
         <button type="submit" className={classes.button}>
-          Register
+          Send Verification Code
         </button>
       </form>
     </div>

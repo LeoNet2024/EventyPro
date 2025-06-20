@@ -1,22 +1,40 @@
 .container {
   display: flex;
-  height: 100vh;
+  flex-direction: row;
+  min-height: 100vh;
+  flex-wrap: wrap;
 }
 
-/* Split each form into half of the screen */
 .half {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 40px;
+  box-sizing: border-box;
 }
 
-/* Optional: alternate background for contrast */
 .leftPane {
   border-right: 2px solid black;
 }
 
 .rightPane {
   border-left: 2px solid black;
+}
+
+/* רספונסיביות למסכים קטנים */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .leftPane,
+  .rightPane {
+    border: none;
+    border-bottom: 2px solid black;
+  }
+
+  .rightPane {
+    border-bottom: none;
+  }
 }

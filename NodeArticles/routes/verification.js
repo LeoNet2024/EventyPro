@@ -101,35 +101,50 @@ router.post("/reset-password/:token", (req, res) => {
 });
 
 // ------------------- EMAIL VERIFICATION CODE -------------------
-router.post("/verify-code", (req, res) => {
-  const { user_id, code } = req.body;
+router.post("/confirm-verification", (req, res) => {
+  const { code } = req.body;
+  const pendingUser = req.session.pendingUser;
 
-  // Step 1: Check if code is valid and not expired
-  const query = `
-    SELECT * FROM email_verification_codes 
-    WHERE user_id = ? AND code = ? AND expires_at > NOW()
+  if (!pendingUser)
+    return res.status(400).json({ error: "No pending registration found." });
+
+  if (Date.now() > pendingUser.expiresAt) {
+    req.session.pendingUser = null;
+    return res.status(400).json({ error: "Verification code expired." });
+  }
+
+  if (pendingUser.code !== code) {
+    return res.status(400).json({ error: "Invalid verification code." });
+  }
+
+  // Create user in DB
+  const insertQuery = `
+    INSERT INTO users (first_name, last_name, user_name, password, gender, city, email, is_verified)
+    VALUES (?, ?, ?, ?, ?, ?, ?, true)
   `;
 
-  db.query(query, [user_id, code], (err, results) => {
-    if (err) return res.status(500).json({ error: "DB error." });
-    if (results.length === 0)
-      return res.status(400).json({ error: "Invalid or expired code." });
+  const values = [
+    pendingUser.first_name,
+    pendingUser.last_name,
+    pendingUser.user_name,
+    pendingUser.password,
+    pendingUser.gender,
+    pendingUser.city,
+    pendingUser.email,
+  ];
 
-    // Step 2: Mark user as verified
-    db.query(
-      `UPDATE users SET is_verified = 1 WHERE user_id = ?`,
-      [user_id],
-      (err2) => {
-        if (err2)
-          return res.status(500).json({ error: "Failed to verify user." });
+  db.query(insertQuery, values, (err) => {
+    if (err) return res.status(500).json({ error: "User creation failed." });
 
-        // Step 3: Delete used code
-        db.query(`DELETE FROM email_verification_codes WHERE user_id = ?`, [
-          user_id,
-        ]);
-        res.json({ message: "Email verified successfully." });
+    // Destroy session completely
+    req.session.destroy((destroyErr) => {
+      if (destroyErr) {
+        console.error("Session destroy failed:", destroyErr);
+        return res.status(500).json({ error: "Session cleanup failed." });
       }
-    );
+
+      res.json({ message: "User registered and verified successfully." });
+    });
   });
 });
 

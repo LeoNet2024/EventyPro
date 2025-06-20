@@ -1,3 +1,4 @@
+// Component for creating a new event
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import classes from "./NewEvent.module.css";
@@ -7,34 +8,17 @@ import { useAuth } from "../../../context/AuthContext";
 export default function NewEvent() {
   const navigate = useNavigate();
   const { user } = useAuth();
+
+  // List of cities and categories for the dropdowns
   const [cities, setCities] = useState([]);
   const [categories, setCategories] = useState([]);
+
+  // Message to display (success or error)
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
 
-  useEffect(() => {
-    axios
-      .get("/register/cities")
-      .then((res) => {
-        const validCities = res.data.filter(
-          (el) => el.name_heb && el.name_heb.trim().length > 0
-        );
-        setCities(validCities);
-      })
-      .catch((err) => {
-        console.error("Error fetching cities:", err);
-      });
-
-    axios
-      .get("/newEvent/getCategories")
-      .then((res) => {
-        console.log(res.data);
-        setCategories(res.data);
-      })
-      .catch((err) => console.error(err));
-  }, []);
-
-  const [eventDea, setEventDea] = useState({
+  // Form data state
+  const [eventData, setEventData] = useState({
     eventName: "",
     city: "",
     category: "",
@@ -46,19 +30,63 @@ export default function NewEvent() {
     user_id: "",
   });
 
+  // Fetch cities and categories when component mounts
+  useEffect(() => {
+    fetchCities();
+    fetchCategories();
+  }, []);
+
+  // Automatically clear message after 3 seconds
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => setMessage(""), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
+
+  // ----------------------------------------
+  // Fetch list of cities from the backend
+  function fetchCities() {
+    axios
+      .get("/register/cities")
+      .then((res) => {
+        const validCities = res.data.filter(
+          (el) => el.name_heb && el.name_heb.trim().length > 0
+        );
+        setCities(validCities);
+      })
+      .catch((err) => {
+        console.error("Error fetching cities:", err);
+      });
+  }
+
+  // Fetch list of categories from the backend
+  function fetchCategories() {
+    axios
+      .get("/newEvent/getCategories")
+      .then((res) => {
+        setCategories(res.data);
+      })
+      .catch((err) => console.error("Error fetching categories:", err));
+  }
+
+  // ----------------------------------------
+  // Handle changes in the form inputs
   function handleChange(e) {
-    setEventDea((prev) => ({
+    setEventData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
       user_id: user.user_id,
     }));
   }
 
+  // ----------------------------------------
+  // Handle form submission and send data to backend
   function handleSubmit(e) {
     e.preventDefault();
 
     axios
-      .post("/newEvent", eventDea)
+      .post("/newEvent", eventData)
       .then(() => {
         setMessage("Event created successfully!");
         setMessageType("success");
@@ -76,14 +104,8 @@ export default function NewEvent() {
       });
   }
 
-  // נקה את ההודעה אחרי 3 שניות
-  useEffect(() => {
-    if (message) {
-      const timer = setTimeout(() => setMessage(""), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [message]);
-
+  // ----------------------------------------
+  // Render the form
   return (
     <div className={classes.backdrop}>
       {message && (
@@ -104,7 +126,7 @@ export default function NewEvent() {
           <input
             type="text"
             name="eventName"
-            value={eventDea.eventName}
+            value={eventData.eventName}
             onChange={handleChange}
             required
           />
@@ -133,7 +155,7 @@ export default function NewEvent() {
           <input
             type="number"
             name="participantAmount"
-            value={eventDea.participantAmount}
+            value={eventData.participantAmount}
             maxLength={3}
             onChange={handleChange}
             required
@@ -143,7 +165,7 @@ export default function NewEvent() {
           <input
             type="date"
             name="startDate"
-            value={eventDea.startDate}
+            value={eventData.startDate}
             onChange={handleChange}
             required
           />
@@ -152,7 +174,7 @@ export default function NewEvent() {
           <input
             type="date"
             name="endDate"
-            value={eventDea.endDate}
+            value={eventData.endDate}
             onChange={handleChange}
             required
           />
@@ -161,7 +183,7 @@ export default function NewEvent() {
           <input
             type="time"
             name="startTime"
-            value={eventDea.startTime}
+            value={eventData.startTime}
             onChange={handleChange}
             required
           />
