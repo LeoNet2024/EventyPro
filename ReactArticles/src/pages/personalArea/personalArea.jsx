@@ -21,7 +21,10 @@ export default function PersonalArea() {
 
     axios
       .post("/personal-area", { user_id: user.user_id })
-      .then((res) => setUserEvents(res.data))
+      .then((res) => {
+        console.log(res.data);
+        setUserEvents(res.data);
+      })
       .catch((err) => console.error("Error loading events:", err));
 
     axios

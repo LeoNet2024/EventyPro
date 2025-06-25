@@ -26,7 +26,9 @@ export default function UserStats({ noti }) {
       axios
         .post("personal-area/userStats/joinedEvents", { user_id: user.user_id })
         .then((res) => {
-          setJoinedCount(res.data["join events"]);
+          console.log(res.data);
+
+          setJoinedCount(res.data.joined);
         })
         .catch((err) => console.error("Error joinedEvents:", err));
 

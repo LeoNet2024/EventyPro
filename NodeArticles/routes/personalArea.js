@@ -139,7 +139,7 @@ router.post("/myFriends", (req, res) => {
 router.post("/userStats/createdEvents", (req, res) => {
   const { user_id } = req.body;
 
-  const query = `SELECT COUNT(*) AS count FROM created_events WHERE user_id = ?`;
+  const query = `SELECT COUNT(*) as count FROM events WHERE events.created_by = ?;`;
   db.query(query, [user_id], (err, results) => {
     if (err) return res.status(500).send("Failed to fetch created events");
     res.send(results[0]);
