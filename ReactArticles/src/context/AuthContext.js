@@ -1,9 +1,9 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import { createContext, useContext, useState, useEffect } from "react";
+import axios from "axios";
 
 export const AuthContext = createContext();
 
-axios.defaults.baseURL = 'http://localhost:8801';
+axios.defaults.baseURL = "http://localhost:8801";
 axios.defaults.withCredentials = true;
 
 export const AuthProvider = ({ children }) => {
@@ -12,8 +12,8 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     axios
-      .get('/check-auth')
-      .then(res => {
+      .get("/check-auth")
+      .then((res) => {
         if (res.data.user !== null)
           setUser(res.data); // If user exists, set the state
         else setUser(null); // If the user doesn't exist, set the state to null

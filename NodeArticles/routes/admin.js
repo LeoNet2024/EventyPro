@@ -3,6 +3,46 @@ const express = require("express");
 const router = express.Router();
 const db = require("../dbSingleton").getConnection();
 
+// ------------------- SEND NEW ADMIN MESSAGE -------------------
+router.post("/contact", (req, res) => {
+  const userId = req.session.user?.user_id;
+  const { subject, message } = req.body;
+
+  if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+  const query = `
+    INSERT INTO admin_messages (user_id, subject, message)
+    VALUES (?, ?, ?)
+  `;
+
+  db.query(query, [userId, subject, message], (err) => {
+    if (err) return res.status(500).json({ error: "Database error" });
+    res.json({ message: "Message sent" });
+  });
+});
+
+// ------------------- GET ALL MESSAGES BY CURRENT USER -------------------
+router.get("/contact", (req, res) => {
+  console.log("in get contact");
+  const userId = req.session.user?.user_id;
+
+  console.log("session:", req.session);
+
+  if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+  const query = `
+    SELECT message_id, subject, message, reply, answered, created_at
+    FROM admin_messages
+    WHERE user_id = ?
+    ORDER BY created_at DESC
+  `;
+
+  db.query(query, [userId], (err, results) => {
+    if (err) return res.status(500).json({ error: "Database error" });
+    res.json(results);
+  });
+});
+
 // ------------------- ADMIN AUTHENTICATION MIDDLEWARE -------------------
 // Only allow access if user is admin
 router.use((req, res, next) => {
@@ -10,6 +50,56 @@ router.use((req, res, next) => {
     return res.status(403).json({ error: "Access denied" });
   }
   next();
+});
+
+// ------------------- ADMIN DASHBBOARD SUMMARY -------------------
+router.get("/summary", (req, res) => {
+  // 10 users האחרונים
+  const usersSql = `
+      SELECT user_id, first_name, last_name, email,
+           user_name, blocked, registration_date
+      FROM users
+      ORDER BY registration_date DESC
+      LIMIT 10
+  `;
+
+  db.query(usersSql, [], (err, users) => {
+    if (err) return res.status(500).json({ error: "Database error" });
+
+    // 10 events האחרונים
+    const eventsSql = `
+        SELECT e.event_id, e.event_name, e.category, e.start_date, e.end_date,
+             e.start_time, e.is_private, e.participant_amount, e.city,
+             e.created_by, e.created_date,
+             COUNT(ep.user_id)           AS actual_participants
+        FROM events               e
+        LEFT JOIN event_participants ep ON e.event_id = ep.event_id
+        GROUP BY e.event_id
+        ORDER BY e.created_date DESC
+      LIMIT 10
+    `;
+
+    db.query(eventsSql, [], (err, events) => {
+      if (err) return res.status(500).json({ error: "Database error" });
+
+      // 10 הודעות אחרונות
+      const msgsSql = `
+        SELECT m.message_id, m.user_id, m.subject, m.message,
+               m.created_at, m.answered, u.user_name
+        FROM admin_messages m
+        JOIN users u ON m.user_id = u.user_id
+        ORDER BY m.created_at DESC
+        LIMIT 10
+      `;
+
+      db.query(msgsSql, [], (err, messages) => {
+        if (err) return res.status(500).json({ error: "Database error" });
+
+        // שלח הכול במענה אחד
+        res.json({ users, events, messages });
+      });
+    });
+  });
 });
 
 // ------------------- GET ALL USERS -------------------
@@ -55,43 +145,6 @@ router.get("/events", (req, res) => {
   `;
 
   db.query(query, (err, results) => {
-    if (err) return res.status(500).json({ error: "Database error" });
-    res.json(results);
-  });
-});
-
-// ------------------- SEND NEW ADMIN MESSAGE -------------------
-router.post("/contact", (req, res) => {
-  const userId = req.session.user?.user_id;
-  const { subject, message } = req.body;
-
-  if (!userId) return res.status(401).json({ error: "Unauthorized" });
-
-  const query = `
-    INSERT INTO admin_messages (user_id, subject, message)
-    VALUES (?, ?, ?)
-  `;
-
-  db.query(query, [userId, subject, message], (err) => {
-    if (err) return res.status(500).json({ error: "Database error" });
-    res.json({ message: "Message sent" });
-  });
-});
-
-// ------------------- GET ALL MESSAGES BY CURRENT USER -------------------
-router.get("/contact", (req, res) => {
-  const userId = req.session.user?.user_id;
-
-  if (!userId) return res.status(401).json({ error: "Unauthorized" });
-
-  const query = `
-    SELECT message_id, subject, message, reply, answered, created_at
-    FROM admin_messages
-    WHERE user_id = ?
-    ORDER BY created_at DESC
-  `;
-
-  db.query(query, [userId], (err, results) => {
     if (err) return res.status(500).json({ error: "Database error" });
     res.json(results);
   });

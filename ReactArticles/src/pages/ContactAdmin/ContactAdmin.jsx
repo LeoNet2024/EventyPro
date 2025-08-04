@@ -14,7 +14,7 @@ export default function ContactAdmin() {
       .get("/admin/contact")
       .then((res) => setMessages(res.data))
       .catch((err) => console.error("Error loading messages:", err));
-  }, [messages]);
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();

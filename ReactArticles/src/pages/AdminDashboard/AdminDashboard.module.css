@@ -11,6 +11,14 @@
   margin-right: auto;
 }
 
+.dashboard {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+  background: #f5f7fa;
+  font-family: "Inter", sans-serif;
+}
+
 .sidebar {
   display: flex;
   justify-content: center;
@@ -20,8 +28,8 @@
 }
 
 .sidebar button {
-  padding: 0.6rem 1.4rem;
-  font-size: 0.95rem;
+  padding: 0.9rem 1.7rem;
+  font-size: 2rem;
   font-weight: 500;
   background: #3b4c5c;
   color: white;
@@ -43,4 +51,45 @@
   color: #3b4c5c;
   border: 2px solid #3b4c5c;
   font-weight: 600;
+}
+
+/* --- Overview grid --- */
+.overview {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1fr; /* עמודה יחידה */
+  margin-bottom: 3rem;
+}
+
+/* --- Card --- */
+.card {
+  background: #ffffff;
+  border: 1px solid #dfe3e8;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+/* --- Card title --- */
+.cardTitle {
+  font-size: 2rem;
+  margin: 0 0 0.75rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* גורם לטבלה / גריד-הודעות להתגלגל בתוך הכרטיס אם גבוה מדי */
+.card table,
+.card .grid,
+.card div {
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+.main {
+  font-size: 0.9em;
 }

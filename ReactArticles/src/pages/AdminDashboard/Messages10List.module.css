@@ -1,0 +1,36 @@
+/* components/Messages10List/Messages10List.module.css */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr; /* כרטיסיות אחת מתחת לשנייה */
+  gap: 1.5rem;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #dfe3e8;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.07);
+  transform: translateY(-3px);
+}
+
+.card h4 {
+  margin: 0 0 0.5rem;
+  font-size: 2rem; /* גדול יותר */
+  color: #111827;
+}
+
+.card p {
+  font-size: 1.7rem;
+  margin: 0 0 0.6rem;
+}
+
+.card small {
+  color: #6b7280;
+  font-size: 1.5rem;
+}

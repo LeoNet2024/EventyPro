@@ -1,0 +1,32 @@
+/* components/User10List/User10List.module.css */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Inter", sans-serif;
+  font-size: 1.05rem; /* כתב גדול יותר */
+}
+
+th,
+td {
+  padding: 0.8rem 0.9rem;
+  border-bottom: 1px solid #dfe3e8;
+  text-align: left;
+  white-space: nowrap;
+}
+
+thead th {
+  background: #eef1f5;
+  color: #111827;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+tbody tr:nth-child(odd) {
+  background: #fafbfc;
+}
+
+tbody tr:hover {
+  background: #f1f5f9;
+}
