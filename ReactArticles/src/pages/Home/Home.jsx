@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import EventCard from "../../components/EventCard/EventCard";
 import Filterbar from "../../components/Filterbar/filterbar";
+import MapComponent from "../../components/MapComponent/MapComponent";
 
 /**
  * Home component displays:
@@ -21,6 +22,20 @@ export default function Home() {
   const [recentEvents, setRecentEvents] = useState([]);
   //event category
   const [categories, setCategories] = useState([]);
+
+  //List of markers - > should be relocate to different file
+  const eventMarkers = [
+    {
+      name: "Event A",
+      description: "Tel Aviv Concert",
+      position: [32.0853, 34.7818], // Tel Aviv
+    },
+    {
+      name: "Event B",
+      description: "Haifa Meetup",
+      position: [32.794, 34.9896], // Haifa
+    },
+  ];
 
   // Load events from backend when component mounts
   useEffect(() => {
@@ -79,11 +94,9 @@ export default function Home() {
 
       {/* Placeholder for future filters and map */}
       <div className={classes.mapAndFilter}>
-        <div className={classes.filters}>
-          <p>Here we will have filters</p>
-        </div>
+        <div className={classes.filters}></div>
         <div className={classes.map}>
-          <p>Here we will have a map</p>
+          <MapComponent center={[32.0853, 34.7818]} markers={eventMarkers} />
         </div>
       </div>
     </main>

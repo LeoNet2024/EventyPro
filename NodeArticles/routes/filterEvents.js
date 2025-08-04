@@ -27,7 +27,7 @@ router.get("/getAllCategories", (req, res) => {
   const query = `SELECT default_images.category from default_images`;
   db.query(query, (err, results) => {
     if (err) return res.status(500).send("Cannot get all event categories");
-    return res.status(results);
+    return res.json(results);
   });
 });
 
