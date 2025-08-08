@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 
 export default function NewEvent() {
+  // const today used to set the current day and to disable expired day
+  const today = new Date().toISOString().split("T")[0];
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -157,6 +159,7 @@ export default function NewEvent() {
             name="participantAmount"
             value={eventData.participantAmount}
             maxLength={3}
+            min={1}
             onChange={handleChange}
             required
           />
@@ -167,6 +170,7 @@ export default function NewEvent() {
             name="startDate"
             value={eventData.startDate}
             onChange={handleChange}
+            min={today}
             required
           />
 
@@ -174,6 +178,7 @@ export default function NewEvent() {
           <input
             type="date"
             name="endDate"
+            min={today}
             value={eventData.endDate}
             onChange={handleChange}
             required

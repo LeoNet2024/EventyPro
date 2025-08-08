@@ -15,7 +15,7 @@ export default function ParticipantsList({ participants, maxParticipants }) {
   return (
     <div className={classes.participantList}>
       <h3 className={classes.title}>
-        משתתפים: {participants.length}/{maxParticipants}
+        participants: {participants.length}/{maxParticipants}
       </h3>
 
       <ul className={classes.list}>

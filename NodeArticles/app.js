@@ -15,6 +15,7 @@ const adminRoute = require("./routes/admin");
 const registerRoute = require("./routes/register");
 const verificationRoute = require("./routes/verification");
 const filterEvents = require("./routes/filterEvents");
+const homePageStat = require("./routes/homePageStat");
 
 const app = express();
 const port = 8801;
@@ -53,6 +54,7 @@ app.use("/admin", adminRoute); // Admin dashboard
 app.use("/register", registerRoute); // Register user
 app.use("/verification", verificationRoute); // Verification with email
 app.use("/filterEvents", filterEvents); // Filter events
+app.use("/homePageStat", homePageStat); // Home page statistics
 
 // ------------------- GLOBAL ERROR HANDLER -------------------
 app.use((err, req, res, next) => {

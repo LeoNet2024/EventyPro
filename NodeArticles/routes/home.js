@@ -24,5 +24,20 @@ router.get("/", (req, res) => {
   });
 });
 
+router.get("/getEventsPositions", (req, res) => {
+  // this query return the events posion from events, yeshuvim, cities_coordinates
+  const query = `SELECT event_name, name_heb, longitude,latitude
+    from
+      (SELECT yeshuvim.name_heb, cities_coordinates.longitude, cities_coordinates.latitude
+      FROM yeshuvim
+      INNER JOIN cities_coordinates ON cities_coordinates.MGLSDE_LOC=yeshuvim.name_heb) as sub
+    INNER JOIN events on events.city=sub.name_heb;`;
+
+  db.query(query, (err, results) => {
+    if (err) return res.status(500).send(err);
+    res.json(results);
+  });
+});
+
 // Export router
 module.exports = router;

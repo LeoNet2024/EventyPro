@@ -3,8 +3,12 @@ import classes from "./filterbar.module.css";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 
-export default function Filterbar({ setFilterEvents, events }) {
+export default function Filterbar({ setFilterEvents, events, categories }) {
   const { user } = useAuth();
+
+  const caregorySelection = categories.map((el) => {
+    return <option value={el.category}>{el.category}</option>;
+  });
 
   // This function filter events by user select
   function handleFilter(filterCategory) {
@@ -25,14 +29,21 @@ export default function Filterbar({ setFilterEvents, events }) {
     }
     // In case user want to see all the events
     else if (filterCategory === "all") setFilterEvents(events);
+    // User city
     else if (filterCategory === "city")
       setFilterEvents((prev) => prev.filter((el) => el.city === user.city));
+    else {
+      setFilterEvents(events);
+      setFilterEvents((prev) =>
+        prev.filter((el) => el.category === filterCategory)
+      );
+    }
   }
 
   return (
     <div className={classes.filterBar}>
       <div className={classes.filterOption} onClick={() => handleFilter("all")}>
-        🔥All events
+        All events
       </div>
       <div
         className={classes.filterOption}
@@ -45,15 +56,13 @@ export default function Filterbar({ setFilterEvents, events }) {
         <div
           className={classes.filterOption}
           onClick={() => handleFilter("city")}
-        >
-          🏙️ By City
-        </div>
+        >{`Events in ${user.city} `}</div>
       )}
-      <div
-        className={classes.filterOption}
-        onClick={() => handleFilter("category")}
-      >
-        📂 By Category
+      <div className={classes.filterOption}>
+        <select onChange={(el) => handleFilter(el.target.value)}>
+          <option value="all">Select Category</option>
+          {caregorySelection}
+        </select>
       </div>
     </div>
   );

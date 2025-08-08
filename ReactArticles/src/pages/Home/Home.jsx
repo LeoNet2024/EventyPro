@@ -5,6 +5,7 @@ import SearchBar from "../../components/SearchBar/SearchBar";
 import EventCard from "../../components/EventCard/EventCard";
 import Filterbar from "../../components/Filterbar/filterbar";
 import MapComponent from "../../components/MapComponent/MapComponent";
+import HomePageStat from "../../components/homePageStat/homePageStat";
 
 /**
  * Home component displays:
@@ -24,18 +25,17 @@ export default function Home() {
   const [categories, setCategories] = useState([]);
 
   //List of markers - > should be relocate to different file
-  const eventMarkers = [
-    {
-      name: "Event A",
-      description: "Tel Aviv Concert",
-      position: [32.0853, 34.7818], // Tel Aviv
-    },
-    {
-      name: "Event B",
-      description: "Haifa Meetup",
-      position: [32.794, 34.9896], // Haifa
-    },
-  ];
+  const [eventsMarksFromDB, setEventsMarksFromDB] = useState([]);
+
+  // create a custom format for map comp
+  const listOfEventsMarks = eventsMarksFromDB.map((el) => {
+    console.log(typeof el.X);
+    return {
+      name: el.event_name,
+      description: el.name_heb,
+      position: [el.latitude, el.longitude],
+    };
+  });
 
   // Load events from backend when component mounts
   useEffect(() => {
@@ -57,7 +57,12 @@ export default function Home() {
     //getting the categories from DB
     axios
       .get("/filterEvents/getAllCategories")
-      .then((res) => setCategories(res))
+      .then((res) => setCategories(res.data))
+      .catch((err) => console.error(err));
+
+    axios
+      .get("home/getEventsPositions")
+      .then((res) => setEventsMarksFromDB(res.data))
       .catch((err) => console.error(err));
   };
 
@@ -94,9 +99,14 @@ export default function Home() {
 
       {/* Placeholder for future filters and map */}
       <div className={classes.mapAndFilter}>
-        <div className={classes.filters}></div>
+        <div className={classes.filters}>
+          <HomePageStat />
+        </div>
         <div className={classes.map}>
-          <MapComponent center={[32.0853, 34.7818]} markers={eventMarkers} />
+          <MapComponent
+            center={[32.0853, 34.7818]}
+            markers={listOfEventsMarks}
+          />
         </div>
       </div>
     </main>

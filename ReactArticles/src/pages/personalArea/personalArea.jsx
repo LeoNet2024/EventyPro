@@ -31,7 +31,7 @@ export default function PersonalArea() {
       .post("/personal-area/FriendRequests", { user_id: user.user_id })
       .then((res) => setFriendRequests(res.data))
       .catch((err) => console.error("Error loading Friend Requests"));
-  }, [user]);
+  }, [user, friendRequests]);
 
   return (
     <div className={classes.container}>
@@ -56,7 +56,7 @@ export default function PersonalArea() {
       </div>
 
       <section className={classes.eventsSection}>
-        <h2>My Events</h2>
+        <h2>Events I created</h2>
         {userEvents.length > 0 ? (
           <div className={classes.eventGrid}>
             {userEvents.map((el) => (
@@ -66,6 +66,10 @@ export default function PersonalArea() {
         ) : (
           <p className={classes.noEvents}>No events to show</p>
         )}
+      </section>
+
+      <section>
+        <h2>My Events</h2>
       </section>
     </div>
   );
