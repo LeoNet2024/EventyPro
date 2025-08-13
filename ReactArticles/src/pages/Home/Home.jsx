@@ -44,26 +44,58 @@ export default function Home() {
 
   // Fetch event data from backend API
   const fetchData = () => {
+    // קודם מעדכן סטטוסים בשרת
     axios
-      .get("home")
-      .then((res) => {
-        setEvents(res.data);
-        setFilterEvents(res.data);
+      .get("/updatePastEvents/")
+      .then(() => {
+        // אחרי שהעדכון בוצע — ממשיכים למשוך את הנתונים
+
+        axios
+          .get("home")
+          .then((res) => {
+            setEvents(res.data);
+            setFilterEvents(res.data);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+
+        // קטגוריות
+        axios
+          .get("/filterEvents/getAllCategories")
+          .then((res) => setCategories(res.data))
+          .catch((err) => console.error(err));
+
+        // מיקומי אירועים
+        axios
+          .get("home/getEventsPositions")
+          .then((res) => setEventsMarksFromDB(res.data))
+          .catch((err) => console.error(err));
       })
-      .catch((error) => {
-        console.error("Error:", error);
+      .catch((err) => {
+        console.error("update-past-events failed:", err);
+
+        // גם אם העדכון נכשל — נטען את שאר הנתונים
+        axios
+          .get("home")
+          .then((res) => {
+            setEvents(res.data);
+            setFilterEvents(res.data);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+
+        axios
+          .get("/filterEvents/getAllCategories")
+          .then((res) => setCategories(res.data))
+          .catch((err) => console.error(err));
+
+        axios
+          .get("home/getEventsPositions")
+          .then((res) => setEventsMarksFromDB(res.data))
+          .catch((err) => console.error(err));
       });
-
-    //getting the categories from DB
-    axios
-      .get("/filterEvents/getAllCategories")
-      .then((res) => setCategories(res.data))
-      .catch((err) => console.error(err));
-
-    axios
-      .get("home/getEventsPositions")
-      .then((res) => setEventsMarksFromDB(res.data))
-      .catch((err) => console.error(err));
   };
 
   return (

@@ -11,7 +11,7 @@ router.get("/", (req, res) => {
     SELECT * 
     FROM default_images
     NATURAL JOIN events
-    WHERE events.category = default_images.category
+    WHERE events.status = 'scheduled' AND events.category = default_images.category
   `;
 
   db.query(query, (err, results) => {

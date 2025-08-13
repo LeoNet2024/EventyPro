@@ -9,6 +9,9 @@ import AdminMessages from "../../components/AdminMessages/AdminMessages";
 import User10List from "./User10List";
 import Event10List from "./Event10List";
 import Messages10List from "./Messages10List";
+import TopActiveUsers from "../../components/TopActiveUsers/TopActiveUsers";
+import TopEventCreators from "../../components/TopEventCreators/TopEventCreators";
+import TopEventCities from "../../components/TopEventCities/TopEventCities";
 
 // שולח את עוגיית-ה-session בכל בקשה
 axios.defaults.withCredentials = true;
@@ -35,12 +38,19 @@ export default function AdminDashboard() {
     <div className={classes.dashboard}>
       <h2 className={classes.dashboardTitle}>Admin Dashboard</h2>
 
-      <div className={classes.overview}>
-        <section className={classes.card}>
-          <h3 className={classes.cardTitle}>Recently registered users</h3>
-          <User10List initialUsers={users} />
-        </section>
+      <section style={{ marginBottom: 16 }}>
+        <TopActiveUsers />
+      </section>
 
+      <section style={{ marginBottom: 16 }}>
+        <TopEventCreators />
+      </section>
+
+      <section style={{ marginBottom: 16 }}>
+        <TopEventCities />
+      </section>
+
+      <div className={classes.overview}>
         <section className={classes.card}>
           <h3 className={classes.cardTitle}>Recently created events</h3>
           <Event10List initialEvents={events} />
@@ -49,6 +59,11 @@ export default function AdminDashboard() {
         <section className={classes.card}>
           <h3 className={classes.cardTitle}>Recent messages</h3>
           <Messages10List initialMessages={messages} />
+        </section>
+
+        <section className={classes.card}>
+          <h3 className={classes.cardTitle}>Recently registered users</h3>
+          <User10List initialUsers={users} />
         </section>
       </div>
 
