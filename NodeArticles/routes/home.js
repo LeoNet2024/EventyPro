@@ -11,7 +11,7 @@ router.get("/", (req, res) => {
     SELECT * 
     FROM default_images
     NATURAL JOIN events
-    WHERE events.category = default_images.category
+    WHERE events.category = default_images.category AND events.start_date > NOW();
   `;
 
   db.query(query, (err, results) => {
@@ -26,12 +26,13 @@ router.get("/", (req, res) => {
 
 router.get("/getEventsPositions", (req, res) => {
   // this query return the events posion from events, yeshuvim, cities_coordinates
-  const query = `SELECT event_name, name_heb, longitude,latitude
+  const query = `SELECT event_name, name_heb, longitude,latitude,events.start_date
     from
       (SELECT yeshuvim.name_heb, cities_coordinates.longitude, cities_coordinates.latitude
       FROM yeshuvim
       INNER JOIN cities_coordinates ON cities_coordinates.MGLSDE_LOC=yeshuvim.name_heb) as sub
-    INNER JOIN events on events.city=sub.name_heb;`;
+    INNER JOIN events on events.city=sub.name_heb
+    HAVING start_date> NOW(); `;
 
   db.query(query, (err, results) => {
     if (err) return res.status(500).send(err);

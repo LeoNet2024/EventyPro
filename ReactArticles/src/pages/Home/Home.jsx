@@ -29,13 +29,14 @@ export default function Home() {
 
   // create a custom format for map comp
   const listOfEventsMarks = eventsMarksFromDB.map((el) => {
-    console.log(typeof el.X);
     return {
       name: el.event_name,
       description: el.name_heb,
-      position: [el.latitude, el.longitude],
+      position: [el.latitude, el.longitude],עןא
     };
   });
+
+  console.log(listOfEventsMarks);
 
   // Load events from backend when component mounts
   useEffect(() => {
