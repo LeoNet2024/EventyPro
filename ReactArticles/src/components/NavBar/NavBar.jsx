@@ -38,6 +38,14 @@ export default function NavBar() {
           Personal Area
         </NavLink>
       )}
+      {user && Boolean(!user?.is_admin) && (
+        <NavLink
+          to="/chatWithFriends"
+          className={({ isActive }) => (isActive ? classes.active : "")}
+        >
+          Chat
+        </NavLink>
+      )}
       {user ? (
         <button onClick={handleLogout} className={classes.logoutButton}>
           Logout

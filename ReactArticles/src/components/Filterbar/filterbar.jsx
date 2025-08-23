@@ -7,7 +7,11 @@ export default function Filterbar({ setFilterEvents, events, categories }) {
   const { user } = useAuth();
 
   const caregorySelection = categories.map((el) => {
-    return <option value={el.category}>{el.category}</option>;
+    return (
+      <option key={el.category} value={el.category}>
+        {el.category}
+      </option>
+    );
   });
 
   // This function filter events by user select
@@ -20,7 +24,6 @@ export default function Filterbar({ setFilterEvents, events, categories }) {
           // Step 1 - Create list of event ids
           const listOfEventId = res.data.map((el) => el.event_id);
           // Step 2 - Return events that their event_id exists appears the list
-
           setFilterEvents((prev) =>
             prev.filter((el) => listOfEventId.includes(el.event_id))
           );

@@ -1,0 +1,255 @@
+:root {
+  --bg: #ffffff;
+  --bg-2: #f7fbff;
+  --fg: #0f172a;
+  --muted: #64748b;
+  --brand: #06b6d4;
+  --brand-2: #0891b2;
+  --line: rgba(0, 0, 0, 0.08);
+  --shadow: 0 10px 28px rgba(2, 132, 199, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b1220;
+    --bg-2: #0a0f1a;
+    --fg: #e2e8f0;
+    --muted: #9aa6b2;
+    --brand: #22d3ee;
+    --brand-2: #06b6d4;
+    --line: rgba(255, 255, 255, 0.1);
+    --shadow: 0 12px 36px rgba(34, 211, 238, 0.12);
+  }
+}
+
+/* Layout: sidebar + chat window */
+.chatLayout {
+  max-width: 1100px;
+  margin: 1.5rem auto;
+  padding: 0.8rem;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 1rem;
+}
+
+/* Sidebar */
+.sidebar {
+  background: linear-gradient(180deg, var(--bg), var(--bg-2));
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  min-height: 560px;
+  overflow: hidden;
+}
+
+.sidebarHeader {
+  padding: 0.9rem;
+  border-bottom: 1px dashed var(--line);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.6rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, var(--brand), var(--brand-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.search {
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 0.95rem;
+  outline: none;
+}
+.search:focus {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--brand) 25%, transparent);
+  border-color: color-mix(in oklab, var(--brand) 60%, transparent);
+}
+
+/* Friend list (keeps your original class names via :global) */
+:global(.friendListWrap) {
+  padding: 0.5rem;
+  overflow: auto;
+  flex: 1;
+  color: white;
+}
+:global(.friendList) {
+  list-style: none;
+  margin: 0;
+  padding: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+:global(.friendList li) {
+  display: grid;
+  grid-template-columns: 38px 1fr auto;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.6rem;
+  border-radius: 12px;
+  background: color-mix(in oklab, var(--brand) 8%, transparent);
+  border: 1px solid var(--line);
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.06s ease;
+}
+:global(.friendList li:hover) {
+  background: color-mix(in oklab, var(--brand) 14%, transparent);
+  box-shadow: 0 6px 16px rgba(6, 182, 212, 0.18);
+}
+
+/* Chat window */
+.chatWindow {
+  background: linear-gradient(180deg, var(--bg), var(--bg-2));
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  min-height: 560px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  overflow: hidden;
+}
+
+/* Header inside chat */
+.chatHeader {
+  padding: 0.9rem 1rem;
+  border-bottom: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chatPeer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: color-mix(in oklab, var(--brand) 22%, transparent);
+  border: 1px solid var(--line);
+  font-size: 1.2rem;
+}
+
+.peerMeta {
+  display: grid;
+  gap: 0.2rem;
+}
+.peerName {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--fg);
+}
+.peerStatus {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* Messages area (keeps your .ChatContent) */
+.messagesWrap {
+  overflow: auto;
+  padding: 0.9rem;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--brand) 3%, transparent),
+    transparent 120%
+  );
+}
+
+/* Global selectors for your provided class */
+:global(.ChatContent) {
+  list-style: none;
+  margin: 0;
+  padding: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Optional message bubble styles you can use later by adding classes to li */
+:global(.ChatContent li) {
+  max-width: 70%;
+  padding: 0.6rem 0.8rem;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--fg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+:global(.ChatContent li.me) {
+  margin-left: auto;
+  background: color-mix(in oklab, var(--brand) 10%, #fff);
+}
+:global(.ChatContent li.them) {
+  margin-right: auto;
+}
+
+/* Input bar */
+.inputBar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.6rem;
+  padding: 0.8rem;
+  border-top: 1px dashed var(--line);
+  background: var(--bg);
+}
+
+.input {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  color: var(--fg);
+  font-size: 1rem;
+  outline: none;
+}
+.input:focus {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--brand) 25%, transparent);
+  border-color: color-mix(in oklab, var(--brand) 60%, transparent);
+}
+
+.sendBtn {
+  appearance: none;
+  border: 1px solid transparent;
+  background: linear-gradient(180deg, var(--brand), var(--brand-2));
+  color: #ffffff;
+  padding: 0.7rem 1rem;
+  font-weight: 800;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.06s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+.sendBtn:hover {
+  box-shadow: 0 8px 20px rgba(6, 182, 212, 0.28);
+}
+.sendBtn:active {
+  transform: translateY(1px);
+}
+
+/* Responsive */
+@media (max-width: 920px) {
+  .chatLayout {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    min-height: 280px;
+  }
+}

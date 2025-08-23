@@ -8,6 +8,7 @@ import EventCard from "../../components/EventCard/EventCard";
 import UserStats from "../../components/userStats/userStats";
 import FriendRequests from "../../components/FriendRequests/FriendRequets";
 import FriendsList from "../../components/myFriends/friendsList";
+import NavBar from "../../components/NavBar/NavBar";
 
 export default function PersonalArea() {
   const [resetRequests, setResetRequests] = useState(0);
@@ -22,7 +23,6 @@ export default function PersonalArea() {
     axios
       .post("/personal-area", { user_id: user.user_id })
       .then((res) => {
-        console.log(res.data);
         setUserEvents(res.data);
       })
       .catch((err) => console.error("Error loading events:", err));
@@ -55,8 +55,13 @@ export default function PersonalArea() {
         </div>
       </div>
 
+      <section>
+        <h2>My Events</h2>
+
+      </section>
+
       <section className={classes.eventsSection}>
-        <h2>Events I created</h2>
+        <h2>All events</h2>
         {userEvents.length > 0 ? (
           <div className={classes.eventGrid}>
             {userEvents.map((el) => (
@@ -66,10 +71,6 @@ export default function PersonalArea() {
         ) : (
           <p className={classes.noEvents}>No events to show</p>
         )}
-      </section>
-
-      <section>
-        <h2>My Events</h2>
       </section>
     </div>
   );

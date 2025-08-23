@@ -49,8 +49,6 @@ export default function Home() {
     axios
       .get("/updatePastEvents/")
       .then(() => {
-        // אחרי שהעדכון בוצע — ממשיכים למשוך את הנתונים
-
         axios
           .get("home")
           .then((res) => {
@@ -61,13 +59,13 @@ export default function Home() {
             console.error("Error:", error);
           });
 
-        // קטגוריות
+        // Category
         axios
           .get("/filterEvents/getAllCategories")
           .then((res) => setCategories(res.data))
           .catch((err) => console.error(err));
 
-        // מיקומי אירועים
+        // Events position
         axios
           .get("home/getEventsPositions")
           .then((res) => setEventsMarksFromDB(res.data))
@@ -109,19 +107,31 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Search functionality */}
-      <div className={classes.homeSearch}>
-        <SearchBar events={events} />
-      </div>
+      <section className={classes.sectionCard}>
+        {/* Search functionality */}
+        <div className={classes.homeSearch}>
+          <SearchBar events={events} />
+        </div>
 
-      {/* Event list section */}
+        {/* Event list section */}
+        <div className={classes.sectionHeader}>
+          <h2 className={classes.sectionTitle}>Featured Events</h2>
 
-      <h2>Featured Events</h2>
-      <Filterbar
-        setFilterEvents={setFilterEvents}
-        events={events}
-        categories={categories}
-      />
+          <div className={classes.sectionMeta}>
+            <span className={classes.resultCount}>
+              {filterEvents?.length ?? 0} results
+            </span>
+          </div>
+        </div>
+
+        <div className={classes.sectionBody}>
+          <Filterbar
+            setFilterEvents={setFilterEvents}
+            events={events}
+            categories={categories}
+          />
+        </div>
+      </section>
 
       <div className={classes.featuredEvents}>
         {filterEvents &&

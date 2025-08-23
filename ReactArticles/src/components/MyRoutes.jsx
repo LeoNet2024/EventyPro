@@ -13,6 +13,7 @@ import classes from "./Page.module.css";
 import ForgotPassword from "./forms/forgotPassword/forgotPassword";
 import ResetPassword from "./forms/forgotPassword/resetPassword";
 import NotFound from "../pages/NotFound/NotFound";
+import ChatWithFriends from "./chatWithFriends/chatWithFriends";
 
 export default function MyRoutes() {
   const { user } = useAuth();
@@ -47,6 +48,7 @@ export default function MyRoutes() {
           <Route path="/event/:id" element={RequireAuth(<EventView />)} />
           <Route path="/contact" element={RequireAuth(<ContactAdmin />)} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/chatWithFriends" element={<ChatWithFriends />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
 
           {/* Admin-only route */}

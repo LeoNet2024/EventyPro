@@ -7,21 +7,49 @@ export default function Header() {
   const navigate = useNavigate();
   const { user, setUser } = useAuth();
 
-  function handleLogoClick() {
-    navigate("/home");
-  }
+  const handleLogoClick = () => navigate("/home");
+
   return (
-    <header className={classes.header}>
-      <div className={classes.headerContainer}>
-        <div className={classes.logo} onClick={handleLogoClick}>
-          Eventy
+    <>
+      {/* Skip link for accessibility */}
+      <a href="#main" className={classes.skipLink}>
+        Skip to content
+      </a>
+
+      <header className={classes.header} role="banner">
+        <div className={classes.inner}>
+          {/* Left: Logo */}
+          <button
+            type="button"
+            onClick={handleLogoClick}
+            className={classes.logoBtn}
+            aria-label="Go to home"
+          >
+            <span className={classes.logoAccent}>Eventy</span>
+          </button>
+
+          {/* Center: Nav */}
+          <nav className={classes.nav} aria-label="Primary">
+            <NavBar setUser={setUser} />
+          </nav>
+
+          {/* Right: User info (optional) */}
+          <div className={classes.rightSlot}>
+            {user && (
+              <div className={classes.userStrip} aria-live="polite">
+                <span className={classes.welcome}>
+                  Hello, {user.first_name}
+                </span>
+                {Boolean(user?.is_admin) && (
+                  <span className={classes.rolePill} title="Admin">
+                    Admin
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-        <div className={classes.nav}>
-          <NavBar setUser={setUser} />
-        </div>
-      </div>
-      <div>{user && <p>Welcome, {user.first_name}</p>}</div>
-      {user && Boolean(user?.is_admin) && <p>Logged in as admin</p>}
-    </header>
+      </header>
+    </>
   );
 }

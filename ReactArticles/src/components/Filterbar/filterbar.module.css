@@ -1,42 +1,73 @@
 .filterBar {
   display: flex;
   justify-content: center;
-  gap: 1.5rem;
-  padding: 1rem;
-  margin: 1.5rem auto;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  max-width: 1000px;
+  gap: 1.2rem;
+  padding: 1rem 1.5rem;
+  margin: 2rem auto;
+  background: linear-gradient(180deg, #ffffff, #f7fbff);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  max-width: 1100px;
   flex-wrap: wrap;
+  align-items: center;
 }
 
+/* clickable filter option */
 .filterOption {
-  background-color: #e0f7fa;
-  color: #00796b;
-  padding: 1rem 1.5rem;
-  border-radius: 10px;
-  font-weight: bold;
+  background: #f0f9ff;
+  color: #0c4a6e;
+  padding: 0.9rem 1.4rem;
+  border-radius: 999px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.06s ease;
   text-align: center;
-  min-width: 150px;
-  font-size: 2rem;
+  min-width: 140px;
+  font-size: 1.4rem;
+  user-select: none;
 }
 
 .filterOption:hover {
-  background-color: #b2ebf2;
+  background: #e0f2fe;
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.18);
+  transform: translateY(-1px);
 }
 
+.filterOption:active {
+  transform: translateY(1px);
+}
+
+/* style for select */
 select {
-  background-color: #e0f7fa;
-  color: #00796b;
-  padding: 1rem 1.5rem;
-  border-radius: 10px;
-  font-weight: bold;
+  background: #f0f9ff;
+  color: #0c4a6e;
+  padding: 0.9rem 1.4rem;
+  border-radius: 999px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: background 0.25s ease, box-shadow 0.25s ease;
   text-align: center;
-  min-width: 150px;
-  font-size: 2rem;
+  min-width: 160px;
+  font-size: 1.4rem;
+}
+
+select:hover {
+  background: #e0f2fe;
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.18);
+}
+
+/* small screen adjustments */
+@media (max-width: 640px) {
+  .filterOption {
+    font-size: 1.2rem;
+    min-width: 120px;
+    padding: 0.7rem 1rem;
+  }
+
+  select {
+    font-size: 1.2rem;
+    min-width: 140px;
+  }
 }
