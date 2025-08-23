@@ -102,6 +102,76 @@ router.get("/summary", (req, res) => {
   });
 });
 
+// routes/admin.js
+router.get("/top-active-users", (req, res) => {
+  const sql = `
+    SELECT 
+      u.user_id,
+      u.first_name,
+      u.last_name,
+      u.email,
+      COUNT(ep.event_id) AS events_attended
+    FROM users AS u
+    JOIN event_participants AS ep
+      ON ep.user_id = u.user_id
+    GROUP BY u.user_id, u.first_name, u.last_name, u.email
+    ORDER BY events_attended DESC, u.last_name ASC, u.first_name ASC
+    LIMIT 10
+  `;
+  db.query(sql, (err, rows) => {
+    if (err)
+      return res.status(500).json({ error: "DB error", detail: err.message });
+    res.json(rows);
+  });
+});
+
+// routes/admin.js
+router.get("/top-event-creators", (req, res) => {
+  const limit = Number(req.query.limit) || 10;
+
+  const sql = `
+    SELECT 
+      u.user_id,
+      u.first_name,
+      u.last_name,
+      u.email,
+      COUNT(e.event_id) AS events_created
+    FROM users AS u
+    JOIN events AS e
+      ON e.created_by = u.user_id
+    GROUP BY u.user_id, u.first_name, u.last_name, u.email
+    ORDER BY events_created DESC, u.last_name ASC, u.first_name ASC
+    LIMIT ?
+  `;
+
+  db.query(sql, [limit], (err, rows) => {
+    if (err)
+      return res.status(500).json({ error: "DB error", detail: err.message });
+    res.json(rows);
+  });
+});
+
+// routes/admin.js
+router.get("/top-event-cities", (req, res) => {
+  const limit = Number(req.query.limit) || 10;
+
+  const sql = `
+    SELECT
+      e.city,
+      COUNT(*) AS events_count
+    FROM events AS e
+    GROUP BY e.city
+    ORDER BY events_count DESC, e.city ASC
+    LIMIT ?
+  `;
+
+  db.query(sql, [limit], (err, rows) => {
+    if (err)
+      return res.status(500).json({ error: "DB error", detail: err.message });
+    res.json(rows);
+  });
+});
+
 // ------------------- GET ALL USERS -------------------
 router.get("/users", (req, res) => {
   const query = `SELECT user_id, first_name, last_name, email, user_name, blocked FROM users`;

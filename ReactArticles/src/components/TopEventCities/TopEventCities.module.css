@@ -1,0 +1,79 @@
+.card {
+  padding: 12px 14px;
+  background: #fff;
+  border: 1px solid var(--divider, #e5e7eb);
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
+}
+
+.cardTitle {
+  margin: 0 0 8px;
+  font-size: 1.9rem;
+  font-weight: 700;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--divider, #e5e7eb);
+}
+.item:last-child {
+  border-bottom: none;
+}
+
+.rowMain {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.city {
+  font-weight: 600;
+}
+.count {
+  opacity: 0.85;
+}
+
+.empty {
+  padding: 8px 4px;
+  opacity: 0.8;
+}
+
+.skeleton .city,
+.skeleton .count {
+  display: inline-block;
+  background: linear-gradient(90deg, #f2f2f2, #ececec, #f2f2f2);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite linear;
+  border-radius: 6px;
+}
+.skeleton .city {
+  width: 40%;
+  height: 14px;
+}
+.skeleton .count {
+  width: 22%;
+  height: 12px;
+}
+
+.errorBox {
+  padding: 10px 12px;
+  background: #fff4f4;
+  color: #b10000;
+  border: 1px solid #ffd1d1;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

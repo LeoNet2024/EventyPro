@@ -14,7 +14,8 @@ router.get("/hotEvents", (req, res) => {
         GROUP by event_id
         ORDER BY participant_count DESC
         LIMIT 5) as subTable
-    ON events.event_id = subTable.event_id;`;
+    ON events.event_id = subTable.event_id;
+    `;
 
   db.query(query, (err, results) => {
     if (err) return res.status(500).send("Cannot get most popluar events");
