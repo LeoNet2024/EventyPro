@@ -32,7 +32,7 @@ export default function Home() {
     return {
       name: el.event_name,
       description: el.name_heb,
-      position: [el.latitude, el.longitude],עןא
+      position: [el.latitude, el.longitude],
     };
   });
 
