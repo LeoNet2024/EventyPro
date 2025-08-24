@@ -4,8 +4,28 @@ const dbSingleton = require("../dbSingleton");
 const router = express.Router();
 const db = dbSingleton.getConnection();
 
+// middleware: נדרש משתמש מחובר
+function requireLogin(req, res, next) {
+  if (!req.session?.user?.user_id) return res.status(401).json({ error: "יש להתחבר" });
+  next();
+}
+
+// middleware: לבדוק בעלות על אירוע
+function requireEventOwner(req, res, next) {
+  const eventId = Number(req.params.eventId);
+  const userId = req.session.user.user_id;
+
+  db.query("SELECT created_by FROM events WHERE event_id=? LIMIT 1", [eventId], (err, rows) => {
+    if (err) return res.status(500).json({ error: "DB error" });
+    if (!rows.length) return res.status(404).json({ error: "אירוע לא נמצא" });
+    if (rows[0].created_by !== userId) return res.status(403).json({ error: "גישה רק ליוצר האירוע" });
+    next();
+  });
+}
+
+
 // ------------------- CREATE NEW EVENT -------------------
-router.post("/", (req, res) => {
+router.post("/", requireLogin, (req, res) => {
   // Data from frontend
   const {
     eventName,

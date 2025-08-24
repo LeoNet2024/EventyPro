@@ -123,3 +123,115 @@
     opacity: 0;
   }
 }
+
+.requestBox {
+  margin: 12px 0 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.requestLabel {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.requestTextarea {
+  resize: vertical;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.ownerPanel {
+  margin-top: 22px;
+  padding: 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fafafa;
+}
+.panelTitle {
+  margin: 0 0 10px 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.emptyBox {
+  padding: 10px 12px;
+  background: #ffffff;
+  border: 1px dashed #e5e7eb;
+  border-radius: 10px;
+}
+
+.pendingList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pendingItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+.pendingInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.pendingName {
+  font-weight: 700;
+}
+.pendingEmail {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+.pendingNote {
+  font-size: 0.95rem;
+  background: #f3f4f6;
+  padding: 6px 8px;
+  border-radius: 8px;
+}
+
+.pendingActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.approveBtn {
+  background: #10b981;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.rejectBtn {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.joinButtonDisabled {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+  cursor: not-allowed;
+}
+.toastSuccess {
+  background: #10b981;
+}
+.toastError {
+  background: #ef4444;
+}
