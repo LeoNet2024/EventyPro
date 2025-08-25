@@ -268,28 +268,43 @@ export default function EventView() {
             </p>
           </div>
 
-          {/* Join or Request */}
-          {user && isPrivate && myStatus === "none" && (
-            <div className={classes.requestBox}>
-              <label htmlFor="requestNote" className={classes.requestLabel}>
-                Optional note to the event creator
-              </label>
+          {/* Join or Request – גרסת כרטיס יפה */}
+          {user && !isOwner && isPrivate && myStatus === "none" && (
+            <div className={classes.requestCard}>
+              <div className={classes.requestHeader}>
+                <h4 className={classes.requestTitle}>
+                  Message to the event creator
+                </h4>
+                <div className={classes.requestHint}>
+                  Optional but recommended
+                </div>
+              </div>
+
               <textarea
                 id="requestNote"
-                className={classes.requestTextarea}
-                placeholder="Write a short note for the approval"
+                className={classes.requestTextareaLarge}
+                placeholder="Tell the creator why you want to join, relevant details, friends coming, previous experience ועוד"
                 value={requestNote}
                 onChange={(e) => setRequestNote(e.target.value)}
-                rows={3}
+                maxLength={400}
               />
+
+              <div className={classes.requestFooter}>
+                <span className={classes.charCount}>
+                  {requestNote.length}/400
+                </span>
+                {/* אפשר להשאיר ריק, או להציג מידע נוסף בעתיד */}
+              </div>
             </div>
           )}
 
-          {user && (
+          {user && !isOwner && (
             <button
               onClick={handleJoinOrRequest}
               className={
-                disableJoin ? classes.joinButtonDisabled : classes.joinButton
+                disableJoin
+                  ? `${classes.joinButtonPrimary} ${classes.joinButtonPrimaryDisabled}`
+                  : classes.joinButtonPrimary
               }
               disabled={disableJoin}
             >

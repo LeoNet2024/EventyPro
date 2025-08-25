@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import classes from "./personalArea.module.css";
 import axios from "axios";
 
@@ -8,7 +8,6 @@ import EventCard from "../../components/EventCard/EventCard";
 import UserStats from "../../components/userStats/userStats";
 import FriendRequests from "../../components/FriendRequests/FriendRequets";
 import FriendsList from "../../components/myFriends/friendsList";
-import NavBar from "../../components/NavBar/NavBar";
 
 export default function PersonalArea() {
   const [resetRequests, setResetRequests] = useState(0);
@@ -17,21 +16,31 @@ export default function PersonalArea() {
   const [userEvents, setUserEvents] = useState([]);
   const [friendRequests, setFriendRequests] = useState([]);
 
+  // טוען אירועים של המשתמש (אותו payload כמו קודם)
   useEffect(() => {
     if (!user) return;
-
     axios
       .post("/personal-area", { user_id: user.user_id })
-      .then((res) => {
-        setUserEvents(res.data);
-      })
+      .then((res) => setUserEvents(res.data))
       .catch((err) => console.error("Error loading events:", err));
+  }, [user]);
 
+  // טוען בקשות חברות (תלוי ב-resetRequests כדי לרענן אחרי פעולה)
+  useEffect(() => {
+    if (!user) return;
     axios
       .post("/personal-area/FriendRequests", { user_id: user.user_id })
       .then((res) => setFriendRequests(res.data))
       .catch((err) => console.error("Error loading Friend Requests"));
-  }, [user, friendRequests]);
+  }, [user, resetRequests]);
+
+  // My Events = אירועים שנוצרו על ידי המשתמש הנוכחי
+  const myEvents = useMemo(() => {
+    if (!user) return [];
+    return (userEvents || []).filter(
+      (e) => Number(e.created_by) === Number(user.user_id)
+    );
+  }, [userEvents, user]);
 
   return (
     <div className={classes.container}>
@@ -55,11 +64,23 @@ export default function PersonalArea() {
         </div>
       </div>
 
-      <section>
+      {/* --- My Events: רק אירועים שהמשתמש יצר --- */}
+      <section className={classes.eventsSection}>
         <h2>My Events</h2>
-
+        {myEvents.length > 0 ? (
+          <div className={classes.eventGrid}>
+            {myEvents.map((el) => (
+              <EventCard key={el.event_id} event={el} />
+            ))}
+          </div>
+        ) : (
+          <p className={classes.noEvents}>
+            You have not created any events yet
+          </p>
+        )}
       </section>
 
+      {/* --- All events (מה שחזר מה־API שלך) --- */}
       <section className={classes.eventsSection}>
         <h2>All events</h2>
         {userEvents.length > 0 ? (

@@ -5,22 +5,61 @@ const router = express.Router();
 const db = dbSingleton.getConnection();
 const bcrypt = require("bcrypt");
 
-// ------------------- GET USER EVENTS -------------------
+// ------------------- GET USER EVENTS (joined + created) -------------------
 router.post("/", (req, res) => {
   const { user_id } = req.body;
 
-  // Fetch all events joined by the user
+  // מאחדים אירועים שהמשתמש הצטרף אליהם + אירועים שהמשתמש יצר
   const query = `
-    SELECT events.event_id, events.category, events.event_name, default_images.src
-    FROM events
-    INNER JOIN event_participants ON events.event_id = event_participants.event_id AND user_id = ?
-    INNER JOIN default_images ON events.category = default_images.category
+    SELECT
+      t.event_id,
+      t.category,
+      t.event_name,
+      t.src,
+      t.created_by,
+      MAX(t.is_joined)  AS is_joined,
+      MAX(t.is_creator) AS is_creator
+    FROM (
+      -- joined events
+      SELECT
+        e.event_id,
+        e.category,
+        e.event_name,
+        di.src,
+        e.created_by,
+        1 AS is_joined,
+        0 AS is_creator
+      FROM events e
+      INNER JOIN event_participants ep
+        ON e.event_id = ep.event_id
+       AND ep.user_id = ?
+      INNER JOIN default_images di
+        ON e.category = di.category
+
+      UNION ALL
+
+      -- created-by-me events
+      SELECT
+        e.event_id,
+        e.category,
+        e.event_name,
+        di.src,
+        e.created_by,
+        0 AS is_joined,
+        1 AS is_creator
+      FROM events e
+      INNER JOIN default_images di
+        ON e.category = di.category
+      WHERE e.created_by = ?
+    ) AS t
+    GROUP BY t.event_id, t.category, t.event_name, t.src, t.created_by
+    ORDER BY t.event_id DESC
   `;
 
-  db.query(query, [user_id], (err, results) => {
+  db.query(query, [user_id, user_id], (err, results) => {
     if (err) {
-      console.log("Error fetching user events");
-      return res.status(500).send(err);
+      console.error("Error fetching user events:", err);
+      return res.status(500).send("DB error");
     }
     res.json(results);
   });

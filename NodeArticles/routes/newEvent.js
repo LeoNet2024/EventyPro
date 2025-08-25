@@ -6,7 +6,8 @@ const db = dbSingleton.getConnection();
 
 // middleware: נדרש משתמש מחובר
 function requireLogin(req, res, next) {
-  if (!req.session?.user?.user_id) return res.status(401).json({ error: "יש להתחבר" });
+  if (!req.session?.user?.user_id)
+    return res.status(401).json({ error: "יש להתחבר" });
   next();
 }
 
@@ -15,14 +16,18 @@ function requireEventOwner(req, res, next) {
   const eventId = Number(req.params.eventId);
   const userId = req.session.user.user_id;
 
-  db.query("SELECT created_by FROM events WHERE event_id=? LIMIT 1", [eventId], (err, rows) => {
-    if (err) return res.status(500).json({ error: "DB error" });
-    if (!rows.length) return res.status(404).json({ error: "אירוע לא נמצא" });
-    if (rows[0].created_by !== userId) return res.status(403).json({ error: "גישה רק ליוצר האירוע" });
-    next();
-  });
+  db.query(
+    "SELECT created_by FROM events WHERE event_id=? LIMIT 1",
+    [eventId],
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: "DB error" });
+      if (!rows.length) return res.status(404).json({ error: "אירוע לא נמצא" });
+      if (rows[0].created_by !== userId)
+        return res.status(403).json({ error: "גישה רק ליוצר האירוע" });
+      next();
+    }
+  );
 }
-
 
 // ------------------- CREATE NEW EVENT -------------------
 router.post("/", requireLogin, (req, res) => {
@@ -91,9 +96,33 @@ router.post("/", requireLogin, (req, res) => {
 
         const event_id = results.insertId;
 
-        res.status(201).json({
-          message: "Event created successfully",
-          eventId: event_id,
+        // Add creator as an approved participant
+        // אם מוגדר יוניק על (event_id, user_id) זה בטוח מפני כפילויות
+        const insertCreatorSql = `
+          INSERT INTO event_participants (user_id, event_id, status, reviewed_by, reviewed_at)
+          VALUES (?, ?, 'approved', ?, NOW())
+          ON DUPLICATE KEY UPDATE
+            status = 'approved',
+            reviewed_by = VALUES(reviewed_by),
+            reviewed_at = NOW()
+        `;
+
+        db.query(insertCreatorSql, [user_id, event_id, user_id], (e2) => {
+          if (e2) {
+            // לא מפילים את יצירת האירוע אם הכנסה לרשימת משתתפים נכשלה
+            // אבל כן מחזירים הודעה אינפורמטיבית
+            console.error("Failed to add creator as participant:", e2);
+            return res.status(201).json({
+              message:
+                "Event created, but failed to add creator as participant",
+              eventId: event_id,
+            });
+          }
+
+          res.status(201).json({
+            message: "Event created successfully",
+            eventId: event_id,
+          });
         });
       });
     }
