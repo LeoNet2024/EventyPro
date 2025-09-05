@@ -16,7 +16,7 @@ export default function FriendsList({ user_id }) {
   }, [user_id]);
 
   if (!friends.length) {
-    return <p className={classes.empty}>You have no friends yet 🥲</p>;
+    return <p className={classes.empty}>You have no friends yet</p>;
   }
 
   return (

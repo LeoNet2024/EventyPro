@@ -22,15 +22,16 @@ export default function ChatWithFriends() {
   const [friendToChat, setFriendTochat] = useState();
 
   useEffect(() => {
-    if (!user?.user_id) return;
+    if (!user) return;
 
     axios
       .post("/chatWithFriends/listOfFriends", { user_id: user.user_id }) // send as object; keep array if your API requires it
       .then((res) => {
         setFriendList(res.data);
+        loadChat();
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [friendToChat]);
 
   const listOfFriends = friendList.map((el) => {
     return (
@@ -71,13 +72,14 @@ export default function ChatWithFriends() {
 
   // this funciton loading the chat content from the server
   function loadChat() {
+    dataToSend.message = "";
+
     axios
       .post("chatWithFriends/getChatContent", {
         user_id: user.user_id,
         reciever_id: friendToChat,
       })
       .then((res) => {
-        console.log(res.data);
         setChatContent(res.data);
       })
       .catch((err) => console.error(err));
@@ -96,6 +98,9 @@ export default function ChatWithFriends() {
       .catch((err) => {
         console.log("API 500:", err.response?.data);
       });
+
+    //After sending the message we want upload the new chat content
+    loadChat();
   }
 
   // saving the message
@@ -104,7 +109,19 @@ export default function ChatWithFriends() {
   }
 
   const chatContactList = chatContent.map((el) => {
-    return <li key={el.message_id}>{el.message}</li>;
+    return (
+      <li key={el.message_id}>
+        <p
+          style={
+            el.sender_id === user.user_id
+              ? { textAlign: "right", color: "BurlyWood" }
+              : { textAlign: "left", color: "DarkGrey" }
+          }
+        >
+          {el.message}
+        </p>
+      </li>
+    );
   });
 
   return (
@@ -134,6 +151,7 @@ export default function ChatWithFriends() {
           <input
             className={classes.input}
             type="text"
+            value={dataToSend.message}
             placeholder="Type a message..."
             aria-label="Message"
             onChange={(e) => handleChange(e)}

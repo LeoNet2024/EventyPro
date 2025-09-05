@@ -8,7 +8,7 @@ axios.defaults.withCredentials = true;
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // כדי שלא נרנדר את שאר האפליקציה לפני שיש תשובה
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
     axios

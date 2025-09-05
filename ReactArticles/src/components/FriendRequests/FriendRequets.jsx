@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import classes from "./FriendRequest.module.css";
 import axios from "axios";
 
-export default function FriendRequests({ requests, setResetRequests }) {
+export default function FriendRequests({ requests, setNumOfRequests }) {
   // This fucntion handling with user respone to request.
   // got the parameters from onClickEvent
   function handleToRequest(userRespone, request_id) {
@@ -18,6 +18,8 @@ export default function FriendRequests({ requests, setResetRequests }) {
         console.log(`The respone is : ${userRespone}`);
       })
       .catch((err) => console.error(err));
+
+    setNumOfRequests((prev) => prev - 1);
   }
 
   return (

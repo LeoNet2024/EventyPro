@@ -15,6 +15,7 @@ import HomePageStat from "../../components/homePageStat/homePageStat";
  * - (Placeholder) Filter section and map
  */
 export default function Home() {
+  console.log("home");
   // for all event
   const [events, setEvents] = useState([]);
   // for filtered events

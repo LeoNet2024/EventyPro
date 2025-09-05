@@ -41,13 +41,18 @@ router.post("/sendMessage", (req, res) => {
 router.post("/getChatContent", (req, res) => {
   const { user_id, reciever_id } = req.body;
 
-  const query = `SELECT * FROM private_messages WHERE private_messages.reciever_id = ? and sender_id = ?;`;
+  const query = `SELECT *
+                FROM private_messages
+                WHERE sender_id = ? and reciever_id = ? or sender_id = ? and reciever_id = ? ;`;
 
-  db.query(query, [reciever_id, user_id], (err, results) => {
-    if (err) return res.status(500).send(err);
-    console.log(results);
-    res.json(results);
-  });
+  db.query(
+    query,
+    [user_id, reciever_id, reciever_id, user_id],
+    (err, results) => {
+      if (err) return res.status(500).send(err);
+      res.json(results);
+    }
+  );
 });
 
 // Export router
