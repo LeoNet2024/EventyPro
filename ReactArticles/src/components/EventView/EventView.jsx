@@ -24,6 +24,10 @@ export default function EventView() {
   const [loadingJoin, setLoadingJoin] = useState(false);
   const [myStatus, setMyStatus] = useState("none"); // none | pending | approved | rejected
 
+  const [editingDescription, setEditingDescription] = useState(false);
+  const [tempDesc, setTempDesc] = useState("");
+  const [savingDesc, setSavingDesc] = useState(false);
+
   const isOwner = useMemo(
     () => !!(user && event && user.user_id === event.created_by),
     [user, event]
@@ -99,6 +103,44 @@ export default function EventView() {
           "You are not authorized to delete this event or an error occurred."
         );
       });
+  };
+
+  // Start editing the description
+  const startEditDesc = () => {
+    setTempDesc(event?.description || "");
+    setEditingDescription(true);
+  };
+
+  // Cancel editing the description
+  const cancelEditDesc = () => {
+    setEditingDescription(false);
+    setTempDesc("");
+  };
+
+  // Saving the description edit
+  const saveDesc = async () => {
+    if (!event) return;
+    setSavingDesc(true);
+    setErrorMsg("");
+    setSuccessMsg("");
+
+    try {
+      await axios.patch(`/event/${id}/description`, {
+        description: (tempDesc || "").trim(),
+      });
+      // update local event state for instant UI feedback
+      setEvent((prev) => ({ ...prev, description: (tempDesc || "").trim() }));
+      setSuccessMsg("Description updated.");
+      setEditingDescription(false);
+    } catch (e) {
+      const msg =
+        e?.response?.data?.error ||
+        e?.response?.data?.message ||
+        "Failed to update description.";
+      setErrorMsg(msg);
+    } finally {
+      setSavingDesc(false);
+    }
   };
 
   const handleJoinOrRequest = async () => {
@@ -241,6 +283,54 @@ export default function EventView() {
         <div className={classes.overlay}>
           <h1 className={classes.title}>{event.event_name}</h1>
           <p className={classes.subtitle}>{event.category}</p>
+          {/* DESCRIPTION VIEW/EDIT */}
+          <div className={classes.descRow}>
+            {!editingDescription ? (
+              <span className={classes.descText}>
+                {event.description?.trim()?.length ? event.description : "-"}
+              </span>
+            ) : (
+              <textarea
+                className={classes.descTextarea}
+                value={tempDesc}
+                onChange={(e) => setTempDesc(e.target.value)}
+                rows={4}
+                maxLength={1000}
+                placeholder="Update event description"
+              />
+            )}
+            {/* Owner description controls */}
+            {isOwner && !editingDescription && (
+              <button
+                type="button"
+                onClick={startEditDesc}
+                className={classes.editDescBtn}
+              >
+                Edit
+              </button>
+            )}
+
+            {isOwner && editingDescription && (
+              <div className={classes.descActions}>
+                <button
+                  type="button"
+                  onClick={saveDesc}
+                  className={classes.saveDescBtn}
+                  disabled={savingDesc}
+                >
+                  {savingDesc ? "Saving..." : "Save"}
+                </button>
+                <button
+                  type="button"
+                  onClick={cancelEditDesc}
+                  className={classes.cancelDescBtn}
+                  disabled={savingDesc}
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -259,6 +349,7 @@ export default function EventView() {
             <p>
               <strong>City:</strong> {event.city || "-"}
             </p>
+
             <p>
               <strong>Private:</strong> {event.is_private ? "Yes" : "No"}
             </p>

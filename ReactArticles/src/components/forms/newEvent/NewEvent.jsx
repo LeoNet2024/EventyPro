@@ -30,6 +30,7 @@ export default function NewEvent() {
     startTime: "",
     type: "",
     user_id: "",
+    description: "",
   });
 
   // Fetch cities and categories when component mounts
@@ -142,6 +143,21 @@ export default function NewEvent() {
               </option>
             ))}
           </select>
+
+          <label>Description</label>
+          <textarea
+            name="description"
+            value={eventData.description}
+            onChange={handleChange}
+            rows={4}
+            maxLength={500} // 3) Optional safeguard
+            placeholder="Write a short description for your event"
+            className={classes.textarea} // optional style hook if you want
+            required
+          />
+
+          {/* 3) Optional live counter */}
+          <small>{eventData.description.length}/500</small>
 
           <label>Category</label>
           <select name="category" onChange={handleChange} required>

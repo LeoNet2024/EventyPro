@@ -75,7 +75,6 @@ router.get("/:id", (req, res) => {
     res.json(results[0]);
   });
 });
-
 // ------------------- JOIN EVENT -------------------
 router.post("/:id/joinEvent", (req, res) => {
   const { user_id, event_id } = req.body;
@@ -283,7 +282,27 @@ router.post("/events/:eventId/requests/:userId/reject", requireLogin, requireEve
   });
 });
 
+// PATCH /event/:eventId/description – update event description (owner only)
+router.patch("/:eventId/description", requireLogin, requireEventOwner, (req, res) => {
+  // Basic validation + trimming
+  let { description } = req.body;
+  if (typeof description !== "string") description = "";
+  description = description.trim();
 
+  // Optional length guard
+  if (description.length > 1000) {
+    return res.status(400).json({ error: "Description is too long (max 1000 chars)" });
+  }
+
+  const eventId = Number(req.params.eventId);
+  const sql = "UPDATE events SET description = ? WHERE event_id = ?";
+
+  db.query(sql, [description, eventId], (err, result) => {
+    if (err) return res.status(500).json({ error: "DB error" });
+    if (!result.affectedRows) return res.status(404).json({ error: "Event not found" });
+    return res.json({ message: "Description updated", description });
+  });
+});
 
 // Export router
 module.exports = router;

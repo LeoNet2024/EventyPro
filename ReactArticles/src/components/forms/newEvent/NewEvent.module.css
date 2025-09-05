@@ -84,6 +84,16 @@
   color: white;
 }
 
+.textarea {
+  width: 100%;
+  resize: vertical;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font: inherit;
+  line-height: 1.4;
+}
+
 @keyframes fadein {
   from {
     opacity: 0;

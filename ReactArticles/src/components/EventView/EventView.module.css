@@ -22,6 +22,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  text-align: center;
 }
 
 .title {
@@ -95,7 +96,6 @@
 }
 .joinButtonPrimary:hover {
   box-shadow: 0 8px 22px rgba(2, 132, 199, 0.32);
-  
 }
 .joinButtonPrimary:active {
   transform: translateY(1px);
@@ -122,6 +122,54 @@
 }
 .deleteButton:hover {
   background-color: #d9363e;
+}
+
+/* EventView.module.css */
+.descRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+.descText {
+  white-space: pre-wrap;
+  line-height: 1.45;
+}
+.descTextarea {
+  width: 100%;
+  resize: vertical;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font: inherit;
+}
+.editDescBtn,
+.saveDescBtn,
+.cancelDescBtn {
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  color: #fff; /* טקסט לבן לניגודיות */
+}
+
+/* כחול בולט לעריכה */
+.editDescBtn {
+  background: #007bff;
+}
+
+/* ירוק חזק לשמירה */
+.saveDescBtn {
+  background: #28a745;
+}
+
+/* אדום חזק לביטול */
+.cancelDescBtn {
+  background: #dc3545;
+  margin-left: 6px;
 }
 
 .toast {
