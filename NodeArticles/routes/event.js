@@ -304,5 +304,32 @@ router.patch("/:eventId/description", requireLogin, requireEventOwner, (req, res
   });
 });
 
+// GET /event/:id/creator
+router.get("/:id/creator", (req, res) => {
+  const { id } = req.params;
+
+  const q = `
+    SELECT u.user_id, u.first_name, u.last_name, u.email
+    FROM events e
+    JOIN users u ON e.created_by = u.user_id
+    WHERE e.event_id = ?
+    LIMIT 1
+  `;
+
+  db.query(q, [id], (err, result) => {
+    if (err) {
+      console.error("Error fetching event creator:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    if (!result.length) {
+      return res.status(404).json({ error: "Creator not found" });
+    }
+
+    res.json(result[0]);
+  });
+});
+
+
 // Export router
 module.exports = router;

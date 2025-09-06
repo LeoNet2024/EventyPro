@@ -93,7 +93,7 @@ export default function Login() {
       <p>admin123</p>
       <p>user:</p>
       <p>testtest@gmail.com</p>
-      <p>testtest2</p>
+      <p>testtest3</p>
     </div>
   );
 }

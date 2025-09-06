@@ -4,7 +4,11 @@
   gap: 1.2rem;
   padding: 1rem 1.5rem;
   margin: 2rem auto;
-  background: linear-gradient(180deg, #ffffff, #f7fbff);
+   background: linear-gradient(
+    180deg,
+    var(--bg) 0%,
+    color-mix(in oklab, var(--bg) 90%, #eaf7ff 10%)
+  );
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 14px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);

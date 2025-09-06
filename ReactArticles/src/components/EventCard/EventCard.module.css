@@ -4,10 +4,11 @@
 }
 
 .eventCard {
-  background-color: #fff;
+  position: relative;
+  background-color: #efeded;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 100%;
   max-width: 320px;
@@ -18,7 +19,30 @@
 
 .eventCard:hover {
   transform: translateY(-6px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.leftBorder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 100%;
+  background: linear-gradient( #22536a, #0284c7);
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+}
+
+.lockIcon {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border-radius: 50%;
+  padding: 6px 8px;
+  font-size: 0.9rem;
+  z-index: 2;
 }
 
 .image {
@@ -32,18 +56,23 @@
   padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .title {
   font-size: 1.25rem;
-  font-weight: 600;
-  color: #222;
+  font-weight: 700;
+  color: #111827;
 }
 
 .category {
   font-size: 0.95rem;
-  color: #666;
+  color: #6b7280;
+}
+
+.city {
+  font-size: 1.3rem;
+  color: #4b5563;
 }
 
 .viewMore {

@@ -8,6 +8,13 @@ import CommentList from "../CommentList/CommentList";
 import Comment from "../../components/forms/comment/comment";
 import ParticipantsList from "../participantsList/participantsList";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCalendarAlt,
+  faClock,
+  faMapMarkerAlt,
+} from "@fortawesome/free-solid-svg-icons";
+
 export default function EventView() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -27,6 +34,15 @@ export default function EventView() {
   const [editingDescription, setEditingDescription] = useState(false);
   const [tempDesc, setTempDesc] = useState("");
   const [savingDesc, setSavingDesc] = useState(false);
+
+  const [creator, setCreator] = useState(null);
+
+  function getInitials(first = "", last = "", email = "") {
+    const a = (first || "").trim()[0] || "";
+    const b = (last || "").trim()[0] || "";
+    if (a || b) return (a + b).toUpperCase();
+    return (email.trim()[0] || "?").toUpperCase();
+  }
 
   const isOwner = useMemo(
     () => !!(user && event && user.user_id === event.created_by),
@@ -49,13 +65,23 @@ export default function EventView() {
     Promise.all([
       axios.get(`/event/${id}`),
       axios.get(`/event/${id}/participants`),
+      axios.get(`/event/${id}/creator`),
     ])
-      .then(([eventRes, participantsRes]) => {
+      .then(([eventRes, participantsRes, creatorRes]) => {
         setEvent(eventRes.data);
         const plist = Array.isArray(participantsRes.data)
           ? participantsRes.data
           : [];
         setParticipants(plist);
+
+        // set creator if available, otherwise try to derive from event payload if it already includes fields
+        const c = creatorRes?.data || {
+          first_name: eventRes?.data?.first_name,
+          last_name: eventRes?.data?.last_name,
+          email: eventRes?.data?.email,
+          avatar_url: eventRes?.data?.src,
+        };
+        if (c && (c.first_name || c.last_name || c.email)) setCreator(c);
 
         if (user) {
           const me = plist.find((p) => p.user_id === user.user_id);
@@ -272,6 +298,8 @@ export default function EventView() {
     ? participants.filter((p) => !p.status || p.status === "approved")
     : [];
 
+  const canView = !isPrivate || isJoined || isOwner;
+
   return (
     <>
       <div className={classes.hero}>
@@ -283,73 +311,96 @@ export default function EventView() {
         <div className={classes.overlay}>
           <h1 className={classes.title}>{event.event_name}</h1>
           <p className={classes.subtitle}>{event.category}</p>
-          {/* DESCRIPTION VIEW/EDIT */}
-          <div className={classes.descRow}>
-            {!editingDescription ? (
-              <span className={classes.descText}>
-                {event.description?.trim()?.length ? event.description : "-"}
-              </span>
-            ) : (
-              <textarea
-                className={classes.descTextarea}
-                value={tempDesc}
-                onChange={(e) => setTempDesc(e.target.value)}
-                rows={4}
-                maxLength={1000}
-                placeholder="Update event description"
-              />
-            )}
-            {/* Owner description controls */}
-            {isOwner && !editingDescription && (
-              <button
-                type="button"
-                onClick={startEditDesc}
-                className={classes.editDescBtn}
-              >
-                Edit
-              </button>
-            )}
-
-            {isOwner && editingDescription && (
-              <div className={classes.descActions}>
-                <button
-                  type="button"
-                  onClick={saveDesc}
-                  className={classes.saveDescBtn}
-                  disabled={savingDesc}
-                >
-                  {savingDesc ? "Saving..." : "Save"}
-                </button>
-                <button
-                  type="button"
-                  onClick={cancelEditDesc}
-                  className={classes.cancelDescBtn}
-                  disabled={savingDesc}
-                >
-                  Cancel
-                </button>
-              </div>
-            )}
-          </div>
         </div>
       </div>
+      {isPrivate && (
+        <div className={classes.privateNotice}>
+          🔒 This is a private event. You must be approved to view all the
+          details.
+        </div>
+      )}
 
       <div className={classes.mainContent}>
         <div className={classes.left}>
           <div className={classes.eventDetails}>
+            {canView ? (
+              <div className={classes.descRow}>
+                {!editingDescription ? (
+                  <span className={classes.descText}>
+                    {event.description?.trim()?.length
+                      ? event.description
+                      : "-"}
+                  </span>
+                ) : (
+                  <textarea
+                    className={classes.descTextarea}
+                    value={tempDesc}
+                    onChange={(e) => setTempDesc(e.target.value)}
+                    rows={4}
+                    maxLength={1000}
+                    placeholder="Update event description"
+                  />
+                )}
+
+                {isOwner && !editingDescription && (
+                  <button
+                    type="button"
+                    onClick={startEditDesc}
+                    className={classes.editDescBtn}
+                  >
+                    Edit
+                  </button>
+                )}
+
+                {isOwner && editingDescription && (
+                  <div className={classes.descActions}>
+                    <button
+                      type="button"
+                      onClick={saveDesc}
+                      className={classes.saveDescBtn}
+                      disabled={savingDesc}
+                    >
+                      {savingDesc ? "Saving..." : "Save"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={cancelEditDesc}
+                      className={classes.cancelDescBtn}
+                      disabled={savingDesc}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p className={classes.hiddenText}>
+                Description hidden - you must be joined to view this part
+              </p>
+            )}
+
             <p>
-              <strong>Date:</strong> {formatDate(event.start_date)}
+              <FontAwesomeIcon icon={faCalendarAlt} /> <strong>Date:</strong>{" "}
+              {formatDate(event.start_date)}
             </p>
             <p>
+              <FontAwesomeIcon icon={faCalendarAlt} />{" "}
               <strong>End Date:</strong> {formatDate(event.end_date)}
             </p>
+            {canView ? (
+              <p>
+                <FontAwesomeIcon icon={faClock} /> <strong>Time:</strong>{" "}
+                {formatTime(event.start_time)}
+              </p>
+            ) : (
+              <p className={classes.hiddenText}>
+                Time hidden - you must be joined to view this part
+              </p>
+            )}
             <p>
-              <strong>Time:</strong> {formatTime(event.start_time)}
+              <FontAwesomeIcon icon={faMapMarkerAlt} /> <strong>City:</strong>{" "}
+              {event.city || "-"}
             </p>
-            <p>
-              <strong>City:</strong> {event.city || "-"}
-            </p>
-
             <p>
               <strong>Private:</strong> {event.is_private ? "Yes" : "No"}
             </p>
@@ -359,7 +410,6 @@ export default function EventView() {
             </p>
           </div>
 
-          {/* Join or Request – גרסת כרטיס יפה */}
           {user && !isOwner && isPrivate && myStatus === "none" && (
             <div className={classes.requestCard}>
               <div className={classes.requestHeader}>
@@ -384,7 +434,6 @@ export default function EventView() {
                 <span className={classes.charCount}>
                   {requestNote.length}/400
                 </span>
-                {/* אפשר להשאיר ריק, או להציג מידע נוסף בעתיד */}
               </div>
             </div>
           )}
@@ -409,7 +458,6 @@ export default function EventView() {
             </button>
           )}
 
-          {/* Owner-only pending approvals panel */}
           {user && isOwner && (
             <div className={classes.ownerPanel}>
               <h3 className={classes.panelTitle}>Pending requests</h3>
@@ -456,8 +504,15 @@ export default function EventView() {
             </div>
           )}
 
-          <CommentList eventid={id} refreshTrigger={refreshComments} />
-          {user && (
+          {canView ? (
+            <CommentList eventid={id} refreshTrigger={refreshComments} />
+          ) : (
+            <p className={classes.hiddenText}>
+              Comments hidden - you must be joined to view this part
+            </p>
+          )}
+
+          {user && canView && (
             <Comment
               eventid={id}
               setSuccessMsg={setSuccessMsg}
@@ -467,10 +522,58 @@ export default function EventView() {
         </div>
 
         <div className={classes.right}>
-          <ParticipantsList
-            participants={approvedParticipants}
-            maxParticipants={event.participant_amount}
-          />
+          {creator && (
+            <div className={classes.creatorCard}>
+              <div className={classes.creatorHeader}>Created by</div>
+
+              <div className={classes.creatorBody}>
+                {creator.avatar_url ? (
+                  <img
+                    className={classes.creatorAvatar}
+                    src={creator.avatar_url}
+                    alt={`${creator.first_name || ""} ${
+                      creator.last_name || ""
+                    }`}
+                  />
+                ) : (
+                  <div className={classes.creatorAvatarFallback}>
+                    {getInitials(
+                      creator.first_name,
+                      creator.last_name,
+                      creator.email
+                    )}
+                  </div>
+                )}
+
+                <div className={classes.creatorMeta}>
+                  <div className={classes.creatorName}>
+                    {(creator.first_name || "") +
+                      " " +
+                      (creator.last_name || "")}
+                  </div>
+                  {creator.email && (
+                    <a
+                      href={`mailto:${creator.email}`}
+                      className={classes.creatorEmail}
+                    >
+                      {creator.email}
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {canView ? (
+            <ParticipantsList
+              participants={approvedParticipants}
+              maxParticipants={event.participant_amount}
+            />
+          ) : (
+            <p className={classes.hiddenText}>
+              Participants hidden - you must be joined to view this part
+            </p>
+          )}
         </div>
       </div>
 
