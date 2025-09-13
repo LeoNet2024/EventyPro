@@ -8,7 +8,7 @@ import { useState } from "react";
 export default function HomePageStat() {
   const [eventsByCategory, setEventsByCategory] = useState([]);
   const [activeUsers, setActiveUsers] = useState([]);
-  
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -45,7 +45,7 @@ export default function HomePageStat() {
 
   const mostThreeActiveUsers = activeUsers.map((el) => {
     return (
-      <li>
+      <li key={el.user_name}>
         User: {el.user_name} Events: {el.num_of_events}
       </li>
     );
@@ -53,10 +53,10 @@ export default function HomePageStat() {
 
   return (
     <div className={styles.card}>
-      <h3 className={styles.title}>📊 Events by Category</h3>
+      <h3 className={styles.title}>Events by Category</h3>
       <ul className={styles.list}>{categoryStats}</ul>
 
-      <h3 className={styles.title}>🏆 Top 3 Active Users</h3>
+      <h3 className={styles.title}>Top 3 Active Users</h3>
       <ol className={styles.list}>{mostThreeActiveUsers}</ol>
     </div>
   );

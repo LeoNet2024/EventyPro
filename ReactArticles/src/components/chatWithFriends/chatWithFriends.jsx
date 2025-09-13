@@ -41,7 +41,7 @@ export default function ChatWithFriends() {
     );
   });
 
-  // this fucntion handle with click on friend, in the friend list.
+  // this function handle with click on friend, in the friend list.
   // the function shuold change the chat screen and to init the reciver id
   // in other words this funciton discover the user_id of the reciver
   function handleClick(selectFriend) {
@@ -108,18 +108,25 @@ export default function ChatWithFriends() {
     setDataToSend({ ...dataToSend, message: e.target.value });
   }
 
-  const chatContactList = chatContent.map((el) => {
+  // For style
+  const userMessage = { textAlign: "right", color: "BurlyWood" };
+  const friendMessage = { textAlign: "left", color: "DarkGrey" };
+
+  const contentChatList = chatContent.map((el) => {
+    const isMe = el.sender_id === user.user_id; // if its me
     return (
-      <li key={el.message_id}>
-        <p
-          style={
-            el.sender_id === user.user_id
-              ? { textAlign: "right", color: "BurlyWood" }
-              : { textAlign: "left", color: "DarkGrey" }
-          }
-        >
-          {el.message}
+      <li
+        key={el.message_id}
+        className={
+          isMe
+            ? `${classes.msg} ${classes.me}`
+            : `${classes.msg} ${classes.them}`
+        }
+      >
+        <p className={classes.time}>
+          {new Date(el.messageDate).toLocaleDateString()}
         </p>
+        <p className={classes.text}>{el.message}</p>
       </li>
     );
   });
@@ -144,7 +151,7 @@ export default function ChatWithFriends() {
         </header>
 
         <div className={classes.messagesWrap}>
-          <ul className="ChatContent">{chatContactList}</ul>
+          <ul className="ChatContent">{contentChatList}</ul>
         </div>
 
         <footer className={classes.inputBar}>

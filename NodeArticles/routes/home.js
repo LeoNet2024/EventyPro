@@ -26,13 +26,21 @@ router.get("/", (req, res) => {
 
 router.get("/getEventsPositions", (req, res) => {
   // this query return the events posion from events, yeshuvim, cities_coordinates
-  const query = `SELECT *
-    from
-      (SELECT yeshuvim.name_heb, cities_coordinates.longitude, cities_coordinates.latitude
-      FROM yeshuvim
-      INNER JOIN cities_coordinates ON cities_coordinates.MGLSDE_LOC=yeshuvim.name_heb) as sub
-    INNER JOIN events on events.city=sub.name_heb
-    HAVING start_date> NOW(); `;
+  const query = `SELECT 
+    e.event_id,
+    e.event_name,
+    e.category,
+    e.start_date,
+    e.city,
+    cc.longitude,
+    cc.latitude
+    FROM events AS e
+    JOIN yeshuvim AS y
+    ON e.city = y.name_heb
+    JOIN cities_coordinates AS cc
+    ON cc.MGLSDE_LOC = y.name_heb
+    WHERE e.start_date > NOW()
+    ORDER BY e.city ASC; `;
 
   db.query(query, (err, results) => {
     if (err) return res.status(500).send(err);

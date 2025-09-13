@@ -37,6 +37,7 @@ export default function Home() {
       event_id: el.event_id,
       category: el.category,
       start_date: el.start_date,
+      city: el.city,
     };
   });
 
@@ -144,9 +145,9 @@ export default function Home() {
 
       {/* Placeholder for future filters and map */}
       <div className={classes.mapAndFilter}>
-        <div className={classes.filters}>
+        {/* <div className={classes.filters}>
           <HomePageStat />
-        </div>
+        </div> */}
         <div className={classes.map}>
           <MapComponent
             center={[32.0853, 34.7818]}

@@ -253,3 +253,73 @@
     min-height: 280px;
   }
 }
+/* --- Chat bubbles like WhatsApp --- */
+.msg {
+  display: grid;
+  gap: 0.25rem;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+
+  max-width: 78%;
+  padding: 0.55rem 0.7rem 0.6rem;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--fg);
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.me {
+  margin-left: auto; /* align to the right */
+  background: color-mix(in oklab, var(--brand) 18%, #ffffff);
+  border-color: color-mix(in oklab, var(--brand) 30%, var(--line));
+  position: relative;
+}
+.me::after {
+  content: "";
+  position: absolute;
+  right: -6px;
+  bottom: 8px;
+  width: 10px;
+  height: 10px;
+  background: inherit;
+  border: inherit;
+  border-left: none;
+  border-top: none;
+  transform: rotate(-45deg);
+  border-radius: 2px;
+}
+
+.them {
+  margin-right: auto; /* align to the left */
+  background: color-mix(in oklab, peachpuff 24%, var(--bg));
+  border-color: color-mix(in oklab, sandybrown 35%, var(--line));
+  position: relative;
+}
+.them::after {
+  content: "";
+  position: absolute;
+  left: -6px;
+  bottom: 8px;
+  width: 10px;
+  height: 10px;
+  background: inherit;
+  border: inherit;
+  border-right: none;
+  border-top: none;
+  transform: rotate(45deg);
+  border-radius: 2px;
+}
+
+.text {
+  margin: 0;
+  line-height: 1.35;
+}
+
+.time {
+  justify-self: end;
+  font-size: 0.75rem;
+  opacity: 0.7;
+  margin: -0.1rem 0 0;
+}

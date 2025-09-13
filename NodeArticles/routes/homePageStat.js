@@ -9,7 +9,7 @@ router.get("/eventsByCategory", (req, res) => {
   const query = `SELECT events.category,events.start_date, count(*) as "Total"
                 FROM events
                 GROUP BY events.category
-                HAVING start_date > NOW();;`;
+                HAVING start_date > NOW();`;
 
   db.query(query, (err, results) => {
     if (err) return res.status(500).send(err);
