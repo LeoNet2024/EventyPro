@@ -1,0 +1,37 @@
+.container {
+  padding: 6px 10px;
+  max-width: 200px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  font-size: 0.85rem;
+  line-height: 1.2;
+}
+
+.title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: #333;
+}
+
+.date,
+.location {
+  margin: 0;
+  color: #555;
+  font-size: 0.8rem;
+}
+
+.cardLink {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #1976d2;
+  text-decoration: none;
+}
+
+.cardLink:hover {
+  text-decoration: underline;
+}

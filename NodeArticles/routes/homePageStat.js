@@ -6,9 +6,10 @@ const db = dbSingleton.getConnection();
 
 // return the num of events group by category
 router.get("/eventsByCategory", (req, res) => {
-  const query = `SELECT events.category, count(*) as "Total"
+  const query = `SELECT events.category,events.start_date, count(*) as "Total"
                 FROM events
-                GROUP BY events.category;`;
+                GROUP BY events.category
+                HAVING start_date > NOW();;`;
 
   db.query(query, (err, results) => {
     if (err) return res.status(500).send(err);

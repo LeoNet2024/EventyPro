@@ -17,12 +17,14 @@ export default function PersonalArea() {
   const { user } = useAuth();
 
   // Used for user Events
-  const [userEvents, setUserEvents] = useState([]);
+  const [allUserEvents, setUserEvents] = useState([]);
   // Used for friend requests
   const [friendRequests, setFriendRequests] = useState([]);
   // Used to update the num of requeset
   const [numOfRequests, setNumOfRequests] = useState([]);
 
+  // Creator Events
+  const [creatorEvents, setCreatorEvents] = useState([]);
   // used to debug
   console.log(numOfRequests);
 
@@ -33,6 +35,7 @@ export default function PersonalArea() {
       .post("/personal-area", { user_id: user.user_id })
       .then((res) => {
         setUserEvents(res.data);
+        setCreatorEvents(res.data);
       })
       .catch((err) => console.error("Error loading events:", err));
 
@@ -72,13 +75,24 @@ export default function PersonalArea() {
 
       <section>
         <h2>My Events</h2>
+        {allUserEvents.length > 0 ? (
+          <div className={classes.eventGrid}>
+            {creatorEvents.map((el, idx) => {
+              if (el.created_by === user.user_id) {
+                return <EventCard key={idx} event={el} />;
+              }
+            })}
+          </div>
+        ) : (
+          <p className={classes.noEvents}>Still not have created event</p>
+        )}
       </section>
 
       <section className={classes.eventsSection}>
         <h2>All events</h2>
-        {userEvents.length > 0 ? (
+        {allUserEvents.length > 0 ? (
           <div className={classes.eventGrid}>
-            {userEvents.map((el) => (
+            {allUserEvents.map((el) => (
               <EventCard key={el.event_id} event={el} />
             ))}
           </div>

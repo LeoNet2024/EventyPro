@@ -21,7 +21,7 @@ function requireEventOwner(req, res, next) {
     [eventId],
     (err, rows) => {
       if (err) return res.status(500).json({ error: "DB error" });
-      if (!rows.length) return res.status(404).json({ error: "אירוע לא נמצא" });
+      if (!rows.length) return res.status(404).json({ error: "NOT FOUND" });
       if (rows[0].created_by !== userId)
         return res.status(403).json({ error: "גישה רק ליוצר האירוע" });
       next();

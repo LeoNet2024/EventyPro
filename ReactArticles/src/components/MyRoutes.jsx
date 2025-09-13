@@ -48,7 +48,10 @@ export default function MyRoutes() {
           <Route path="/event/:id" element={RequireAuth(<EventView />)} />
           <Route path="/contact" element={RequireAuth(<ContactAdmin />)} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/chatWithFriends" element={<ChatWithFriends />} />
+          <Route
+            path="/chatWithFriends"
+            element={RequireAuth(<ChatWithFriends />)}
+          />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
 
           {/* Admin-only route */}

@@ -26,7 +26,7 @@ router.get("/", (req, res) => {
 
 router.get("/getEventsPositions", (req, res) => {
   // this query return the events posion from events, yeshuvim, cities_coordinates
-  const query = `SELECT event_name, name_heb, longitude,latitude,events.start_date
+  const query = `SELECT *
     from
       (SELECT yeshuvim.name_heb, cities_coordinates.longitude, cities_coordinates.latitude
       FROM yeshuvim

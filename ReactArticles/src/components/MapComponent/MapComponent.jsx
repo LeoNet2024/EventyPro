@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import "./MapComponent.css";
+import EventDetailsForMarks from "../EventDetailsForMarks/eventDetailsForMarks";
 
 // Default icon fix for Leaflet with Webpack
 delete L.Icon.Default.prototype._getIconUrl;
@@ -16,6 +17,7 @@ L.Icon.Default.mergeOptions({
 export default function MapComponent({
   center = [32.0853, 34.7818],
   markers = [],
+  events,
 }) {
   return (
     <MapContainer
@@ -32,9 +34,14 @@ export default function MapComponent({
       {markers.map((marker, idx) => (
         <Marker key={idx} position={marker.position}>
           <Popup>
-            <b>{marker.name}</b>
+            {/* <b>{marker.name}</b>
             <br />
-            {marker.description}
+            {marker.description} */}
+            <EventDetailsForMarks
+              event={marker}
+              description={marker.description}
+              name={marker.name}
+            />
           </Popup>
         </Marker>
       ))}

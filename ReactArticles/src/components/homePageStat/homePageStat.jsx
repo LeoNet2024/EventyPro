@@ -8,6 +8,7 @@ import { useState } from "react";
 export default function HomePageStat() {
   const [eventsByCategory, setEventsByCategory] = useState([]);
   const [activeUsers, setActiveUsers] = useState([]);
+  
   useEffect(() => {
     fetchData();
   }, []);

@@ -34,6 +34,9 @@ export default function Home() {
       name: el.event_name,
       description: el.name_heb,
       position: [el.latitude, el.longitude],
+      event_id: el.event_id,
+      category: el.category,
+      start_date: el.start_date,
     };
   });
 
@@ -46,7 +49,6 @@ export default function Home() {
 
   // Fetch event data from backend API
   const fetchData = () => {
-    // קודם מעדכן סטטוסים בשרת
     axios
       .get("/updatePastEvents/")
       .then(() => {
@@ -75,7 +77,6 @@ export default function Home() {
       .catch((err) => {
         console.error("update-past-events failed:", err);
 
-        // גם אם העדכון נכשל — נטען את שאר הנתונים
         axios
           .get("home")
           .then((res) => {
@@ -150,6 +151,7 @@ export default function Home() {
           <MapComponent
             center={[32.0853, 34.7818]}
             markers={listOfEventsMarks}
+            events={events}
           />
         </div>
       </div>
