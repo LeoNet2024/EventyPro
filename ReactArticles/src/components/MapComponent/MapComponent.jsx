@@ -19,6 +19,15 @@ export default function MapComponent({
   markers = [],
   events,
 }) {
+  const finalListOfEvents = [];
+  const temp = events.map((el) => {
+    const foundEvent = markers.find((mark) => mark.event_id === el.event_id);
+
+    if (foundEvent) {
+      finalListOfEvents.push(foundEvent);
+    }
+  });
+
   return (
     <MapContainer
       center={center}
@@ -31,7 +40,7 @@ export default function MapComponent({
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {markers.map((marker, idx) => (
+      {finalListOfEvents.map((marker, idx) => (
         <Marker key={idx} position={marker.position}>
           <Popup>
             {/* <b>{marker.name}</b>

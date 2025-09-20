@@ -29,7 +29,7 @@ export default function Home() {
   const [eventsMarksFromDB, setEventsMarksFromDB] = useState([]);
 
   // create a custom format for map comp
-  const listOfEventsMarks = eventsMarksFromDB.map((el) => {
+  let listOfEventsMarks = eventsMarksFromDB.map((el) => {
     return {
       name: el.event_name,
       description: el.name_heb,
@@ -40,8 +40,6 @@ export default function Home() {
       city: el.city,
     };
   });
-
-  console.log(listOfEventsMarks);
 
   // Load events from backend when component mounts
   useEffect(() => {
@@ -151,8 +149,8 @@ export default function Home() {
         <div className={classes.map}>
           <MapComponent
             center={[32.0853, 34.7818]}
-            markers={listOfEventsMarks}
-            events={events}
+            markers={listOfEventsMarks || []}
+            events={filterEvents}
           />
         </div>
       </div>
