@@ -4,6 +4,8 @@ import axios from "axios";
 import classes from "./NewEvent.module.css";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
+import HalfHourTimeSelect from "./HalfHourTimeSelect";
+import CityAutocomplete from "./CityAutocomplete";
 
 export default function NewEvent() {
   console.log("new event()");
@@ -136,14 +138,21 @@ export default function NewEvent() {
           />
 
           <label>City</label>
-          <select name="city" onChange={handleChange} required>
-            <option value="">-- Select City --</option>
-            {cities.map((el, idx) => (
-              <option key={idx} value={el.name_heb}>
-                {el.name_heb}
-              </option>
-            ))}
-          </select>
+          <CityAutocomplete
+            options={cities
+              .map((el) => (el.name_heb || "").trim())
+              .filter(Boolean)}
+            value={eventData.city}
+            onChange={(val) =>
+              setEventData((prev) => ({
+                ...prev,
+                city: val,
+                user_id: user.user_id,
+              }))
+            }
+            className={classes.input}
+            required
+          />
 
           <label>Description</label>
           <textarea
@@ -202,12 +211,16 @@ export default function NewEvent() {
           />
 
           <label>Start Time</label>
-          <input
-            type="time"
-            name="startTime"
+          <HalfHourTimeSelect
             value={eventData.startTime}
-            onChange={handleChange}
-            required
+            onChange={(val) =>
+              setEventData((prev) => ({
+                ...prev,
+                startTime: val,
+                user_id: user.user_id,
+              }))
+            }
+            className={classes.input}
           />
 
           <label>Type of Event</label>

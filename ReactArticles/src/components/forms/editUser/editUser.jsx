@@ -6,6 +6,9 @@ import { useAuth } from "../../../context/AuthContext";
 export default function EditUser({ user, showForm, user_id }) {
   const { setUser } = useAuth();
 
+  // image state
+  const [imageFile, setImageFile] = useState(null);
+
   // use state for form
   const [formData, setFormData] = useState({
     first_name: user.first_name,
@@ -24,16 +27,62 @@ export default function EditUser({ user, showForm, user_id }) {
     }));
   }
 
+  function handleFileChange(e) {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+    }
+  }
+
   // sending the form by put
   function handleSubmit(e) {
     e.preventDefault();
 
+    // image uploaded - upload image and change src value
+    if (imageFile) {
+      const data = new FormData();
+      data.append("file", imageFile);
+
+      axios
+        .post("/upload", data, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .then((up) => {
+          const filename = up?.data?.file?.filename; // הגנה מ-undefined
+          if (!filename)
+            throw new Error("Upload succeeded but filename missing");
+
+          return axios.put("/personal-area/editProfile", {
+            first_name: formData.first_name,
+            last_name: formData.last_name,
+            user_name: formData.user_name,
+            user_id: formData.user_id,
+            src: `/uploads/${filename}`,
+          });
+        })
+        .then((res) => {
+          setUser(res.data);
+          showForm(false);
+        })
+        .catch((error) => {
+          console.error("Update failed:", error);
+          alert("Something went wrong while updating. Please try again.");
+        });
+
+      return; // חשוב: לא להמשיך למסלול ללא קובץ
+    }
+
+    // no image gile - changing only text fields
     axios
-      // send obj
-      .put("/personal-area/editProfile", formData)
+      .put("/personal-area/editProfile", {
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        user_name: formData.user_name,
+        user_id: formData.user_id,
+      })
       .then((res) => {
-        showForm(false);
         setUser(res.data);
+        showForm(false);
       })
       .catch((error) => {
         console.error("Update failed:", error);
@@ -74,6 +123,11 @@ export default function EditUser({ user, showForm, user_id }) {
               value={formData.user_name}
               onChange={handleChange}
             />
+          </label>
+
+          <label>
+            Profile Image:
+            <input type="file" accept="image/*" onChange={handleFileChange} />
           </label>
 
           {/* to do -> add cities */}

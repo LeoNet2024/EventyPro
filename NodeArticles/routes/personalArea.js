@@ -99,11 +99,23 @@ router.put("/editProfile/editPassword", (req, res) => {
 
 // ------------------- UPDATE USER PROFILE -------------------
 router.put("/editProfile", (req, res) => {
-  const { first_name, last_name, user_name, user_id } = req.body;
+  const { first_name, last_name, user_name, user_id, src } = req.body;
+
+  let query;
+  let values;
 
   // Update user fields
-  const query = `UPDATE users SET first_name = ?, last_name = ?, user_name = ? WHERE user_id = ?`;
-  const values = [first_name, last_name, user_name, user_id];
+  if (src) {
+    query = `UPDATE users 
+             SET first_name = ?, last_name = ?, user_name = ?, src = ? 
+             WHERE user_id = ?`;
+    values = [first_name, last_name, user_name, src, user_id];
+  } else {
+    query = `UPDATE users 
+             SET first_name = ?, last_name = ?, user_name = ? 
+             WHERE user_id = ?`;
+    values = [first_name, last_name, user_name, user_id];
+  }
 
   db.query(query, values, (err) => {
     if (err) return res.status(500).send(err);

@@ -4,6 +4,9 @@
 const express = require("express");
 const session = require("express-session");
 const cors = require("cors");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 
 // Import route modules
 const homeRoute = require("./routes/home");
@@ -21,6 +24,28 @@ const chatWithFriends = require("./routes/chatWithFriends");
 
 const app = express();
 const port = 8801;
+
+const uploadsDir = path.join(__dirname, "uploads");
+
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir);
+}
+
+// ------------------- FILE UPLOAD -------------------
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/"); // תיקייה מקומית
+  },
+  filename: (req, file, cb) => {
+    // שם ייחודי לקובץ
+    const ext = path.extname(file.originalname);
+    cb(null, Date.now() + "-" + file.fieldname + ext);
+  },
+});
+
+const upload = multer({ storage });
+
+app.use("/uploads", express.static(uploadsDir));
 
 // ------------------- CORS CONFIGURATION -------------------
 app.use(
@@ -85,6 +110,13 @@ app.get("/check-auth", (req, res) => {
   } else {
     res.json({ user: null });
   }
+});
+
+// ------------------- UPLOAD FILE -------------------
+app.post("/upload", upload.single("file"), (req, res) => {
+  // req.file מכיל את פרטי הקובץ שהועלה
+  console.log(req.file);
+  res.json({ message: "הקובץ הועלה בהצלחה!", file: req.file });
 });
 
 // ------------------- START SERVER -------------------

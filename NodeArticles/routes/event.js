@@ -6,7 +6,8 @@ const db = dbSingleton.getConnection();
 
 // middleware: נדרש משתמש מחובר
 function requireLogin(req, res, next) {
-  if (!req.session?.user?.user_id) return res.status(401).json({ error: "יש להתחבר" });
+  if (!req.session?.user?.user_id)
+    return res.status(401).json({ error: "יש להתחבר" });
   next();
 }
 
@@ -15,12 +16,17 @@ function requireEventOwner(req, res, next) {
   const eventId = Number(req.params.eventId);
   const userId = req.session.user.user_id;
 
-  db.query("SELECT created_by FROM events WHERE event_id=? LIMIT 1", [eventId], (err, rows) => {
-    if (err) return res.status(500).json({ error: "DB error" });
-    if (!rows.length) return res.status(404).json({ error: "אירוע לא נמצא" });
-    if (rows[0].created_by !== userId) return res.status(403).json({ error: "גישה רק ליוצר האירוע" });
-    next();
-  });
+  db.query(
+    "SELECT created_by FROM events WHERE event_id=? LIMIT 1",
+    [eventId],
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: "DB error" });
+      if (!rows.length) return res.status(404).json({ error: "אירוע לא נמצא" });
+      if (rows[0].created_by !== userId)
+        return res.status(403).json({ error: "גישה רק ליוצר האירוע" });
+      next();
+    }
+  );
 }
 
 // ------------------- GET PARTICIPANTS BY EVENT ID -------------------
@@ -177,7 +183,6 @@ router.post("/deleteEvent", (req, res) => {
   });
 });
 
-
 // POST /api/events/:eventId/join-or-request
 router.post("/:eventId/join-or-request", requireLogin, (req, res) => {
   const eventId = Number(req.params.eventId);
@@ -185,7 +190,8 @@ router.post("/:eventId/join-or-request", requireLogin, (req, res) => {
   const requestNote = (req.body?.note || "").trim();
 
   // נביא את האירוע כדי להבין אם הוא פרטי ומה הקיבולת
-  const sqlEvent = "SELECT is_private, participant_amount FROM events WHERE event_id=? LIMIT 1";
+  const sqlEvent =
+    "SELECT is_private, participant_amount FROM events WHERE event_id=? LIMIT 1";
   db.query(sqlEvent, [eventId], (e1, r1) => {
     if (e1) return res.status(500).json({ error: "DB error" });
     if (!r1.length) return res.status(404).json({ error: "אירוע לא נמצא" });
@@ -194,7 +200,8 @@ router.post("/:eventId/join-or-request", requireLogin, (req, res) => {
     const capacity = r1[0].participant_amount;
 
     // נספור רק מאושרים לצורך קיבולת
-    const sqlCount = "SELECT COUNT(*) AS cnt FROM event_participants WHERE event_id=? AND status='approved'";
+    const sqlCount =
+      "SELECT COUNT(*) AS cnt FROM event_participants WHERE event_id=? AND status='approved'";
     db.query(sqlCount, [eventId], (e2, r2) => {
       if (e2) return res.status(500).json({ error: "DB error" });
 
@@ -212,104 +219,137 @@ router.post("/:eventId/join-or-request", requireLogin, (req, res) => {
         "ON DUPLICATE KEY UPDATE status=VALUES(status), request_note=VALUES(request_note), reviewed_by=NULL, reviewed_at=NULL";
       db.query(insert, [userId, eventId, status, requestNote || null], (e3) => {
         if (e3) {
-          if (e3.code === "ER_DUP_ENTRY") return res.status(409).json({ error: "כבר ביקשת/הצטרפת לאירוע" });
+          if (e3.code === "ER_DUP_ENTRY")
+            return res.status(409).json({ error: "כבר ביקשת/הצטרפת לאירוע" });
           return res.status(500).json({ error: "DB error" });
         }
-        if (isPrivate) return res.json({ message: "הבקשה נשלחה וממתינה לאישור היוצר", status: "pending" });
-        return res.json({ message: "הצטרפת לאירוע בהצלחה", status: "approved" });
+        if (isPrivate)
+          return res.json({
+            message: "הבקשה נשלחה וממתינה לאישור היוצר",
+            status: "pending",
+          });
+        return res.json({
+          message: "הצטרפת לאירוע בהצלחה",
+          status: "approved",
+        });
       });
     });
   });
 });
 
 // For event creator - accepting users to private event
-router.get("/:eventId/requests", requireLogin, requireEventOwner, (req, res) => {
-  const eventId = Number(req.params.eventId);
-  const sql = `
+router.get(
+  "/:eventId/requests",
+  requireLogin,
+  requireEventOwner,
+  (req, res) => {
+    const eventId = Number(req.params.eventId);
+    const sql = `
     SELECT ep.user_id, u.first_name, u.last_name, u.email, ep.request_note, ep.join_date
     FROM event_participants ep
     JOIN users u ON u.user_id = ep.user_id
     WHERE ep.event_id=? AND ep.status='pending'
     ORDER BY ep.join_date ASC
   `;
-  db.query(sql, [eventId], (err, rows) => {
-    if (err) return res.status(500).json({ error: "DB error" });
-    res.json(rows);
-  });
-});
+    db.query(sql, [eventId], (err, rows) => {
+      if (err) return res.status(500).json({ error: "DB error" });
+      res.json(rows);
+    });
+  }
+);
 
 // Accepting a user to the private event
-router.post("/:eventId/requests/:userId/approve", requireLogin, requireEventOwner, (req, res) => {
-  const eventId = Number(req.params.eventId);
-  const targetUserId = Number(req.params.userId);
-  const reviewer = req.session.user.user_id;
+router.post(
+  "/:eventId/requests/:userId/approve",
+  requireLogin,
+  requireEventOwner,
+  (req, res) => {
+    const eventId = Number(req.params.eventId);
+    const targetUserId = Number(req.params.userId);
+    const reviewer = req.session.user.user_id;
 
-  const sqlCapacity = `
+    const sqlCapacity = `
     SELECT e.participant_amount, 
            (SELECT COUNT(*) FROM event_participants WHERE event_id=e.event_id AND status='approved') AS approved_cnt
     FROM events e
     WHERE e.event_id=? LIMIT 1
   `;
-  db.query(sqlCapacity, [eventId], (e1, r1) => {
-    if (e1) return res.status(500).json({ error: "DB error" });
-    if (!r1.length) return res.status(404).json({ error: "אירוע לא נמצא" });
+    db.query(sqlCapacity, [eventId], (e1, r1) => {
+      if (e1) return res.status(500).json({ error: "DB error" });
+      if (!r1.length) return res.status(404).json({ error: "אירוע לא נמצא" });
 
-    if (r1[0].approved_cnt >= r1[0].participant_amount)
-      return res.status(400).json({ error: "האירוע מלא" });
+      if (r1[0].approved_cnt >= r1[0].participant_amount)
+        return res.status(400).json({ error: "האירוע מלא" });
 
-    const sql =
-      "UPDATE event_participants SET status='approved', reviewed_by=?, reviewed_at=NOW() WHERE event_id=? AND user_id=? AND status='pending'";
-    db.query(sql, [reviewer, eventId, targetUserId], (e2, result) => {
-      if (e2) return res.status(500).json({ error: "DB error" });
-      if (!result.affectedRows) return res.status(404).json({ error: "בקשה לא נמצאה/כבר טופלה" });
-      res.json({ message: "הבקשה אושרה" });
+      const sql =
+        "UPDATE event_participants SET status='approved', reviewed_by=?, reviewed_at=NOW() WHERE event_id=? AND user_id=? AND status='pending'";
+      db.query(sql, [reviewer, eventId, targetUserId], (e2, result) => {
+        if (e2) return res.status(500).json({ error: "DB error" });
+        if (!result.affectedRows)
+          return res.status(404).json({ error: "בקשה לא נמצאה/כבר טופלה" });
+        res.json({ message: "הבקשה אושרה" });
+      });
     });
-  });
-});
+  }
+);
 
 // Rejecting a user
-router.post("/events/:eventId/requests/:userId/reject", requireLogin, requireEventOwner, (req, res) => {
-  const eventId = Number(req.params.eventId);
-  const targetUserId = Number(req.params.userId);
-  const reviewer = req.session.user.user_id;
+router.post(
+  "/events/:eventId/requests/:userId/reject",
+  requireLogin,
+  requireEventOwner,
+  (req, res) => {
+    const eventId = Number(req.params.eventId);
+    const targetUserId = Number(req.params.userId);
+    const reviewer = req.session.user.user_id;
 
-  const sql =
-    "UPDATE event_participants SET status='rejected', reviewed_by=?, reviewed_at=NOW() WHERE event_id=? AND user_id=? AND status IN ('pending','approved')";
-  db.query(sql, [reviewer, eventId, targetUserId], (err, result) => {
-    if (err) return res.status(500).json({ error: "DB error" });
-    if (!result.affectedRows) return res.status(404).json({ error: "בקשה לא נמצאה/כבר טופלה" });
-    res.json({ message: "הבקשה נדחתה / המשתתף הוסר" });
-  });
-});
+    const sql =
+      "UPDATE event_participants SET status='rejected', reviewed_by=?, reviewed_at=NOW() WHERE event_id=? AND user_id=? AND status IN ('pending','approved')";
+    db.query(sql, [reviewer, eventId, targetUserId], (err, result) => {
+      if (err) return res.status(500).json({ error: "DB error" });
+      if (!result.affectedRows)
+        return res.status(404).json({ error: "בקשה לא נמצאה/כבר טופלה" });
+      res.json({ message: "הבקשה נדחתה / המשתתף הוסר" });
+    });
+  }
+);
 
 // PATCH /event/:eventId/description – update event description (owner only)
-router.patch("/:eventId/description", requireLogin, requireEventOwner, (req, res) => {
-  // Basic validation + trimming
-  let { description } = req.body;
-  if (typeof description !== "string") description = "";
-  description = description.trim();
+router.patch(
+  "/:eventId/description",
+  requireLogin,
+  requireEventOwner,
+  (req, res) => {
+    // Basic validation + trimming
+    let { description } = req.body;
+    if (typeof description !== "string") description = "";
+    description = description.trim();
 
-  // Optional length guard
-  if (description.length > 1000) {
-    return res.status(400).json({ error: "Description is too long (max 1000 chars)" });
+    // Optional length guard
+    if (description.length > 1000) {
+      return res
+        .status(400)
+        .json({ error: "Description is too long (max 1000 chars)" });
+    }
+
+    const eventId = Number(req.params.eventId);
+    const sql = "UPDATE events SET description = ? WHERE event_id = ?";
+
+    db.query(sql, [description, eventId], (err, result) => {
+      if (err) return res.status(500).json({ error: "DB error" });
+      if (!result.affectedRows)
+        return res.status(404).json({ error: "Event not found" });
+      return res.json({ message: "Description updated", description });
+    });
   }
-
-  const eventId = Number(req.params.eventId);
-  const sql = "UPDATE events SET description = ? WHERE event_id = ?";
-
-  db.query(sql, [description, eventId], (err, result) => {
-    if (err) return res.status(500).json({ error: "DB error" });
-    if (!result.affectedRows) return res.status(404).json({ error: "Event not found" });
-    return res.json({ message: "Description updated", description });
-  });
-});
+);
 
 // GET /event/:id/creator
 router.get("/:id/creator", (req, res) => {
   const { id } = req.params;
 
   const q = `
-    SELECT u.user_id, u.first_name, u.last_name, u.email
+    SELECT u.user_id, u.first_name, u.last_name, u.email, u.src
     FROM events e
     JOIN users u ON e.created_by = u.user_id
     WHERE e.event_id = ?
@@ -329,7 +369,6 @@ router.get("/:id/creator", (req, res) => {
     res.json(result[0]);
   });
 });
-
 
 // Export router
 module.exports = router;

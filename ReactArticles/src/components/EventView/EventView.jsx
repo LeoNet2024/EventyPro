@@ -79,7 +79,7 @@ export default function EventView() {
           first_name: eventRes?.data?.first_name,
           last_name: eventRes?.data?.last_name,
           email: eventRes?.data?.email,
-          avatar_url: eventRes?.data?.src,
+          src: eventRes?.data?.src,
         };
         if (c && (c.first_name || c.last_name || c.email)) setCreator(c);
 
@@ -313,7 +313,7 @@ export default function EventView() {
           <p className={classes.subtitle}>{event.category}</p>
         </div>
       </div>
-      {isPrivate && (
+      {isPrivate && !isJoined && (
         <div className={classes.privateNotice}>
           🔒 This is a private event. You must be approved to view all the
           details.
@@ -527,10 +527,10 @@ export default function EventView() {
               <div className={classes.creatorHeader}>Created by</div>
 
               <div className={classes.creatorBody}>
-                {creator.avatar_url ? (
+                {creator.src ? (
                   <img
                     className={classes.creatorAvatar}
-                    src={creator.avatar_url}
+                    src={creator.src}
                     alt={`${creator.first_name || ""} ${
                       creator.last_name || ""
                     }`}

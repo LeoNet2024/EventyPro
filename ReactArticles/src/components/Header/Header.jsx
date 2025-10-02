@@ -45,6 +45,7 @@ export default function Header() {
                     Admin
                   </span>
                 )}
+                <img className={classes.profilePic} src={user.src} alt="" />
               </div>
             )}
           </div>
