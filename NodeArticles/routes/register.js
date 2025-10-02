@@ -56,6 +56,8 @@ router.post("/request-verification", (req, res) => {
         expiresAt,
       };
 
+      console.log(code);
+
       // Step 5: Send email with code
       const mailOptions = {
         from: "eventyproservice@gmail.com",

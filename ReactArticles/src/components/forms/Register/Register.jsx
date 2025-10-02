@@ -1,10 +1,11 @@
 // Register.jsx
 // Sends verification code to user's email, but does NOT create the user yet
 
-import { useEffect, useState } from "react";
+import { useMemo, useCallback, useState, useEffect } from "react";
 import axios from "axios";
 import classes from "../login/Login.module.css";
 import VerifyCode from "../Register/VerifyCode";
+import CityAutocomplete from "../newEvent/CityAutocomplete";
 
 export default function Register() {
   const [successMessage, setSuccessMessage] = useState("");
@@ -20,6 +21,21 @@ export default function Register() {
     email: "",
   });
   const [errors, setErrors] = useState({});
+
+  // נרמול להשוואה חסינת רווחים/רישיות
+  const norm = (s) => (s || "").trim().toLowerCase();
+
+  // רשימת ערים נקייה לשימוש בקומפוננטה
+  const cityOptions = useMemo(
+    () => cities.map((c) => (c.name_heb || "").trim()).filter(Boolean),
+    [cities]
+  );
+
+  // בדיקת קיום עיר מהרשימה
+  const cityExists = useCallback(
+    (name) => cityOptions.some((o) => norm(o) === norm(name)),
+    [cityOptions]
+  );
 
   // Fetch cities for dropdown
   useEffect(() => {
@@ -146,19 +162,18 @@ export default function Register() {
         </select>
         {errors.gender && <p className={classes.error}>{errors.gender}</p>}
 
-        <select
-          name="city"
+        <CityAutocomplete
+          options={cityOptions}
           value={info.city}
-          onChange={handleChange}
+          onChange={(val) => {
+            setInfo((prev) => ({ ...prev, city: val }));
+            setErrors((prev) => ({ ...prev, city: "" }));
+          }}
           className={classes.input}
-        >
-          <option value="">Select City</option>
-          {cities.map((el, idx) => (
-            <option key={idx} value={el.name_heb.trim()}>
-              {el.name_heb.trim()}
-            </option>
-          ))}
-        </select>
+          required
+        />
+        {errors.city && <p className={classes.error}>{errors.city}</p>}
+
         {errors.city && <p className={classes.error}>{errors.city}</p>}
 
         <input

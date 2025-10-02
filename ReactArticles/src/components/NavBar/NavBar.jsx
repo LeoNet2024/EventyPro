@@ -38,7 +38,7 @@ export default function NavBar() {
           Personal Area
         </NavLink>
       )}
-      {user && Boolean(!user?.is_admin) && (
+      {user && (
         <NavLink
           to="/chatWithFriends"
           className={({ isActive }) => (isActive ? classes.active : "")}

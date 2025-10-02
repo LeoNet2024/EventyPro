@@ -31,6 +31,8 @@ router.post("/sendMessage", (req, res) => {
 
   const query = `INSERT INTO private_messages(sender_id,reciever_id,message) VALUES(?,?,?)`;
 
+  console.log(reciever_id);
+
   db.query(query, [sender_id, reciever_id, message], (err, results) => {
     if (err) return res.status(500).send(err);
     res.json(results);
