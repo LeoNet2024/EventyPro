@@ -72,7 +72,7 @@ export default function EditUser({ user, showForm, user_id }) {
       return; // חשוב: לא להמשיך למסלול ללא קובץ
     }
 
-    // no image gile - changing only text fields
+    // no image file - changing only text fields
     axios
       .put("/personal-area/editProfile", {
         first_name: formData.first_name,

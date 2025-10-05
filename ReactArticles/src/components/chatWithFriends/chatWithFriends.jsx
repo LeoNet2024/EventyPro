@@ -16,6 +16,8 @@ export default function ChatWithFriends() {
     sender_id: user.user_id,
     reciever_id: "",
     message: "",
+    name: "",
+    src: "",
   });
 
   // used to know which friend we want to chat with him the current time
@@ -35,9 +37,14 @@ export default function ChatWithFriends() {
 
   const listOfFriends = friendList.map((el) => {
     return (
-      <li key={el.request_id} onClick={() => handleClick(el)}>
-        {el.first_name + " " + el.last_name}
-      </li>
+      <div>
+        <li key={el.request_id} onClick={() => handleClick(el)}>
+          <img src={el.src} className={classes.sidePic} alt="" />
+          <p style={{ paddingLeft: "2rem" }}>
+            {el.first_name + " " + el.last_name}
+          </p>
+        </li>
+      </div>
     );
   });
 
@@ -47,14 +54,12 @@ export default function ChatWithFriends() {
   function handleClick(selectFriend) {
     // init the data of the message
 
-    console.log("hi");
+    // setDataToSend({ ...dataToSend, message: "", reciever_id: "" });
 
-    setDataToSend({ ...dataToSend, message: "", reciever_id: "" });
-
-    let userToSendTheMessage = selectFriend.reciever_id;
+    let userToSendTheMessage = undefined;
     // In case the user is the one who send the request
     if (selectFriend.sender_id === user.user_id) {
-      userToSendTheMessage = selectFriend.reciever_id;
+      userToSendTheMessage = selectFriend.receiver_id;
     }
     // in case the user is the one who get the message
     else {
@@ -68,6 +73,8 @@ export default function ChatWithFriends() {
       ...dataToSend,
       message: "",
       reciever_id: userToSendTheMessage,
+      name: selectFriend.first_name,
+      src: selectFriend.src,
     });
 
     loadChat();
@@ -91,9 +98,14 @@ export default function ChatWithFriends() {
   // This function send the message to user
   function sendMessage() {
     // Avoid send empty message
-    if (dataToSend.message.trim() === "") {
+    if (
+      dataToSend.message.trim() === "" ||
+      dataToSend.reciever_id === undefined
+    ) {
+      console.log("Empty Message or reciever_id is null");
       return;
     }
+
     // send the message to the server using post
     axios
       .post("chatWithFriends/sendMessage", dataToSend)
@@ -148,6 +160,14 @@ export default function ChatWithFriends() {
 
       <section className={classes.chatWindow} aria-label="Chat window">
         <header className={classes.chatHeader}>
+          <div className={classes.chatHeaderInfo}>
+            <img
+              src={dataToSend.src}
+              alt=""
+              className={classes.chatAvatar} // ישמור על צורה עגולה
+            />
+            <h2 className={classes.chatName}>{dataToSend.name}</h2>
+          </div>
           <div className={classes.chatPeer}>
             <div className={classes.peerMeta}></div>
           </div>

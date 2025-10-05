@@ -68,15 +68,25 @@ router.get("/summary", (req, res) => {
 
     // 10 events האחרונים
     const eventsSql = `
-        SELECT e.event_id, e.event_name, e.category, e.start_date, e.end_date,
-             e.start_time, e.is_private, e.participant_amount, e.city,
-             e.created_by, e.created_date,
-             COUNT(ep.user_id)           AS actual_participants
-        FROM events               e
-        LEFT JOIN event_participants ep ON e.event_id = ep.event_id
-        GROUP BY e.event_id
-        ORDER BY e.created_date DESC
-      LIMIT 10
+      SELECT 
+      e.event_id,
+      e.event_name,
+      e.category,
+      e.start_date,
+      e.start_time,
+      e.is_private,
+      e.participant_amount,
+      e.city,
+      e.created_by,
+      e.created_date,
+      COUNT(ep.user_id) AS actual_participants
+    FROM events e
+    LEFT JOIN event_participants ep 
+      ON e.event_id = ep.event_id
+    GROUP BY e.event_id
+    ORDER BY e.created_date DESC
+    LIMIT 10;
+
     `;
 
     db.query(eventsSql, [], (err, events) => {

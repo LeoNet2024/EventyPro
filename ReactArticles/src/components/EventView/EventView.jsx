@@ -8,6 +8,8 @@ import CommentList from "../CommentList/CommentList";
 import Comment from "../../components/forms/comment/comment";
 import ParticipantsList from "../participantsList/participantsList";
 
+import whatsappLogo from "../../assets/img/whatsapp.png";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCalendarAlt,
@@ -304,7 +306,7 @@ export default function EventView() {
     <>
       <div className={classes.hero}>
         <img
-          src={event.src}
+          src={event.event_src ? event.event_src : event.src}
           alt={event.event_name}
           className={classes.heroImage}
         />
@@ -592,6 +594,63 @@ export default function EventView() {
           {errorMsg || successMsg}
         </div>
       )}
+
+      {/* ===== Invite Friends ===== */}
+      <div className={classes.inviteSection}>
+        <h3 className={classes.inviteTitle}>הזמנת חברים</h3>
+
+        <div className={classes.shareRow}>
+          <input
+            className={classes.shareInput}
+            type="text"
+            readOnly
+            value={`${window.location.origin}/event/${id}`}
+            onFocus={(e) => e.target.select()}
+          />
+          <button
+            type="button"
+            className={classes.copyBtn}
+            onClick={async () => {
+              const url = `${window.location.origin}/event/${id}`;
+              try {
+                await navigator.clipboard.writeText(url);
+                setSuccessMsg("הלינק הועתק");
+              } catch {
+                // fallback
+                const el = document.createElement("textarea");
+                el.value = url;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand("copy");
+                document.body.removeChild(el);
+                setSuccessMsg("הלינק הועתק");
+              }
+            }}
+          >
+            העתק קישור
+          </button>
+
+          <a
+            className={classes.whatsappBtn}
+            href={`https://wa.me/?text=${encodeURIComponent(
+              `בואו לאירוע: ${event.event_name}\n${window.location.origin}/event/${id}`
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="שלח בוואטסאפ"
+          >
+            <img
+              src={whatsappLogo}
+              alt="WhatsApp"
+              className={classes.whatsappIcon}
+            />
+          </a>
+        </div>
+
+        <div className={classes.inviteHint}>
+          אפשר להעתיק את הקישור או לשלוח בוואטסאפ עם הודעה מוכנה.
+        </div>
+      </div>
     </>
   );
 }

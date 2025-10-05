@@ -15,6 +15,9 @@ router.post("/", (req, res) => {
       t.event_id,
       t.category,
       t.event_name,
+      t.start_date,
+      t.start_time,
+      t.event_src,
       t.src,
       t.created_by,
       MAX(t.is_joined)  AS is_joined,
@@ -25,6 +28,9 @@ router.post("/", (req, res) => {
         e.event_id,
         e.category,
         e.event_name,
+        e.start_date,
+        e.start_time,
+        e.event_src,
         di.src,
         e.created_by,
         1 AS is_joined,
@@ -32,7 +38,7 @@ router.post("/", (req, res) => {
       FROM events e
       INNER JOIN event_participants ep
         ON e.event_id = ep.event_id
-       AND ep.user_id = ?
+      AND ep.user_id = ?
       INNER JOIN default_images di
         ON e.category = di.category
 
@@ -43,6 +49,9 @@ router.post("/", (req, res) => {
         e.event_id,
         e.category,
         e.event_name,
+        e.start_date,
+        e.start_time,
+        e.event_src,
         di.src,
         e.created_by,
         0 AS is_joined,
@@ -52,8 +61,16 @@ router.post("/", (req, res) => {
         ON e.category = di.category
       WHERE e.created_by = ?
     ) AS t
-    GROUP BY t.event_id, t.category, t.event_name, t.src, t.created_by
-    ORDER BY t.event_id DESC
+    GROUP BY
+      t.event_id,
+      t.category,
+      t.event_name,
+      t.start_date,
+      t.start_time,
+      t.event_src,
+      t.src,
+      t.created_by
+    ORDER BY t.event_id DESC;
   `;
 
   db.query(query, [user_id, user_id], (err, results) => {
@@ -213,9 +230,11 @@ router.post("/userStats/lastComment", (req, res) => {
   const { user_id } = req.body;
 
   const query = `
-    SELECT comment_content, MAX(comment_time) AS maxTime
-    FROM event_comments
-    WHERE user_id = ?
+  SELECT comment_content, comment_time
+  FROM event_comments
+  WHERE user_id = ?
+  ORDER BY comment_time DESC
+  LIMIT 1
   `;
 
   db.query(query, [user_id], (err, results) => {

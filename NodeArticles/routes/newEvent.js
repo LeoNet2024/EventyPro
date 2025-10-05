@@ -42,20 +42,8 @@ router.post("/", requireLogin, (req, res) => {
     city,
     user_id,
     description,
+    event_src,
   } = req.body;
-
-  // list of values to insert
-  const values = [
-    eventName,
-    category,
-    startDate,
-    startTime,
-    type === "private" ? 1 : 0,
-    parseInt(participantAmount),
-    city,
-    user_id,
-    description,
-  ];
 
   // Prevent duplicated events
   const preventDupEvents = `
@@ -81,10 +69,44 @@ router.post("/", requireLogin, (req, res) => {
       }
 
       // query to insert values into tables
-      const query = `
+
+      let query;
+      let values;
+
+      if (event_src) {
+        query = `
+      INSERT INTO events(event_name, category, start_date, start_time, is_private, participant_amount, city,created_by, description, event_src)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+        values = [
+          eventName,
+          category,
+          startDate,
+          startTime,
+          type === "private" ? 1 : 0,
+          parseInt(participantAmount),
+          city,
+          user_id,
+          description,
+          event_src,
+        ];
+      } else {
+        query = `
       INSERT INTO events(event_name, category, start_date, start_time, is_private, participant_amount, city,created_by, description)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
+        values = [
+          eventName,
+          category,
+          startDate,
+          startTime,
+          type === "private" ? 1 : 0,
+          parseInt(participantAmount),
+          city,
+          user_id,
+          description,
+        ];
+      }
 
       // Execute the query
       db.query(query, values, (err, results) => {

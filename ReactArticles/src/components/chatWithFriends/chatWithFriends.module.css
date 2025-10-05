@@ -272,7 +272,7 @@
 
 .me {
   margin-left: auto; /* align to the right */
-  background: color-mix(in oklab, var(--brand) 18%, #ffffff);
+  background: color-mix(in oklab, var(--brand) 18%, #336602) !important;
   border-color: color-mix(in oklab, var(--brand) 30%, var(--line));
   position: relative;
 }
@@ -293,7 +293,7 @@
 
 .them {
   margin-right: auto; /* align to the left */
-  background: color-mix(in oklab, peachpuff 24%, var(--bg));
+  background: color-mix(in oklab, rgb(57, 57, 56) 24%, var(--bg)) !important;
   border-color: color-mix(in oklab, sandybrown 35%, var(--line));
   position: relative;
 }
@@ -322,4 +322,34 @@
   font-size: 0.75rem;
   opacity: 0.7;
   margin: -0.1rem 0 0;
+}
+.chatHeaderInfo {
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+  gap: 1rem;
+}
+
+.chatAvatar {
+  width: 50px; /* גודל קבוע */
+  height: 50px;
+  border-radius: 50%; /* עיגול */
+  object-fit: cover; /* שהתמונה לא תימתח */
+}
+
+.sidePic {
+  width: 55px; /* גודל קבוע */
+  height: 55px;
+  border-radius: 50%; /* עיגול */
+  object-fit: cover; /* שהתמונה לא תימתח */
+  border: 2px solid #eee; /* אופציונלי – מסגרת בהירה */
+}
+
+.chatName {
+  margin: auto;
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* פונט מודרני ונעים */
+  font-weight: 600; /* קצת יותר מודגש */
+  font-size: 1.2rem; /* טיפה גדול יותר */
+  letter-spacing: 0.5px; /* ריווח קל באותיות */
+  color: #333; /* צבע טקסט כהה */
 }

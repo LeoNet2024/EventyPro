@@ -33,7 +33,11 @@ export default function NewEvent() {
     type: "",
     user_id: "",
     description: "",
+    event_src: null,
   });
+
+  // image state
+  const [imageFile, setImageFile] = useState(null);
 
   // Fetch cities and categories when component mounts
   useEffect(() => {
@@ -90,6 +94,51 @@ export default function NewEvent() {
   function handleSubmit(e) {
     e.preventDefault();
 
+    if (imageFile) {
+      const data = new FormData();
+      data.append("file", imageFile);
+
+      axios
+        .post("/upload", data, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .then((up) => {
+          const filename = up?.data?.file?.filename; // הגנה מ-undefined
+          if (!filename)
+            throw new Error("Upload succeeded but filename missing");
+
+          return axios.post("/newEvent", {
+            eventName: eventData.eventName,
+            city: eventData.city,
+            category: eventData.category,
+            participantAmount: eventData.participantAmount,
+            startDate: eventData.startDate,
+            startTime: eventData.startTime,
+            type: eventData.type,
+            user_id: eventData.user_id,
+            description: eventData.description,
+            event_src: `/uploads/${filename}`,
+          });
+        })
+        .then(() => {
+          setMessage("Event created successfully!");
+          setMessageType("success");
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          const msg =
+            error.response?.data ||
+            "An unexpected error occurred while creating the event.";
+          setMessage(msg);
+          setMessageType("error");
+        });
+
+      return; // חשוב: לא להמשיך למסלול ללא קובץ
+    }
+    // no image file
     axios
       .post("/newEvent", eventData)
       .then(() => {
@@ -107,6 +156,20 @@ export default function NewEvent() {
         setMessage(msg);
         setMessageType("error");
       });
+  }
+
+  function handleFileChange(e) {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+    }
+  }
+
+  function handleFileChange(e) {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+    }
   }
 
   // ----------------------------------------
@@ -218,6 +281,11 @@ export default function NewEvent() {
             <option value="private">Private</option>
             <option value="public">Public</option>
           </select>
+
+          <label>
+            Event Image (Optional)
+            <input type="file" accept="image/*" onChange={handleFileChange} />
+          </label>
 
           <button type="submit">Create Event</button>
         </form>

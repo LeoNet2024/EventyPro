@@ -79,7 +79,7 @@ export default function PersonalArea() {
           <div className={classes.eventGrid}>
             {creatorEvents.map((el, idx) => {
               if (el.created_by === user.user_id) {
-                return <EventCard key={idx} event={el} />;
+                return <EventCard key={idx} event={el} inPersonalArea={true} />;
               }
             })}
           </div>
@@ -93,7 +93,7 @@ export default function PersonalArea() {
         {allUserEvents.length > 0 ? (
           <div className={classes.eventGrid}>
             {allUserEvents.map((el) => (
-              <EventCard key={el.event_id} event={el} />
+              <EventCard key={el.event_id} event={el} inPersonalArea={true} />
             ))}
           </div>
         ) : (

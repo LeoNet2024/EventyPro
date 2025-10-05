@@ -32,19 +32,49 @@ if (!fs.existsSync(uploadsDir)) {
 }
 
 // ------------------- FILE UPLOAD -------------------
+
+const ALLOWED_MIME = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+  "image/webp",
+  "image/bmp",
+  "image/svg+xml",
+]);
+
+const ALLOWED_EXT = new Set([
+  ".jpg",
+  ".jpeg",
+  ".png",
+  ".gif",
+  ".webp",
+  ".bmp",
+  ".svg",
+]);
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); // תיקייה מקומית
+    cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
-    // שם ייחודי לקובץ
-    const ext = path.extname(file.originalname);
+    const ext = path.extname(file.originalname).toLowerCase();
     cb(null, Date.now() + "-" + file.fieldname + ext);
   },
 });
 
-const upload = multer({ storage });
+function imageFileFilter(req, file, cb) {
+  const ext = path.extname(file.originalname || "").toLowerCase();
+  if (!ALLOWED_MIME.has(file.mimetype) || !ALLOWED_EXT.has(ext)) {
+    return cb(new Error("רק קבצי תמונה מותרים."), false);
+  }
+  cb(null, true);
+}
 
+const upload = multer({
+  storage,
+  fileFilter: imageFileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 }, // עד 5MB
+});
 app.use("/uploads", express.static(uploadsDir));
 
 // ------------------- CORS CONFIGURATION -------------------
@@ -114,9 +144,21 @@ app.get("/check-auth", (req, res) => {
 
 // ------------------- UPLOAD FILE -------------------
 app.post("/upload", upload.single("file"), (req, res) => {
-  // req.file מכיל את פרטי הקובץ שהועלה
-  console.log(req.file);
-  res.json({ message: "הקובץ הועלה בהצלחה!", file: req.file });
+  if (!req.file) {
+    return res.status(400).json({ error: "לא הועלה קובץ או שהקובץ לא תמונה." });
+  }
+
+  res.json({
+    message: "הקובץ הועלה בהצלחה!",
+    file: {
+      originalName: req.file.originalname,
+      filename: req.file.filename, // ← מוסיפים
+      path: req.file.path, // ← אופציונלי
+      url: `/uploads/${req.file.filename}`, // לשימוש ב־IMG
+      mimetype: req.file.mimetype,
+      size: req.file.size,
+    },
+  });
 });
 
 // ------------------- START SERVER -------------------

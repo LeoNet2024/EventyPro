@@ -1,36 +1,68 @@
-/* components/Messages10List/Messages10List.module.css */
 .grid {
   display: grid;
-  grid-template-columns: 1fr; /* כרטיסיות אחת מתחת לשנייה */
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
 }
 
 .card {
-  background: #ffffff;
-  border: 1px solid #dfe3e8;
+  border: 1px solid #e5e7eb;
   border-radius: 12px;
-  padding: 1.25rem 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-  transition: box-shadow 0.25s ease, transform 0.25s ease;
+  padding: 12px;
+  background: #fff;
 }
 
-.card:hover {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.07);
-  transform: translateY(-3px);
-}
-
-.card h4 {
-  margin: 0 0 0.5rem;
-  font-size: 2rem; /* גדול יותר */
-  color: #111827;
-}
-
-.card p {
-  font-size: 1.7rem;
-  margin: 0 0 0.6rem;
-}
-
-.card small {
-  color: #6b7280;
+.subject {
+  margin: 0 0 6px 0;
   font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.body {
+  margin: 0 0 8px 0;
+  color: #374151;
+}
+
+.meta {
+  display: block;
+  color: #6b7280;
+  font-size: 0.8rem;
+  margin-bottom: 8px;
+}
+
+.replyArea {
+  margin-top: 8px;
+  display: grid;
+  gap: 8px;
+}
+
+.replyBox {
+  width: 100%;
+  resize: vertical;
+  min-height: 72px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 1.5rem;
+}
+
+.replyButton {
+  justify-self: start;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.2s ease;
+}
+.replyButton:hover {
+  opacity: 0.95;
+}
+.replyButton:active {
+  transform: scale(0.98);
+}
+.replyButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

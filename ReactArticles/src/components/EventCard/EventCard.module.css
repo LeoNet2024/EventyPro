@@ -28,7 +28,7 @@
   left: 0;
   width: 6px;
   height: 100%;
-  background: linear-gradient( #22536a, #0284c7);
+  background: linear-gradient(#22536a, #0284c7);
   border-top-left-radius: 16px;
   border-bottom-left-radius: 16px;
 }
@@ -86,4 +86,26 @@
 
 .viewMore:hover {
   color: #0c4cc3;
+}
+
+.activeStatus {
+  background-color: #d1fae5; /* ירוק בהיר */
+  color: #065f46; /* ירוק כהה לטקסט */
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 12px;
+  display: inline-block;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.pastStatus {
+  background-color: #fee2e2; /* אדום בהיר */
+  color: #991b1b; /* אדום כהה לטקסט */
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 12px;
+  display: inline-block;
+  font-size: 0.9rem;
+  text-align: center;
 }
