@@ -270,16 +270,17 @@
 }
 .pendingName {
   font-weight: bold;
+  margin: auto;
 }
 .pendingEmail {
-  font-size: 0.95rem;
+  font-size: 1.2rem;
   color: #6b7280;
 }
 .pendingNote {
   background: #f3f4f6;
   padding: 6px 10px;
   border-radius: 8px;
-  font-size: 0.95rem;
+  font-size: 1.3rem;
 }
 .pendingActions {
   display: flex;
@@ -357,6 +358,19 @@
   text-decoration: underline;
 }
 
+.pendingPic {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover; 
+}
+
+.pendingUser {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  align-items: center;
+}
 /* TOAST */
 .toast {
   position: fixed;

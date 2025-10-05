@@ -36,7 +36,6 @@ router.post("/", requireLogin, (req, res) => {
     eventName,
     category,
     startDate,
-    endDate,
     startTime,
     type,
     participantAmount,
@@ -50,7 +49,6 @@ router.post("/", requireLogin, (req, res) => {
     eventName,
     category,
     startDate,
-    endDate,
     startTime,
     type === "private" ? 1 : 0,
     parseInt(participantAmount),
@@ -84,8 +82,8 @@ router.post("/", requireLogin, (req, res) => {
 
       // query to insert values into tables
       const query = `
-      INSERT INTO events(event_name, category, start_date, end_date, start_time, is_private, participant_amount, city,created_by, description)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO events(event_name, category, start_date, start_time, is_private, participant_amount, city,created_by, description)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
       // Execute the query

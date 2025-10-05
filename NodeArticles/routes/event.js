@@ -245,7 +245,7 @@ router.get(
   (req, res) => {
     const eventId = Number(req.params.eventId);
     const sql = `
-    SELECT ep.user_id, u.first_name, u.last_name, u.email, ep.request_note, ep.join_date
+    SELECT ep.user_id, u.first_name, u.last_name, u.email, u.src, ep.request_note, ep.join_date
     FROM event_participants ep
     JOIN users u ON u.user_id = ep.user_id
     WHERE ep.event_id=? AND ep.status='pending'

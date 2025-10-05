@@ -29,7 +29,6 @@ export default function NewEvent() {
     category: "",
     participantAmount: "",
     startDate: "",
-    endDate: "",
     startTime: "",
     type: "",
     user_id: "",
@@ -197,16 +196,6 @@ export default function NewEvent() {
             value={eventData.startDate}
             onChange={handleChange}
             min={today}
-            required
-          />
-
-          <label>End Date</label>
-          <input
-            type="date"
-            name="endDate"
-            min={eventData.startDate}
-            value={eventData.endDate}
-            onChange={handleChange}
             required
           />
 

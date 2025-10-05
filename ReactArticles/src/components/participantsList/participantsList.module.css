@@ -44,3 +44,28 @@
   color: #f1c40f;
   font-weight: 600;
 }
+.removeBtn {
+  background-color: #e53935; /* אדום */
+  color: #fff; /* טקסט לבן */
+  border: none;
+  border-radius: 20%;
+  padding: 4px 8px; /* קטן וצמוד */
+  font-size: 1rem; /* טקסט קטן */
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  margin-left: 8px; /* מרווח קטן מהתוכן */
+}
+
+.removeBtn:hover {
+  background-color: #c62828; /* אדום כהה יותר */
+  transform: scale(1.05); /* טיפה גדל */
+}
+
+.removeBtn:active {
+  transform: scale(0.95); /* אפקט קל בלחיצה */
+}
+
+.removeLogo {
+  width: 20px;
+  border-radius: 50%;
+}

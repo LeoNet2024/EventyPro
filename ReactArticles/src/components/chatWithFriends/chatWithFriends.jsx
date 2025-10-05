@@ -47,9 +47,11 @@ export default function ChatWithFriends() {
   function handleClick(selectFriend) {
     // init the data of the message
 
+    console.log("hi");
+
     setDataToSend({ ...dataToSend, message: "", reciever_id: "" });
 
-    let userToSendTheMessage = undefined;
+    let userToSendTheMessage = selectFriend.reciever_id;
     // In case the user is the one who send the request
     if (selectFriend.sender_id === user.user_id) {
       userToSendTheMessage = selectFriend.reciever_id;
@@ -58,6 +60,7 @@ export default function ChatWithFriends() {
     else {
       userToSendTheMessage = selectFriend.sender_id;
     }
+
     setFriendTochat(userToSendTheMessage);
 
     // set new reciever_id

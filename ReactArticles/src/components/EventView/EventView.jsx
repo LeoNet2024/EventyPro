@@ -471,7 +471,9 @@ export default function EventView() {
                   {pendingRequests.map((r) => (
                     <li key={r.user_id} className={classes.pendingItem}>
                       <div className={classes.pendingInfo}>
-                        <div className={classes.pendingName}>
+                        <div className={classes.pendingUser}>
+                          <img className={classes.pendingPic} src={r.src} />
+                          <div className={classes.pendingName}></div>
                           {r.first_name} {r.last_name}
                         </div>
                         <div className={classes.pendingEmail}>{r.email}</div>
@@ -568,6 +570,10 @@ export default function EventView() {
             <ParticipantsList
               participants={approvedParticipants}
               maxParticipants={event.participant_amount}
+              event_id={event.event_id}
+              setSuccessMsg={setSuccessMsg}
+              isOwner={isOwner}
+              fetchData={fetchData}
             />
           ) : (
             <p className={classes.hiddenText}>
