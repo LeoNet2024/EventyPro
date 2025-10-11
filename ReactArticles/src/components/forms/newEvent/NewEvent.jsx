@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import HalfHourTimeSelect from "./HalfHourTimeSelect";
 import CityAutocomplete from "./CityAutocomplete";
+import { use } from "react";
 
 export default function NewEvent() {
   console.log("new event()");
@@ -34,6 +35,7 @@ export default function NewEvent() {
     user_id: "",
     description: "",
     event_src: null,
+    is_today: false,
   });
 
   // image state
@@ -86,8 +88,16 @@ export default function NewEvent() {
       ...prev,
       [e.target.name]: e.target.value,
       user_id: user.user_id,
+      // Find if today
+      is_today: today === prev.startDate,
     }));
   }
+
+  // This used to set the current value for is_today
+  useEffect(() => {
+    console.log("useEffect changed");
+    setEventData((prev) => ({ ...prev, is_today: today === prev.startDate }));
+  }, [eventData.startDate]);
 
   // ----------------------------------------
   // Handle form submission and send data to backend
@@ -265,6 +275,7 @@ export default function NewEvent() {
           <label>Start Time</label>
           <HalfHourTimeSelect
             value={eventData.startTime}
+            is_today={eventData.is_today}
             onChange={(val) =>
               setEventData((prev) => ({
                 ...prev,

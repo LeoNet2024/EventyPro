@@ -37,14 +37,12 @@ export default function ChatWithFriends() {
 
   const listOfFriends = friendList.map((el) => {
     return (
-      <div>
-        <li key={el.request_id} onClick={() => handleClick(el)}>
-          <img src={el.src} className={classes.sidePic} alt="" />
-          <p style={{ paddingLeft: "2rem" }}>
-            {el.first_name + " " + el.last_name}
-          </p>
-        </li>
-      </div>
+      <li key={el.request_id} onClick={() => handleClick(el)}>
+        <img src={el.src} className={classes.sidePic} alt="" />
+        <p style={{ paddingLeft: "2rem" }}>
+          {el.first_name + " " + el.last_name}
+        </p>
+      </li>
     );
   });
 
@@ -123,10 +121,6 @@ export default function ChatWithFriends() {
     setDataToSend({ ...dataToSend, message: e.target.value });
   }
 
-  // For style
-  const userMessage = { textAlign: "right", color: "BurlyWood" };
-  const friendMessage = { textAlign: "left", color: "DarkGrey" };
-
   const contentChatList = chatContent.map((el) => {
     const isMe = el.sender_id === user.user_id; // if its me
     return (
@@ -164,7 +158,7 @@ export default function ChatWithFriends() {
             <img
               src={dataToSend.src}
               alt=""
-              className={classes.chatAvatar} // ישמור על צורה עגולה
+              className={classes.chatAvatar} //Keep  circle shape
             />
             <h2 className={classes.chatName}>{dataToSend.name}</h2>
           </div>

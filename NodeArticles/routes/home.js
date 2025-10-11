@@ -11,7 +11,7 @@ router.get("/", (req, res) => {
     SELECT * 
     FROM default_images
     NATURAL JOIN events
-    WHERE events.category = default_images.category AND events.start_date > NOW();
+    WHERE events.category = default_images.category AND events.start_date >= CURRENT_DATE();
   `;
 
   db.query(query, (err, results) => {

@@ -8,18 +8,25 @@ function pad(n) {
 export default function HalfHourTimeSelect({
   value,
   onChange,
-  startHour = 0,
+  startHour,
   endHour = 23,
   name = "startTime",
   className,
+  is_today,
 }) {
+  console.log("halfHourFunction() ");
+  // if today the start time will start from the current hour, otherwise from 0
+  const beginingOFStartTimeEventRange = is_today
+    ? new Date().getHours() + 1
+    : 0;
+
   const options = useMemo(() => {
     const out = [];
-    for (let h = startHour; h <= endHour; h++) {
+    for (let h = beginingOFStartTimeEventRange; h <= endHour; h++) {
       for (const m of [0, 30]) out.push(`${pad(h)}:${pad(m)}`);
     }
     return out;
-  }, [startHour, endHour]);
+  }, [beginingOFStartTimeEventRange, endHour]);
 
   return (
     <select

@@ -75,26 +75,6 @@ export default function Home() {
       })
       .catch((err) => {
         console.error("update-past-events failed:", err);
-
-        axios
-          .get("home")
-          .then((res) => {
-            setEvents(res.data);
-            setFilterEvents(res.data);
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
-
-        axios
-          .get("/filterEvents/getAllCategories")
-          .then((res) => setCategories(res.data))
-          .catch((err) => console.error(err));
-
-        axios
-          .get("home/getEventsPositions")
-          .then((res) => setEventsMarksFromDB(res.data))
-          .catch((err) => console.error(err));
       });
   };
 

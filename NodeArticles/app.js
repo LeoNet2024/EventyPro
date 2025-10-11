@@ -65,7 +65,7 @@ const storage = multer.diskStorage({
 function imageFileFilter(req, file, cb) {
   const ext = path.extname(file.originalname || "").toLowerCase();
   if (!ALLOWED_MIME.has(file.mimetype) || !ALLOWED_EXT.has(ext)) {
-    return cb(new Error("רק קבצי תמונה מותרים."), false);
+    return cb(new Error("ONLY IMG TYPE ALLOWED"), false);
   }
   cb(null, true);
 }
@@ -73,7 +73,7 @@ function imageFileFilter(req, file, cb) {
 const upload = multer({
   storage,
   fileFilter: imageFileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 }, // עד 5MB
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
 });
 app.use("/uploads", express.static(uploadsDir));
 
