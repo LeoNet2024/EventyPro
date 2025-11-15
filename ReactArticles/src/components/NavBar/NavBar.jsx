@@ -15,7 +15,7 @@ export default function NavBar() {
       .post("/logout", {}, { withCredentials: true })
       .then(() => {
         navigate("/home");
-        setUser(null); // נקה את ה-user מה-Context
+        setUser(null); 
       })
       .catch((err) => {
         console.error("Logout failed:", err);

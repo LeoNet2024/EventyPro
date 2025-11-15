@@ -8,7 +8,7 @@ export default function Footer() {
         <div className={classes.section}>
           <h3 className={classes.title}>EventyPro</h3>
           <p className={classes.text}>
-            Bringing people together through events worldwide 🌍
+            Bringing people together through events
           </p>
         </div>
 
@@ -30,7 +30,8 @@ export default function Footer() {
       </div>
 
       <div className={classes.copy}>
-        © {new Date().getFullYear()} EventyPro. All rights reserved.
+        © {new Date().getFullYear()} EventyPro. All rights reserved By Leon And
+        Neo.
       </div>
     </footer>
   );

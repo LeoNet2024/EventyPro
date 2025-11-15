@@ -145,16 +145,16 @@ app.get("/check-auth", (req, res) => {
 // ------------------- UPLOAD FILE -------------------
 app.post("/upload", upload.single("file"), (req, res) => {
   if (!req.file) {
-    return res.status(400).json({ error: "לא הועלה קובץ או שהקובץ לא תמונה." });
+    return res.status(400).json({ error: "Not Found" });
   }
 
   res.json({
-    message: "הקובץ הועלה בהצלחה!",
+    message: "Upload completed",
     file: {
       originalName: req.file.originalname,
-      filename: req.file.filename, // ← מוסיפים
-      path: req.file.path, // ← אופציונלי
-      url: `/uploads/${req.file.filename}`, // לשימוש ב־IMG
+      filename: req.file.filename, // ← adding
+      path: req.file.path, // ← op
+      url: `/uploads/${req.file.filename}`, // IMG
       mimetype: req.file.mimetype,
       size: req.file.size,
     },

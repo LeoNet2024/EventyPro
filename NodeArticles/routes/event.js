@@ -4,14 +4,14 @@ const dbSingleton = require("../dbSingleton");
 const router = express.Router();
 const db = dbSingleton.getConnection();
 
-// middleware: נדרש משתמש מחובר
+// middleware
 function requireLogin(req, res, next) {
   if (!req.session?.user?.user_id)
     return res.status(401).json({ error: "יש להתחבר" });
   next();
 }
 
-// middleware: לבדוק בעלות על אירוע
+// middleware
 function requireEventOwner(req, res, next) {
   const eventId = Number(req.params.eventId);
   const userId = req.session.user.user_id;
@@ -21,9 +21,10 @@ function requireEventOwner(req, res, next) {
     [eventId],
     (err, rows) => {
       if (err) return res.status(500).json({ error: "DB error" });
-      if (!rows.length) return res.status(404).json({ error: "אירוע לא נמצא" });
+      if (!rows.length)
+        return res.status(404).json({ error: "Event Not Found" });
       if (rows[0].created_by !== userId)
-        return res.status(403).json({ error: "גישה רק ליוצר האירוע" });
+        return res.status(403).json({ error: "Only admin allowed" });
       next();
     }
   );
@@ -189,7 +190,7 @@ router.post("/:eventId/join-or-request", requireLogin, (req, res) => {
   const userId = req.session.user.user_id;
   const requestNote = (req.body?.note || "").trim();
 
-  // נביא את האירוע כדי להבין אם הוא פרטי ומה הקיבולת
+  // Checking if the event is private
   const sqlEvent =
     "SELECT is_private, participant_amount FROM events WHERE event_id=? LIMIT 1";
   db.query(sqlEvent, [eventId], (e1, r1) => {
@@ -199,7 +200,7 @@ router.post("/:eventId/join-or-request", requireLogin, (req, res) => {
     const isPrivate = !!r1[0].is_private;
     const capacity = r1[0].participant_amount;
 
-    // נספור רק מאושרים לצורך קיבולת
+    // Count only approved users
     const sqlCount =
       "SELECT COUNT(*) AS cnt FROM event_participants WHERE event_id=? AND status='approved'";
     db.query(sqlCount, [eventId], (e2, r2) => {
@@ -208,28 +209,27 @@ router.post("/:eventId/join-or-request", requireLogin, (req, res) => {
       const approvedCount = r2[0].cnt;
       const status = isPrivate ? "pending" : "approved";
 
-      // אם האירוע ציבורי וגם מלא – נחסום הצטרפות
+      // if event is public -> block
       if (!isPrivate && approvedCount >= capacity) {
-        return res.status(400).json({ error: "האירוע מלא" });
+        return res.status(400).json({ error: "Event full" });
       }
 
-      // ננסה להוסיף/לעדכן שורה; אם קיימת בקשה קודמת – נטפל בהתאם
       const insert =
         "INSERT INTO event_participants (user_id, event_id, status, request_note) VALUES (?,?,?,?) " +
         "ON DUPLICATE KEY UPDATE status=VALUES(status), request_note=VALUES(request_note), reviewed_by=NULL, reviewed_at=NULL";
       db.query(insert, [userId, eventId, status, requestNote || null], (e3) => {
         if (e3) {
           if (e3.code === "ER_DUP_ENTRY")
-            return res.status(409).json({ error: "כבר ביקשת/הצטרפת לאירוע" });
+            return res.status(409).json({ error: "" });
           return res.status(500).json({ error: "DB error" });
         }
         if (isPrivate)
           return res.json({
-            message: "הבקשה נשלחה וממתינה לאישור היוצר",
+            message: "waiting",
             status: "pending",
           });
         return res.json({
-          message: "הצטרפת לאירוע בהצלחה",
+          message: "succesful",
           status: "approved",
         });
       });
@@ -286,8 +286,8 @@ router.post(
       db.query(sql, [reviewer, eventId, targetUserId], (e2, result) => {
         if (e2) return res.status(500).json({ error: "DB error" });
         if (!result.affectedRows)
-          return res.status(404).json({ error: "בקשה לא נמצאה/כבר טופלה" });
-        res.json({ message: "הבקשה אושרה" });
+          return res.status(404).json({ error: "Not found" });
+        res.json({ message: "approved" });
       });
     });
   }
@@ -308,8 +308,8 @@ router.post(
     db.query(sql, [reviewer, eventId, targetUserId], (err, result) => {
       if (err) return res.status(500).json({ error: "DB error" });
       if (!result.affectedRows)
-        return res.status(404).json({ error: "בקשה לא נמצאה/כבר טופלה" });
-      res.json({ message: "הבקשה נדחתה / המשתתף הוסר" });
+        return res.status(404).json({ error: "Not found" });
+      res.json({ message: "Request denided" });
     });
   }
 );

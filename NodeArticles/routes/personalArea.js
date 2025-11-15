@@ -9,7 +9,7 @@ const bcrypt = require("bcrypt");
 router.post("/", (req, res) => {
   const { user_id } = req.body;
 
-  // מאחדים אירועים שהמשתמש הצטרף אליהם + אירועים שהמשתמש יצר
+  // User events and joined events
   const query = `
     SELECT
       t.event_id,

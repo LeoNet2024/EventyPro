@@ -6,6 +6,8 @@ import axios from "axios";
 export default function UserStats({ noti }) {
   const { user } = useAuth();
 
+  console.log("UserStats()");
+
   const [createdCount, setCreatedCount] = useState(0);
   const [joinedCount, setJoinedCount] = useState(0);
   const [lastComment, setLastComment] = useState("");

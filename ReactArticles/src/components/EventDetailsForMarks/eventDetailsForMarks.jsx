@@ -12,7 +12,7 @@ export default function EventDetailsForMarks({ event, description, name }) {
       </p>
       <p className={classes.location}>{"Category: " + event.category}</p>
       <Link to={`/event/${event.event_id}`} className={classes.cardLink}>
-        View details →
+        View details
       </Link>
     </div>
   );

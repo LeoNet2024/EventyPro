@@ -4,14 +4,14 @@ const dbSingleton = require("../dbSingleton");
 const router = express.Router();
 const db = dbSingleton.getConnection();
 
-// middleware: נדרש משתמש מחובר
+// middleware:
 function requireLogin(req, res, next) {
   if (!req.session?.user?.user_id)
     return res.status(401).json({ error: "יש להתחבר" });
   next();
 }
 
-// middleware: לבדוק בעלות על אירוע
+// middleware:
 function requireEventOwner(req, res, next) {
   const eventId = Number(req.params.eventId);
   const userId = req.session.user.user_id;
@@ -23,7 +23,7 @@ function requireEventOwner(req, res, next) {
       if (err) return res.status(500).json({ error: "DB error" });
       if (!rows.length) return res.status(404).json({ error: "NOT FOUND" });
       if (rows[0].created_by !== userId)
-        return res.status(403).json({ error: "גישה רק ליוצר האירוע" });
+        return res.status(403).json({ error: "Only for creator" });
       next();
     }
   );
@@ -119,7 +119,6 @@ router.post("/", requireLogin, (req, res) => {
         const event_id = results.insertId;
 
         // Add creator as an approved participant
-        // אם מוגדר יוניק על (event_id, user_id) זה בטוח מפני כפילויות
         const insertCreatorSql = `
           INSERT INTO event_participants (user_id, event_id, status, reviewed_by, reviewed_at)
           VALUES (?, ?, 'approved', ?, NOW())
@@ -131,8 +130,6 @@ router.post("/", requireLogin, (req, res) => {
 
         db.query(insertCreatorSql, [user_id, event_id, user_id], (e2) => {
           if (e2) {
-            // לא מפילים את יצירת האירוע אם הכנסה לרשימת משתתפים נכשלה
-            // אבל כן מחזירים הודעה אינפורמטיבית
             console.error("Failed to add creator as participant:", e2);
             return res.status(201).json({
               message:

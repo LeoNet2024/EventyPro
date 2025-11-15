@@ -26,6 +26,10 @@ export default function Header() {
             aria-label="Go to home"
           >
             <span className={classes.logoAccent}>Eventy</span>
+            <br />
+            <span className={classes.logoAccent} style={{ fontSize: "1rem" }}>
+              Go Out. Meet More.
+            </span>
           </button>
 
           {/* Center: Nav */}

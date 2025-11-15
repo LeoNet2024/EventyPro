@@ -92,7 +92,6 @@ router.get("/summary", (req, res) => {
     db.query(eventsSql, [], (err, events) => {
       if (err) return res.status(500).json({ error: "Database error" });
 
-      // 10 הודעות אחרונות
       const msgsSql = `
         SELECT m.message_id, m.user_id, m.subject, m.message,
                m.created_at, m.answered, u.user_name
@@ -105,7 +104,6 @@ router.get("/summary", (req, res) => {
       db.query(msgsSql, [], (err, messages) => {
         if (err) return res.status(500).json({ error: "Database error" });
 
-        // שלח הכול במענה אחד
         res.json({ users, events, messages });
       });
     });
