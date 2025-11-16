@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import classes from './CommentList.module.css';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import classes from "./CommentList.module.css";
 
 export default function CommentList({ eventid, refreshTrigger }) {
   const [comments, setComments] = useState([]);
@@ -8,20 +8,20 @@ export default function CommentList({ eventid, refreshTrigger }) {
   useEffect(() => {
     axios
       .get(`/event/${eventid}/comments`)
-      .then(res => setComments(res.data))
-      .catch(err => console.error('Failed to load comments:', err));
-  }, [eventid, refreshTrigger]); // ← הוספת תלות ב-refreshTrigger
+      .then((res) => setComments(res.data))
+      .catch((err) => console.error("Failed to load comments:", err));
+  }, [eventid, refreshTrigger]);
 
-  const formatDateTime = datetime => {
+  const formatDateTime = (datetime) => {
     const date = new Date(datetime);
-    return date.toLocaleString(); // תאריך + שעה
+    return date.toLocaleString();
   };
 
   return (
     <div className={classes.commentListContainer}>
       <h3 className={classes.title}>Comments</h3>
       {comments.length === 0 && <p>No comments yet.</p>}
-      {comments.map(c => (
+      {comments.map((c) => (
         <div key={c.comment_id} className={classes.comment}>
           <img
             src={c.src}
@@ -30,7 +30,7 @@ export default function CommentList({ eventid, refreshTrigger }) {
           />
           <div className={classes.content}>
             <p
-              className={`${classes.author} ${c.is_admin ? classes.admin : ''}`}
+              className={`${classes.author} ${c.is_admin ? classes.admin : ""}`}
             >
               {c.user_name}
             </p>

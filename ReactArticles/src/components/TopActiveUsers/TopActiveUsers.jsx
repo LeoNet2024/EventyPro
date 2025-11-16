@@ -20,7 +20,7 @@ export default function TopActiveUsers({
   const [loading, setLoading] = useState(initialUsers.length === 0);
   const [error, setError] = useState("");
 
-  // שולח את עוגיית הסשן
+  // sending the session
   axios.defaults.withCredentials = true;
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export default function TopActiveUsers({
       })
       .catch((err) => {
         if (!mounted) return;
-        setError("שגיאת שרת בעת טעינת המשתמשים הכי פעילים");
+        setError("Error in most active users");
         console.error("TopActiveUsers error:", err);
       })
       .finally(() => mounted && setLoading(false));
@@ -70,9 +70,7 @@ export default function TopActiveUsers({
 
       {!loading && !error && (
         <ul className={classes.list}>
-          {rows.length === 0 && (
-            <li className={classes.empty}>אין נתונים להצגה</li>
-          )}
+          {rows.length === 0 && <li className={classes.empty}>No data</li>}
           {rows.map((u) => (
             <li key={u.user_id} className={classes.item}>
               <div className={classes.rowMain}>

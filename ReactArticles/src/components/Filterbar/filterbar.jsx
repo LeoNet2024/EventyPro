@@ -23,7 +23,7 @@ export default function Filterbar({ setFilterEvents, events, categories }) {
         .then((res) => {
           // Step 1 - Create list of event ids
           const listOfEventId = res.data.map((el) => el.event_id);
-          // Step 2 - Return events that their event_id exists appears the list
+          // Step 2 - Return events that their event_id exists and appears the list
           setFilterEvents((prev) =>
             prev.filter((el) => listOfEventId.includes(el.event_id))
           );

@@ -111,7 +111,6 @@ export default function EventView() {
       })
       .catch((err) => {
         console.error("Pending requests error:", err);
-        // לא מציג שגיאה ליוזר כדי לא להכביד אם הנתיב עוד לא קיים
       });
   };
 
@@ -602,7 +601,7 @@ export default function EventView() {
 
       {/* ===== Invite Friends ===== */}
       <div className={classes.inviteSection}>
-        <h3 className={classes.inviteTitle}>הזמנת חברים</h3>
+        <h3 className={classes.inviteTitle}>Invite Friends</h3>
 
         <div className={classes.shareRow}>
           <input
@@ -619,7 +618,7 @@ export default function EventView() {
               const url = `${window.location.origin}/event/${id}`;
               try {
                 await navigator.clipboard.writeText(url);
-                setSuccessMsg("הלינק הועתק");
+                setSuccessMsg("was copied");
               } catch {
                 // fallback
                 const el = document.createElement("textarea");
@@ -628,11 +627,11 @@ export default function EventView() {
                 el.select();
                 document.execCommand("copy");
                 document.body.removeChild(el);
-                setSuccessMsg("הלינק הועתק");
+                setSuccessMsg("was copied");
               }
             }}
           >
-            העתק קישור
+            Copy Like
           </button>
 
           <a

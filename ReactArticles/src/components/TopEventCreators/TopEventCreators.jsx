@@ -34,7 +34,7 @@ export default function TopEventCreators({
       )
       .catch((err) => {
         if (!mounted) return;
-        setError("שגיאה בטעינת יוצרי האירועים המובילים");
+        setError("Error top event creators");
         console.error("TopEventCreators error:", err);
       })
       .finally(() => mounted && setLoading(false));
@@ -67,7 +67,7 @@ export default function TopEventCreators({
       {!loading && !error && (
         <ul className={classes.list}>
           {rows.length === 0 && (
-            <li className={classes.empty}>אין נתונים להצגה</li>
+            <li className={classes.empty}>No Data to show</li>
           )}
           {rows.map((u) => (
             <li key={u.user_id} className={classes.item}>

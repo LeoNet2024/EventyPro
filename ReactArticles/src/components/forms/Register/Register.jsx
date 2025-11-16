@@ -22,16 +22,16 @@ export default function Register() {
   });
   const [errors, setErrors] = useState({});
 
-  // נרמול להשוואה חסינת רווחים/רישיות
+  // Lower case
   const norm = (s) => (s || "").trim().toLowerCase();
 
-  // רשימת ערים נקייה לשימוש בקומפוננטה
+  // clean list of cities
   const cityOptions = useMemo(
     () => cities.map((c) => (c.name_heb || "").trim()).filter(Boolean),
     [cities]
   );
 
-  // בדיקת קיום עיר מהרשימה
+  // check if the city exists
   const cityExists = useCallback(
     (name) => cityOptions.some((o) => norm(o) === norm(name)),
     [cityOptions]

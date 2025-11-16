@@ -113,7 +113,7 @@ export default function NewEvent() {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then((up) => {
-          const filename = up?.data?.file?.filename; // הגנה מ-undefined
+          const filename = up?.data?.file?.filename; // prevent null
           if (!filename)
             throw new Error("Upload succeeded but filename missing");
 
@@ -146,7 +146,7 @@ export default function NewEvent() {
           setMessageType("error");
         });
 
-      return; // חשוב: לא להמשיך למסלול ללא קובץ
+      return; // no image file
     }
     // no image file
     axios

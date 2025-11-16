@@ -32,7 +32,7 @@ export default function TopEventCities({
       )
       .catch((err) => {
         if (!mounted) return;
-        setError("שגיאה בטעינת ערים מובילות");
+        setError("Error TopEvent Cities");
         console.error("TopEventCities error:", err);
       })
       .finally(() => mounted && setLoading(false));
@@ -64,7 +64,7 @@ export default function TopEventCities({
       {!loading && !error && (
         <ul className={classes.list}>
           {rows.length === 0 && (
-            <li className={classes.empty}>אין נתונים להצגה</li>
+            <li className={classes.empty}>No data to show</li>
           )}
           {rows.map((r, i) => (
             <li key={r.city + i} className={classes.item}>
