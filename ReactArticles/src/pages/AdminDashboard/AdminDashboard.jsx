@@ -13,7 +13,6 @@ import TopActiveUsers from "../../components/TopActiveUsers/TopActiveUsers";
 import TopEventCreators from "../../components/TopEventCreators/TopEventCreators";
 import TopEventCities from "../../components/TopEventCities/TopEventCities";
 
-// שולח את עוגיית-ה-session בכל בקשה
 axios.defaults.withCredentials = true;
 
 export default function AdminDashboard() {
@@ -22,7 +21,7 @@ export default function AdminDashboard() {
   const [events, setEvents] = useState([]);
   const [messages, setMessages] = useState([]);
 
-  // מביא “הכי חדשים” ברגע שהדף נטען
+  // bring the most new
   useEffect(() => {
     axios
       .get("/admin/summary")

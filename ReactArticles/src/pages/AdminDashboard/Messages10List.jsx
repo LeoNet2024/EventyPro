@@ -18,7 +18,7 @@ export default function Messages10List({
   const [replies, setReplies] = useState({}); // { [message_id]: text }
   const [sending, setSending] = useState({}); // { [message_id]: boolean }
   const buildReplyUrl =
-    replyEndpointBuilder || ((id) => `/admin/adminMessages/${id}/reply`); // ברירת מחדל כמו בדוגמה שלך
+    replyEndpointBuilder || ((id) => `/admin/adminMessages/${id}/reply`);
 
   useEffect(() => setMessages(initialMessages), [initialMessages]);
 
@@ -34,10 +34,10 @@ export default function Messages10List({
       setSending((s) => ({ ...s, [id]: true }));
       await axios.post(buildReplyUrl(id), { reply });
 
-      // אופציונלי: רענון מהרודף
+      // Refetch
       if (typeof onRefetch === "function") onRefetch();
 
-      // אופטימיסטי: ננקה את הטקסט ונסמן כ-answered
+      // clean the text and marks as answered
       setReplies((prev) => ({ ...prev, [id]: "" }));
       setMessages((prev) =>
         prev.map((m) => (m.message_id === id ? { ...m, answered: 1 } : m))
@@ -63,7 +63,7 @@ export default function Messages10List({
             {m.answered ? "Answered" : "Pending"}
           </small>
 
-          {/* טופס תגובה – נציג תמיד, או רק כשלא נענה עדיין */}
+          {/* respone form*/}
           {!m.answered && (
             <div className={classes.replyArea}>
               <textarea

@@ -5,7 +5,6 @@ import classes from "./User10List.module.css";
 export default function User10List({ initialUsers = [] }) {
   const [users, setUsers] = useState(initialUsers);
 
-  // אם ה-Dashboard מעדכן את-prop – נעדכן גם כאן
   useEffect(() => setUsers(initialUsers), [initialUsers]);
 
   if (!users.length) return <p>No users found.</p>;
@@ -30,7 +29,7 @@ export default function User10List({ initialUsers = [] }) {
             </td>
             <td>{u.email}</td>
             <td>
-              {/* פורמט תאריך מקומי קצר */}
+              {/* local date*/}
               {new Date(u.registration_date).toLocaleDateString()}
             </td>
             <td>{u.blocked ? "Yes" : "No"}</td>

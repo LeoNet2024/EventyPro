@@ -7,7 +7,7 @@ const db = dbSingleton.getConnection();
 // middleware:
 function requireLogin(req, res, next) {
   if (!req.session?.user?.user_id)
-    return res.status(401).json({ error: "יש להתחבר" });
+    return res.status(401).json({ error: "You must login first" });
   next();
 }
 

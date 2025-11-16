@@ -54,7 +54,7 @@ router.use((req, res, next) => {
 
 // ------------------- ADMIN DASHBBOARD SUMMARY -------------------
 router.get("/summary", (req, res) => {
-  // 10 users האחרונים
+  // 10 users 
   const usersSql = `
       SELECT user_id, first_name, last_name, email,
            user_name, blocked, registration_date
@@ -66,7 +66,7 @@ router.get("/summary", (req, res) => {
   db.query(usersSql, [], (err, users) => {
     if (err) return res.status(500).json({ error: "Database error" });
 
-    // 10 events האחרונים
+    // 10 events 
     const eventsSql = `
       SELECT 
       e.event_id,
