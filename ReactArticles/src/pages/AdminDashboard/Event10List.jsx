@@ -16,7 +16,7 @@ export default function Event10List({ initialEvents = [] }) {
           <th>Event Creator</th>
           <th>Category</th>
           <th>City</th>
-          <th>Dates</th>
+          <th>Date</th>
           <th>Participants</th>
         </tr>
       </thead>
@@ -27,10 +27,7 @@ export default function Event10List({ initialEvents = [] }) {
             <td>{e.event_name}</td>
             <td>{e.category}</td>
             <td>{e.city}</td>
-            <td>
-              {new Date(e.start_date).toLocaleDateString()} –{" "}
-              {new Date(e.end_date).toLocaleDateString()}
-            </td>
+            <td>{new Date(e.start_date).toLocaleDateString()}</td>
             <td>
               {e.actual_participants}/{e.participant_amount}
             </td>

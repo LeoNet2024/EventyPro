@@ -51,6 +51,11 @@ export default function EventView() {
     [user, event]
   );
 
+  const isFull = useMemo(
+    () => !!(user && event && event.participant_amount === participants.length),
+    [user, event]
+  );
+
   useEffect(() => {
     fetchData();
     setSuccessMsg("");
@@ -292,13 +297,13 @@ export default function EventView() {
     if (isJoined) joinBtnText = "Joined";
   }
 
-  const disableJoin =
-    loadingJoin || isJoined || isPending || (isPrivate && isRejected);
-
   // נאפשר להציג בימין רק מאושרים לפאנל המשתתפים
   const approvedParticipants = Array.isArray(participants)
     ? participants.filter((p) => !p.status || p.status === "approved")
     : [];
+
+  const disableJoin =
+    loadingJoin || isJoined || isPending || (isPrivate && isRejected) || isFull;
 
   const canView = !isPrivate || isJoined || isOwner;
 
